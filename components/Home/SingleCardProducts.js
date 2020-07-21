@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const SingleCardProducts = (props) => {
   return (

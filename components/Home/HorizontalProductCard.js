@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const HorizontalProductCard = (props) => {
   const dispatch = useDispatch();
@@ -44,14 +45,18 @@ const HorizontalProductCard = (props) => {
               </Text>
             </View>
           )}
-          <Image
-            source={{url: result.main_image}}
+         <FastImage
+            source={{
+              uri: result.main_image,
+              priority: FastImage.priority.normal,
+            }}
             style={{
-              width: 170,
-              height: 150,
+              width: 200,
+              height: 170,
               borderRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
+            progressiveRenderingEnabled={true}
           />
         </View>
       </TouchableOpacity>
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
   hairProductsMiddleView: {
     position: 'absolute',
     zIndex: 1,
-    marginTop: '25%',
+    marginTop: '22%',
     width: '100%',
   },
   hairProductCard: {

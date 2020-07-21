@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
-  ScrollView,
+  ScrollView,Alert
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -48,10 +48,37 @@ const OpenCategorySectionModal = (props) => {
 
   const filterCategory = (name) => {
     //select
-    setSelectedCategories((prev) => [...prev, name]);
-    //delete from list
-    const filtered = data.filter((value) => value !== name);
-    setData(filtered);
+    const hasSelected = selectedCategories.filter(value => value === name)
+    if(hasSelected.length === 0){
+      setSelectedCategories((prev) => [...prev, name]);
+      //delete from list
+      const filtered = data.filter((value) => value !== name);
+      setData(filtered);
+    } else {
+      Alert.alert(
+        'Category exist',
+        'You already selected this category',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {},
+            style: 'text',
+          },
+          {
+            text: 'Done',
+            style: 'text',
+
+            onPress: async () => {
+             
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+
+
+
   };
 
   const deleteSelected = (name) => {
@@ -116,16 +143,14 @@ const OpenCategorySectionModal = (props) => {
       style={{backgroundColor: '#fff'}}>
       <SafeAreaView>
         <View style={styles.header}>
-          <View style={{width: '20%'}}></View>
           <View style={styles.headerRow}>
             <Text
               style={{
                 alignSelf: 'center',
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
-                textAlign: 'center',
               }}>
-              Select Categories
+              What category of products does your shop sell
             </Text>
           </View>
           <View style={{width: '20%'}}>
@@ -202,7 +227,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerRow: {
-    width: '60%',
+    width: '80%',
   },
 
   selectedCat: {

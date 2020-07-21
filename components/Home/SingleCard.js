@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const SingleCard = (props) => {
   return (

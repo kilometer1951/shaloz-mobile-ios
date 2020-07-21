@@ -16,6 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import * as appActions from '../../store/actions/appActions';
+import FastImage from 'react-native-fast-image';
 
 const HorizontalProducts = (props) => {
   const dispatch = useDispatch();
@@ -43,14 +44,13 @@ const HorizontalProducts = (props) => {
               </Text>
             </View>
           )}
-          <Image
-            source={{url: result.main_image}}
-            style={{
-              width: 170,
-              height: 120,
-              borderRadius: 5,
+         <FastImage
+            style={{width: 170, height: 120, borderRadius: 5}}
+            source={{
+              uri: result.main_image,
+              priority: FastImage.priority.normal,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
       </TouchableOpacity>

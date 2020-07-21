@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
-
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
@@ -21,10 +20,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import UpdatingLoader from '../UpdatingLoader';
-import {ActionSheet} from "native-base"
+import {ActionSheet} from 'native-base';
 import OtherProducts from '../ProductCategory/OtherProducts';
 import Toast from 'react-native-root-toast';
-
+import FastImage from 'react-native-fast-image';
 
 const FavoriteProductComponent = (props) => {
   const dispatch = useDispatch();
@@ -44,12 +43,11 @@ const FavoriteProductComponent = (props) => {
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [page, setPage] = useState(2);
 
-
   const [otherProducts, setOtherProducts] = useState([]);
   const [shops, setShops] = useState([]);
 
-  const [openUpdateMessage, setOpenUpdateMessage] = useState(false)
-const [updateMessage, setUpdateMessage] = useState("")
+  const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState('');
 
   useEffect(() => {
     const fetchFavProducts = async () => {
@@ -58,9 +56,9 @@ const [updateMessage, setUpdateMessage] = useState("")
         await dispatch(appActions.fetchFavProducts(user._id, 1));
         const response = await appActions.fechProductByCategory(
           user._id,
-          "",
-          "",
-          "",
+          '',
+          '',
+          '',
           1,
         );
         setOtherProducts(response.otherProducts);
@@ -124,54 +122,51 @@ const [updateMessage, setUpdateMessage] = useState("")
     }
   };
 
-
   const visiShop = (seller_id) => {
     props.navigation.navigate('Shops', {
       headerTile: 'Shop',
       backTitle: 'Favorites',
-      seller_id:seller_id
-    })
-  }
+      seller_id: seller_id,
+    });
+  };
 
-  const openActionSheet =  (seller_id,product_id) =>
-  ActionSheet.show(
+  const openActionSheet = (seller_id, product_id) =>
+    ActionSheet.show(
       {
         options: ['Cancel', 'Visit shop', 'Remove from favorite'],
         cancelButtonIndex: 0,
         tintColor: '#000',
-        destructiveButtonIndex:2
+        destructiveButtonIndex: 2,
       },
       async (buttonIndex) => {
         if (buttonIndex === 0) {
           // cancel action
         } else if (buttonIndex === 1) {
-          visiShop(seller_id)
-        } else if(buttonIndex === 2){
-          try{
-            setIsUpdating(true)
-          await  dispatch(appActions.removeFavProduct(user._id,product_id));
-          setIsUpdating(false)
-          Toast.show('Removed from favorites', {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-            backgroundColor:"red"
-        })
-
-          } catch(e) {
-            setIsUpdating(false)
+          visiShop(seller_id);
+        } else if (buttonIndex === 2) {
+          try {
+            setIsUpdating(true);
+            await dispatch(appActions.removeFavProduct(user._id, product_id));
+            setIsUpdating(false);
+            Toast.show('Removed from favorites', {
+              duration: Toast.durations.LONG,
+              position: Toast.positions.BOTTOM,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+              backgroundColor: 'red',
+            });
+          } catch (e) {
+            setIsUpdating(false);
             setNetworkError(true);
           }
         }
       },
     );
-    const openSingleScreen = (product_id) => {
-      props.navigation.push('SingleProduct', {product_id: product_id});
-      
-    };
+  const openSingleScreen = (product_id) => {
+    props.navigation.push('SingleProduct', {product_id: product_id});
+  };
 
   const renderItem = ({item}) => (
     <TouchableWithoutFeedback
@@ -185,9 +180,16 @@ const [updateMessage, setUpdateMessage] = useState("")
           </View>
         )}
 
-        <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
+        <View
+          style={{
+            backgroundColor: '#e1e4e8',
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}>
           <Image
-            source={{url: item.product.main_image}}
+            source={{
+              url: item.product.main_image,
+            }}
             style={{
               width: '100%',
               height: 150,
@@ -198,14 +200,14 @@ const [updateMessage, setUpdateMessage] = useState("")
           />
         </View>
         <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
                 flex: 1,
                 flexWrap: 'wrap',
                 fontFamily: Fonts.poppins_regular,
                 height: 49,
-                fontSize:15
+                fontSize: 15,
               }}>
               {item.product.product_name.trunc(35)}
             </Text>
@@ -217,7 +219,7 @@ const [updateMessage, setUpdateMessage] = useState("")
               justifyContent: 'space-between',
             }}>
             <View style={{marginTop: 2, flexDirection: 'row'}}>
-            <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
+              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
                 $
                 {displayPrice(
                   item.product.product_price,
@@ -230,8 +232,13 @@ const [updateMessage, setUpdateMessage] = useState("")
                 </Text>
               )}
             </View>
-            <TouchableOpacity onPress={openActionSheet.bind(this, item.product.user, item.product._id)}>
-            <Icon name="ios-more" size={30} color={Colors.grey_darken} />
+            <TouchableOpacity
+              onPress={openActionSheet.bind(
+                this,
+                item.product.user,
+                item.product._id,
+              )}>
+              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
             </TouchableOpacity>
           </View>
         </View>
@@ -243,21 +250,21 @@ const [updateMessage, setUpdateMessage] = useState("")
   if (fav_products_data.length === 0) {
     view = (
       <ScrollView>
-      <View style={{marginTop: '10%'}}>           
-       <Text
-          style={{
-            fontFamily: Fonts.poppins_regular,
-            fontSize: 20,
-            textAlign: 'center',
-          }}>
-          You have not added any favorite product(s)
-        </Text>
-        <OtherProducts
-        dataN={otherProducts}
-        navigation={props.navigation}
-        shops={shops}
-      />
-      </View>
+        <View style={{marginTop: '10%'}}>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_regular,
+              fontSize: 20,
+              textAlign: 'center',
+            }}>
+            You have not added any favorite product(s)
+          </Text>
+          <OtherProducts
+            dataN={otherProducts}
+            navigation={props.navigation}
+            shops={shops}
+          />
+        </View>
       </ScrollView>
     );
   } else {
@@ -276,7 +283,7 @@ const [updateMessage, setUpdateMessage] = useState("")
         data={fav_products_data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2,marginBottom:20}}
+        style={{marginTop: 2, marginBottom: 20}}
         numColumns={2}
         extraData={fav_products_data}
         onEndReachedThreshold={0.5}
@@ -326,9 +333,7 @@ const [updateMessage, setUpdateMessage] = useState("")
         />
       )}
 
-
-
-{isUpdating && <UpdatingLoader />}
+      {isUpdating && <UpdatingLoader />}
     </View>
   );
 };
@@ -375,7 +380,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 18,
-
   },
 });
 
