@@ -26,6 +26,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fonts from '../contants/Fonts';
 import Colors from '../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const ProductDesignComponent = (props) => {
   const dispatch = useDispatch();
@@ -80,15 +81,15 @@ const ProductDesignComponent = (props) => {
         )}
 
         <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
-          <Image
-            source={{url: main_image}}
+          <FastImage
+            source={{uri: main_image, priority:FastImage.priority.normal}}
             style={{
               width: '100%',
               height: 150,
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>

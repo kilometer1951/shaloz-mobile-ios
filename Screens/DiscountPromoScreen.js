@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   
   SafeAreaView,
-  TextInput,
+  TextInput,Alert
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
@@ -68,6 +68,23 @@ const DiscountPromScreen = (props) => {
 
   const update = () => {
     try {
+      if (discount_amount_for_threshold === '') {
+        Alert.alert(
+          'Error',
+          'Invalid input, item threshold is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+      if (max_items_to_get_discount === '') {
+        Alert.alert(
+          'Error',
+          'Invalid input, discount to apply is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+      
       appActions.updateDiscountPromo(
         user._id,
         offers_discount_on_price_threshold,

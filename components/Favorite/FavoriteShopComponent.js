@@ -146,7 +146,7 @@ const FavoriteShopComponent = (props) => {
         
         <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
           <Image
-            source={{url: item.seller.shop_logo}}
+            source={{uri: item.seller.shop_logo}}
             style={{
               width: '100%',
               height: 150,

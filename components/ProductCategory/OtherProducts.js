@@ -13,6 +13,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const OtherProducts = (props) => {
   const dispatch = useDispatch();
@@ -34,14 +35,14 @@ const OtherProducts = (props) => {
               </Text>
             </View>
           )}
-          <Image
-            source={{url: result.main_image}}
+          <FastImage
+            source={{uri: result.main_image, priority: FastImage.priority.normal}}
             style={{
-              width: "100%",
-              height: "100%",
+              width: '100%',
+              height: '100%',
               borderRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
       </TouchableOpacity>
@@ -63,15 +64,14 @@ const OtherProducts = (props) => {
               })
         }>
         <View style={{marginRight: 10, width:180, height:160}}>
-          
-          <Image
-            source={{url: result.shop_logo}}
+        <FastImage
+            source={{uri: result.shop_logo, priority: FastImage.priority.normal}}
             style={{
-              width: "100%",
-              height: "100%",
+              width: '100%',
+              height: '100%',
               borderRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
       </TouchableOpacity>

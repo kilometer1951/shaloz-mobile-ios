@@ -49,8 +49,7 @@ const ChangeShopLogoScreen = (props) => {
             type: response.mime,
             name: response.filename + '.JPEG',
           };
-          //dispatch(authActions.referenceLicensePhotoData(data));
-         // setShopImageObject(data);
+        dispatch(authActions.changeShopLogo(data,response.path, user._id));
          setShopLogo(source);
         }
       })

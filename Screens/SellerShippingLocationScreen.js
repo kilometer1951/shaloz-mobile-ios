@@ -88,10 +88,30 @@ const SellerShippingLocationScreen = (props) => {
     //newAdressArray.length !== 4 && setDisplayNextButton(false);
   };
 
-  const updateShippingPromo = async () => {
+  const update = async () => {
     try {
-      setIsLoading(true);
       let newAdressArray = shopLocation.split(',');
+
+      if (shopName === '') {
+        Alert.alert(
+          'Error',
+          'Invalid input, shop name is required',
+          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+      if (newAdressArray.length != 4) {
+        Alert.alert(
+          'Error',
+          'Invalid input, address is invalid',
+          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+
+      setIsLoading(true);
       if (newAdressArray.length == 4) {
         if (newAdressArray[3].trim() !== '') {
           let address = newAdressArray[0].trim();
@@ -163,12 +183,12 @@ const SellerShippingLocationScreen = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-              Shipping promotion
+              Shop name / Shop location
             </Text>
           </View>
           <View style={{width: '20%'}}>
             {updateButton && (
-              <TouchableOpacity onPress={updateShippingPromo}>
+              <TouchableOpacity onPress={update}>
                 <View style={{alignItems: 'flex-end'}}>
                   <Text
                     style={{

@@ -186,9 +186,10 @@ const FavoriteProductComponent = (props) => {
             borderTopLeftRadius: 5,
             borderTopRightRadius: 5,
           }}>
-          <Image
+          <FastImage
             source={{
-              url: item.product.main_image,
+              uri: item.product.main_image,
+              priority: FastImage.priority.normal,
             }}
             style={{
               width: '100%',
@@ -196,7 +197,7 @@ const FavoriteProductComponent = (props) => {
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>

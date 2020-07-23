@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   
   SafeAreaView,
-  TextInput,
+  TextInput,Alert
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
@@ -53,6 +53,14 @@ const ShippingPromoScreen = (props) => {
 
   const updateShippingPromo = () => {
     try {
+      if (price_threshold === '') {
+        Alert.alert(
+          'Error',
+          'Invalid input, price is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
       appActions.updateShippingPromo(
         user._id,
         offers_free_shipping,

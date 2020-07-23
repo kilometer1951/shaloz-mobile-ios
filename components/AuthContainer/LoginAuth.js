@@ -84,11 +84,10 @@ const [viewToRender, setViewToRender] = useState("login")
       if(!response.status){
         setIsLoading(false);
           if(response.message === "user not found"){
-            Alert.alert(
-                'Incorrect email or password',
-                ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-                {cancelable: false},
-              );
+            Alert.alert('Error', 'Incorrect email or password', [
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+              ],
+              { cancelable: true });
             return;
           }
       } else {
