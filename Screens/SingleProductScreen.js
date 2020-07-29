@@ -75,7 +75,7 @@ const SingleProductScreen = (props) => {
       let total_p = price * total_d;
       let total = price - total_p;
 
-      setPrice(total);
+      setPrice(total.toFixed(2));
     }
   };
 

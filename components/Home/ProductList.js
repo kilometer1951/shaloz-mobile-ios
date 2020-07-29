@@ -100,7 +100,7 @@ const ProductList = (props) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: 1,
-          marginTop: 30,
+          marginTop: 10,
           width: '100%',
           padding: 10,
         }}>
@@ -117,14 +117,26 @@ const ProductList = (props) => {
             }
 
             if (props.heading !== 'Shop All Categories') {
-              props.navigation.navigate('ProductCategory', {
-                backTitle: 'Home',
-                headerTile: props.heading,
-                main_cat: props.heading,
-                sub_cat_one: '',
-                sub_cat_two: '',
-              });
+              if(props.heading === "Workout Supplements"){
+                props.navigation.navigate('ProductCategory', {
+                  backTitle: 'Home',
+                  headerTile:"Workout Supplements",
+                  main_cat: "Workout Supplements & Equipments",
+                  sub_cat_one: '',
+                  sub_cat_two: '',
+                });
+              } else {
+                props.navigation.navigate('ProductCategory', {
+                  backTitle: 'Home',
+                  headerTile: props.heading,
+                  main_cat: props.heading,
+                  sub_cat_one: '',
+                  sub_cat_two: '',
+                });
+              }
+             
             } else {
+
               props.navigation.navigate('Product', {
                 backTitle: 'Home',
                 headerTile: 'Products',

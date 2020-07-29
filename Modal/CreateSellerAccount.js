@@ -4,10 +4,9 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  
   TouchableOpacity,
-  
   Modal,
+  Alert,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,15 +18,14 @@ import Error from '../components/Error';
 
 import StepMain from '../components/SellerAuthProcess/StepMain';
 import {MaterialIndicator} from 'react-native-indicators';
-import CreateSellerAccountMessage from '../components/CreateSellerAccountMessage'
+import CreateSellerAccountMessage from '../components/CreateSellerAccountMessage';
 
 const CreateSellerAccount = (props) => {
-  const {isNotAuthenticated, setIsNotAuthenticated,setShopStatus} = props;
+  const {isNotAuthenticated, setIsNotAuthenticated, setShopStatus} = props;
   const [viewToRender, setViewToRender] = useState('getstarted');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const user = useSelector((state) => state.authReducer.user);
-
 
   const getStarted = async () => {
     try {
@@ -41,10 +39,19 @@ const CreateSellerAccount = (props) => {
         );
         return;
       }
+      if (response.message === 'account exist') {
+        Alert.alert(
+          'Error',
+          'Account already exist. If you think this is an error, you can try closing the app completely and reopen it again or you can send us an email through the help section of the app thanks.',
+          [{text: 'Ok', onPress: () => setIsNotAuthenticated(false)}],
+          {cancelable: false},
+        );
+        return
+      }
       setViewToRender('createSellerAccount');
     } catch (e) {
       console.log(e);
-      
+
       setIsLoading(false);
       setError(
         'Network error. Please click the get started button to try again.',
@@ -56,9 +63,8 @@ const CreateSellerAccount = (props) => {
   if (viewToRender === 'getstarted') {
     view = (
       <View>
-       
         {isLoading ? (
-          <View style={{alignItems: 'center', marginTop: '40%',padding:20}}>
+          <View style={{alignItems: 'center', marginTop: '40%', padding: 20}}>
             <MaterialIndicator
               color={Colors.purple_darken}
               style={{
@@ -78,17 +84,20 @@ const CreateSellerAccount = (props) => {
           </View>
         ) : (
           <View>
-            {error !== '' &&  <View style={{marginTop:"30%"}}><Error error={error} /></View>}
-            <CreateSellerAccountMessage getStarted={getStarted} closeModal={() => setIsNotAuthenticated(false)}/>
-
-           
-          
+            {error !== '' && (
+              <View style={{marginTop: '30%'}}>
+                <Error error={error} />
+              </View>
+            )}
+            <CreateSellerAccountMessage
+              getStarted={getStarted}
+              closeModal={() => setIsNotAuthenticated(false)}
+            />
           </View>
         )}
       </View>
     );
-  } 
-   else {
+  } else {
     view = (
       <StepMain
         navigation={props.navigation}

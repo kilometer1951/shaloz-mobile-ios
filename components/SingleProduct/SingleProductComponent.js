@@ -178,7 +178,7 @@ const SingleProductComponent = (props) => {
               color: 'red',
             }}>
             Out of stock. We do not advise
-            buying items that are out of stock to prevent shipping delays,
+            buying items that are out of stock to prevent shipping delays.
           </Text>
         </TouchableWithoutFeedback>
       );

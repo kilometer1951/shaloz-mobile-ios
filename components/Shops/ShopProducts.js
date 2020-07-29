@@ -83,7 +83,7 @@ const ShopProducts = (props) => {
       let total_p = price * total_d;
       let total = price - total_p;
 
-      return total;
+      return total.toFixed(2);
     }
   };
 
@@ -360,7 +360,8 @@ const styles = StyleSheet.create({
     textDecorationStyle: 'solid',
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
-    fontSize: 18,
+    fontSize: 12,
+    marginTop:4
 
   },
 });

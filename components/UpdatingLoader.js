@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View,  ActivityIndicator} from 'react-native';
+import {View,  ActivityIndicator,Text} from 'react-native';
 import Colors from '../contants/Colors';
 import Fonts from '../contants/Fonts';
 
@@ -19,6 +19,7 @@ const UpdatingLoader = (props) => {
       }}>
       <View>
         <ActivityIndicator size="large" color={Colors.purple_darken} />
+        <Text style={{ fontFamily: Fonts.poppins_bold,}}>Loading please wait ...</Text>
       </View>
     </View>
   );

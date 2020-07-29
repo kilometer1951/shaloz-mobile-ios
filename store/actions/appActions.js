@@ -1480,3 +1480,17 @@ export const updateLastActivity = (user_id) => {
       }),
     });
 };
+
+
+
+export const trackVisitors = (seller_id,user_id) => {
+  fetch(`${URL}/api/track_store_visitors`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      user_id,seller_id
+    }),
+  });
+};

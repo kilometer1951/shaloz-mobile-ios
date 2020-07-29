@@ -155,48 +155,48 @@ const NewProductScreen = (props) => {
     try {
       if (product_name === '') {
         Alert.alert(
-          'Product name is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product name is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (product_weight === '') {
         Alert.alert(
-          'Product weight is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product weight is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (product_weight_unit === '') {
         Alert.alert(
-          'Product weight unit is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product weight unit is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (product_price === '') {
         Alert.alert(
-          'Product price is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product price is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (product_qty === '') {
         Alert.alert(
-          'Product quantity is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product quantity is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (product_details === '') {
         Alert.alert(
-          'Product detail is required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Product detail is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
@@ -204,16 +204,16 @@ const NewProductScreen = (props) => {
 
       if (Object.entries(main_image).length === 0) {
         Alert.alert(
-          'Main image required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Main image required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
       }
       if (main_category === 'Select') {
         Alert.alert(
-          'Main category required',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          'Error',
+          'Main category required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
@@ -226,8 +226,8 @@ const NewProductScreen = (props) => {
       } else {
         if (discount === '') {
           Alert.alert(
-            'Discount required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Discount required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -242,14 +242,14 @@ const NewProductScreen = (props) => {
         // }
         if (discount_end_date === 'Select date') {
           Alert.alert(
-            'Select an end date',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Select an end date'[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
-        
       }
+
 
       const _data = {
         _id:product_data._id,

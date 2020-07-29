@@ -64,6 +64,11 @@ const ProfileScreen = (props) => {
   };
 
 
+  const createOnlineStore = async () => {
+    setIsNotAuthenticated(true)
+  }
+
+
   return (
     <View style={styles.screen}>
       <SafeAreaView>
@@ -128,7 +133,7 @@ const ProfileScreen = (props) => {
               </View>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => setIsNotAuthenticated(true)}>
+            <TouchableOpacity onPress={createOnlineStore}>
               <View
                 style={{
                   flexDirection: 'row',

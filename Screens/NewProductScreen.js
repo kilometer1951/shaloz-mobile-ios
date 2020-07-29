@@ -68,8 +68,14 @@ const NewProductScreen = (props) => {
   const [productHasDiscount, setProductHasDiscount] = useState(false);
 
   const [productCanBeCustomized, setProductCanBeCustomized] = useState(false);
-  const [product_can_be_customized_is_optional, setProduct_can_be_customized_is_optional] = useState(true);
-  const [product_personilization_note, setProduct_personilization_note] = useState("");
+  const [
+    product_can_be_customized_is_optional,
+    setProduct_can_be_customized_is_optional,
+  ] = useState(true);
+  const [
+    product_personilization_note,
+    setProduct_personilization_note,
+  ] = useState('');
 
   const [product_weight, setProduct_weight] = useState('');
   const [product_weight_unit, setProduct_weight_unit] = useState('gram');
@@ -79,48 +85,58 @@ const NewProductScreen = (props) => {
       if (viewToRender === 'product_details') {
         if (product_name === '') {
           Alert.alert(
-            'Product name is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Product name is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
         if (product_price === '') {
           Alert.alert(
-            'Product price is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Product price is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
         if (product_qty === '') {
           Alert.alert(
+            'Error',
             'Product quantity is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
-        if (product_details === '') {
-          Alert.alert(
-            'Product detail is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-            {cancelable: false},
-          );
-          return;
-        }
+        // if (product_details === '') {
+        //   Alert.alert(
+        //     'Error',
+        //     'Product detail is required',
+        //     [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+        //     {cancelable: true},
+        //   );
+
+        //   // Alert.alert(
+        //   //   'Required',
+        //   //   'Product detail is required'[
+        //   //     {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
+        //   //   ],
+        //   //   {cancelable: false},
+        //   // );
+        //   return;
+        // }
         if (product_weight === '') {
           Alert.alert(
-            'Product weight is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Product weight is required', [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
         if (product_weight_unit === '') {
           Alert.alert(
-            'Product weight unit is required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Product weight unit is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -130,16 +146,16 @@ const NewProductScreen = (props) => {
       } else if (viewToRender === 'product_images') {
         if (Object.entries(main_image).length === 0) {
           Alert.alert(
-            'Main image required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Main image required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
         }
         if (main_category === 'Select') {
           Alert.alert(
-            'Main category required',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Error',
+            'Main category required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -182,8 +198,8 @@ const NewProductScreen = (props) => {
         } else {
           if (discount === '') {
             Alert.alert(
-              'Discount required',
-              ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+              'Error',
+              'Discount required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
               {cancelable: false},
             );
             return;
@@ -198,8 +214,8 @@ const NewProductScreen = (props) => {
           // }
           if (discount_end_date === 'Select date') {
             Alert.alert(
-              'Select an end date',
-              ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+              'Error',
+              'Select an end date',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
               {cancelable: false},
             );
             return;
@@ -224,7 +240,7 @@ const NewProductScreen = (props) => {
           product_weight: parseFloat(product_weight).toFixed(2),
           product_weight_unit,
           product_can_be_customized_is_optional,
-product_personilization_note
+          product_personilization_note,
         };
 
         setSavingLoader(true);
@@ -371,12 +387,14 @@ product_personilization_note
         }
         productCanBeCustomized={productCanBeCustomized}
         setProductCanBeCustomized={setProductCanBeCustomized}
-
-        product_can_be_customized_is_optional={product_can_be_customized_is_optional}
-setProduct_can_be_customized_is_optional={setProduct_can_be_customized_is_optional}
-
-product_personilization_note={product_personilization_note}
-setProduct_personilization_note={setProduct_personilization_note}
+        product_can_be_customized_is_optional={
+          product_can_be_customized_is_optional
+        }
+        setProduct_can_be_customized_is_optional={
+          setProduct_can_be_customized_is_optional
+        }
+        product_personilization_note={product_personilization_note}
+        setProduct_personilization_note={setProduct_personilization_note}
       />
     );
   }

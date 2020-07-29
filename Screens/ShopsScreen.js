@@ -15,9 +15,12 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import ProductComponent from '../components/ProductComponent';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import ShopsComponent from '../components/Shops/ShopsComponent';
+import * as appActions from '../store/actions/appActions';
 
 const ShopsScreen = (props) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.authReducer.user);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isFav, setIsFav] = useState(false);
 
@@ -25,7 +28,14 @@ const ShopsScreen = (props) => {
   const headerTile = props.navigation.getParam('headerTile');
   const seller_id = props.navigation.getParam('seller_id');
 
-  
+
+//track store visitors
+  useEffect(() => {
+   const trackVisitors = () => {
+      appActions.trackVisitors(seller_id,user._id)
+   }
+   trackVisitors()
+  },[])
 
   return (
     <View style={styles.screen}>

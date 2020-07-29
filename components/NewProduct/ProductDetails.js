@@ -122,7 +122,7 @@ const ProductDetails = (props) => {
             </View>
           </View>
           <View>
-            <Text style={styles.label}>Product details*</Text>
+            <Text style={styles.label}>Product details</Text>
             <TextInput
               style={[{...styles.textInput}, {maxHeight: 150}]}
               value={product_details}

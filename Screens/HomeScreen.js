@@ -75,35 +75,41 @@ const HomeScreen = (props) => {
     const id = route.match(/\/([^\/]+)\/?$/);
     const routeName = route.split('/');
     console.log(routeName);
-
-    if (routeName.length !== 0) {
-      if (routeName[0] === 'view_orders') {
-        props.navigation.navigate('MyShopOrders');
-      }
-      if (routeName[0] === 'view_earning') {
-        props.navigation.navigate('MyShop', {backTitle: 'Back'});
-      }
-      if (routeName[0] === 'purchased_orders') {
-        props.navigation.navigate('PurchaseAndReview');
-      }
-      if (routeName[0] === 'review_errors') {
-        props.navigation.navigate('MyShop', {backTitle: 'Back'});
-      }
-      if (routeName[0] === 'product') {
-        props.navigation.navigate('SingleProduct', {product_id: routeName[1]})
-      }
-      if (routeName[0] === 'cart') {
-        dispatch(appActions.SelectedFooterTab('cart'));
-        props.navigation.navigate('Cart');
-      }
-      if (routeName[0] === 'shop') {
-        props.navigation.push('Shops', {
-          headerTile: 'Shop',
-          backTitle: 'Back',
-          seller_id: routeName[1],
-        })
+    if(Object.entries(user).length === 0) {
+      setIsNotAuthenticated(true);
+      
+    } else {
+      if (routeName.length !== 0) {
+        if (routeName[0] === 'view_orders') {
+          props.navigation.navigate('MyShopOrders');
+        }
+        if (routeName[0] === 'view_earning') {
+          props.navigation.navigate('MyShop', {backTitle: 'Back'});
+        }
+        if (routeName[0] === 'purchased_orders') {
+          props.navigation.navigate('PurchaseAndReview');
+        }
+        if (routeName[0] === 'review_errors') {
+          props.navigation.navigate('MyShop', {backTitle: 'Back'});
+        }
+        if (routeName[0] === 'product') {
+          props.navigation.navigate('SingleProduct', {product_id: routeName[1]})
+        }
+        if (routeName[0] === 'cart') {
+          dispatch(appActions.SelectedFooterTab('cart'));
+          props.navigation.navigate('Cart');
+        }
+        if (routeName[0] === 'shop') {
+          props.navigation.push('Shops', {
+            headerTile: 'Shop',
+            backTitle: 'Back',
+            seller_id: routeName[1],
+          })
+        }
       }
     }
+
+    
   }
 
   //console.log(user);

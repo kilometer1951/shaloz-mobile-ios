@@ -193,6 +193,7 @@ const MyShopScreen = (props) => {
           backgroundColor: Colors.purple_darken,
           height: 1,
         }}
+        locked={true}
         renderTabBar={() => <ScrollableTab />}>
         <Tab
           heading={

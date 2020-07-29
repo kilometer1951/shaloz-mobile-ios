@@ -54,7 +54,7 @@ const ProductCategoryComponent = (props) => {
       let total_p = price * total_d;
       let total = price - total_p;
 
-      return total;
+      return total.toFixed(2);
     }
   };
 

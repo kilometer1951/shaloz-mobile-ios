@@ -30,6 +30,7 @@ const Product = (props) => {
   );
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
 
   const handleRefreshHome = async () => {
     try {
@@ -111,7 +112,7 @@ const Product = (props) => {
         </View>
       </TouchableOpacity>
     );
-   } //else {
+  } //else {
   //   banner_message = (
   //     <TouchableOpacity
   //       onPress={async () => {
@@ -134,7 +135,7 @@ const Product = (props) => {
   //                 fontSize: 15,
   //                 fontFamily: Fonts.poppins_light,
   //                 fontWeight: 'normal',
-                  
+
   //               }}>
   //               Independent sellers. Buy directly from someone who put their
   //               heart and soul into making something special. Secure shopping.
@@ -186,15 +187,22 @@ const Product = (props) => {
         </TouchableOpacity>
       )}
 
-      <HorizontalProducts
-        heading="Health & Beauty"
+      <ProductList
+        heading="Shop All Categories"
         navigation={props.navigation}
-        dataN={fetched_home_data.health_beauty}
+        dataN={fetched_home_data.all_cat}
         setIsNotAuthenticated={props.setIsNotAuthenticated}
       />
 
       <SingleCard
         navigation={props.navigation}
+        setIsNotAuthenticated={props.setIsNotAuthenticated}
+      />
+
+      <HorizontalProducts
+        heading="Health & Beauty"
+        navigation={props.navigation}
+        dataN={fetched_home_data.health_beauty}
         setIsNotAuthenticated={props.setIsNotAuthenticated}
       />
 
@@ -205,7 +213,7 @@ const Product = (props) => {
         setIsNotAuthenticated={props.setIsNotAuthenticated}
       />
       <ProductList
-        heading="Cell Phones & Accessories "
+        heading="Mobile Phones & Accessories"
         navigation={props.navigation}
         dataN={fetched_home_data.cell_phone_acc}
         setIsNotAuthenticated={props.setIsNotAuthenticated}
@@ -281,12 +289,7 @@ const Product = (props) => {
         navigation={props.navigation}
         setIsNotAuthenticated={props.setIsNotAuthenticated}
       />
-      <ProductList
-        heading="Shop All Categories"
-        navigation={props.navigation}
-        dataN={fetched_home_data.all_cat}
-        setIsNotAuthenticated={props.setIsNotAuthenticated}
-      />
+
       <SingleCardProducts
         image={require('../../assets/handmade.jpg')}
         text="Stay loyal to your creativity beause it's a gift"

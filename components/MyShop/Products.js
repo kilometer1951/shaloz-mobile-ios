@@ -21,6 +21,7 @@ import Moment from 'moment';
 import UpdatingLoader from '../UpdatingLoader';
 
 import * as appActions from '../../store/actions/appActions';
+import FastImage from 'react-native-fast-image';
 
 const Products = (props) => {
   const dispatch = useDispatch();
@@ -224,7 +225,7 @@ const Products = (props) => {
 
   const addToStock = (product_id, product_qty, product_name) => {
     Alert.alert(
-      'Are you sure you want to add ' + product_name + ' stock',
+      'Are you sure you want to add ' + product_name + ' back to stock',
       '',
       [
         {text: 'No', onPress: () => console.log('Cancel Pressed!')},
@@ -252,13 +253,13 @@ const Products = (props) => {
         }}>
         <View style={{width: '80%', flexDirection: 'row'}}>
           <View style={{width: '30%'}}>
-            <Image
-              source={{uri: item.main_image}}
+            <FastImage
+              source={{uri: item.main_image, priority:FastImage.priority.normal}}
               style={{
                 width: '100%',
                 height: 100,
               }}
-              resizeMode="contain"
+              resizeMode={FastImage.resizeMode.cover}
             />
           </View>
           <View style={{width: '70%', marginLeft: 5}}>

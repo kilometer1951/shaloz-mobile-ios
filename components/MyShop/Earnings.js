@@ -17,11 +17,6 @@ import * as appActions from '../../store/actions/appActions';
 import {MaterialIndicator} from 'react-native-indicators';
 import {
   LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
 } from 'react-native-chart-kit';
 
 function numberWithCommas(x) {
