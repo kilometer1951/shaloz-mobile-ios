@@ -336,6 +336,7 @@ const ShippingDetails = (props) => {
             Country
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             editable={false}
             style={{
               borderWidth: 1,
@@ -344,6 +345,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={country}
           />
@@ -358,6 +360,7 @@ const ShippingDetails = (props) => {
             Full name*
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -365,6 +368,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={full_name}
             onChangeText={(value) => setFull_name(value)}
@@ -381,6 +385,7 @@ const ShippingDetails = (props) => {
             Street address*
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -388,6 +393,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={street_address}
             onChangeText={(value) => setStreet_address(value)}
@@ -404,13 +410,15 @@ const ShippingDetails = (props) => {
             Apt / Suite / Other (optional)
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
               fontFamily: Fonts.poppins_regular,
               padding: 10,
               borderColor: Colors.light_grey,
-              borderRadius: 5,
+              borderRadius: 5, 
+              color:"#000"
             }}
             value={apt_suite_other}
             onChangeText={(value) => setApt_suite_other(value)}
@@ -427,6 +435,7 @@ const ShippingDetails = (props) => {
             Zip Code
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -434,6 +443,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={zip_code}
             onChangeText={(value) => setZip_code(value)}
@@ -451,6 +461,7 @@ const ShippingDetails = (props) => {
             City
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -458,6 +469,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={city}
             onChangeText={(value) => setCity(value)}
@@ -474,6 +486,7 @@ const ShippingDetails = (props) => {
             State
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -481,6 +494,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={state}
             onChangeText={(value) => setState(value)}

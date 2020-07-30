@@ -116,6 +116,7 @@ const StepThree = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
+                color:"#000"
               }}
               value={ssn}
               onChangeText={(value) => setSsn(value)}

@@ -191,11 +191,12 @@ const MyShopSearchScreen = (props) => {
             </View>
             <View style={{width: '90%'}}>
               <TextInput
+              placeholderTextColor="#bdbdbd" 
                 placeholder={'Search'}
                 onChangeText={(value) => setSearchInput(value)}
                 value={searchInput}
                 autoFocus={true}
-                style={{fontFamily: Fonts.poppins_regular, width: '100%'}}
+                style={{fontFamily: Fonts.poppins_regular, width: '100%',color:"#000"}}
                 returnKeyType={'search'}
                 onSubmitEditing={() => {
                   startSearch();

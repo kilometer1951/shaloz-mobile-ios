@@ -131,6 +131,7 @@ const VerificationModal = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={fName}
             onChangeText={(value) => setFname(value)}
@@ -153,6 +154,7 @@ const VerificationModal = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={lName}
             onChangeText={(value) => setLname(value)}

@@ -143,6 +143,7 @@ const ForgotPasswordAuth = (props) => {
           Phone Number*
         </Text>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder={'(312) 708-0122*'}
           style={{
             borderWidth: 1,
@@ -151,6 +152,7 @@ const ForgotPasswordAuth = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
+            color:"#000"
           }}
           value={phoneNumber}
           onChangeText={handlePhoneNumber}
@@ -240,6 +242,7 @@ const ForgotPasswordAuth = (props) => {
           Verification Code*
         </Text>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder={'Enter Verification Code'}
           style={{
             borderWidth: 1,
@@ -248,6 +251,7 @@ const ForgotPasswordAuth = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
+            color:"#000"
           }}
           value={verification}
           onChangeText={(value) => setVerification(value)}

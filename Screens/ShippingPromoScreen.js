@@ -185,6 +185,7 @@ const ShippingPromoScreen = (props) => {
                   padding: 10,
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
+                  color:"#000"
                 }}
                 value={price_threshold}
                 keyboardType="decimal-pad"

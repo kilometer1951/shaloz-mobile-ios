@@ -249,11 +249,12 @@ const SearchScreen = (props) => {
             </View>
             <View style={{width: '90%'}}>
               <TextInput
+              placeholderTextColor="#bdbdbd" 
                 placeholder="Search for anything"
                 onChangeText={dynamicSearchAllProducts}
                 value={searchInput}
                 autoFocus={!browseByCategory ? true : false}
-                style={{fontFamily: Fonts.poppins_regular, width: '100%'}}
+                style={{fontFamily: Fonts.poppins_regular, width: '100%',color:"#000"}}
                 onFocus={() => setBrowseByCategory(false)}
               />
             </View>

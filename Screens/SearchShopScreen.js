@@ -103,8 +103,9 @@ const SearchShopScreen = (props) => {
             </View>
             <View style={{width: '90%'}}>
               <TextInput
+              placeholderTextColor="#bdbdbd" 
                 placeholder={'Search for any product in this shop'}
-                style={[styles.textInput, {...props.moreStyles}]}
+                style={{fontFamily: Fonts.poppins_regular, width: '100%',color:"#000"}}
                 onChangeText={dynamicSearchSellerProducts}
                 value={searchInput}
                 autoFocus={!browseByCategory ? true : false}

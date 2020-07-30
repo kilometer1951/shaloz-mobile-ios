@@ -339,6 +339,7 @@ const ShippingDetails = (props) => {
               Country
             </Text>
             <TextInput
+            placeholderTextColor="#bdbdbd" 
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -346,6 +347,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
+                color:"#000"
               }}
               value={country}
               onChangeText={(value) => setCountry(value)}
@@ -360,6 +362,7 @@ const ShippingDetails = (props) => {
               Zip code
             </Text>
             <TextInput
+            placeholderTextColor="#bdbdbd" 
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -367,6 +370,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
+                color:"#000"
               }}
               value={zip_code}
               onChangeText={(value) => setZip_code(value)}
@@ -381,6 +385,7 @@ const ShippingDetails = (props) => {
               Name on card
             </Text>
             <TextInput
+            placeholderTextColor="#bdbdbd" 
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -388,6 +393,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
+                color:"#000"
               }}
               value={full_name}
               onChangeText={(value) => setFull_name(value)}

@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light_grey,
     borderRadius: 5,
     marginTop: 5,
+    color:"#000"
   },
   header: {
     borderBottomWidth: 0.5,

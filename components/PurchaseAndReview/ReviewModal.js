@@ -96,6 +96,7 @@ const ReviewModal = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   height: 200,
+                  color:"#000"
                 }}
                 value={reviewText}
                 onChangeText={(value) => setReviewText(value)}
@@ -167,6 +168,7 @@ const ReviewModal = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   height: 200,
+                  color:"#000"
                 }}
                 value={reviewText_shop}
                 onChangeText={(value) => setReviewText_shop(value)}

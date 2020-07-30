@@ -140,6 +140,7 @@ const ProductDiscount = (props) => {
                     padding: 10,
                     borderColor: Colors.light_grey,
                     borderRadius: 5,
+                    color:"#000"
                   }}
                   value={discount}
                   keyboardType="number-pad"
@@ -307,6 +308,7 @@ const ProductDiscount = (props) => {
                     borderColor: Colors.light_grey,
                     borderRadius: 5,
                     maxHeight: 200,
+                    color:"#000"
                   }}
                   value={product_personilization_note}
                   onChangeText={(value) =>
@@ -406,6 +408,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light_grey,
     borderRadius: 5,
     marginTop: 5,
+    color:"#000"
   },
 });
 

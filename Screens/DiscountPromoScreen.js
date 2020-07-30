@@ -216,6 +216,7 @@ const DiscountPromScreen = (props) => {
                     padding: 10,
                     borderColor: Colors.light_grey,
                     borderRadius: 5,
+                    color:"#000"
                   }}
                   value={max_items_to_get_discount}
                   keyboardType="number-pad"
@@ -243,6 +244,7 @@ const DiscountPromScreen = (props) => {
                     padding: 10,
                     borderColor: Colors.light_grey,
                     borderRadius: 5,
+                    color:"#000"
                   }}
                   value={discount_amount_for_threshold}
                   keyboardType="number-pad"

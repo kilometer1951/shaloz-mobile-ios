@@ -188,6 +188,7 @@ const StepTwo = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
+                color:"#000"
               }}
               value={shopName}
               onChangeText={(value) => setShopName(value)}
@@ -216,6 +217,7 @@ const StepTwo = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
+                  color:"#000"
                 }}
                 value={shopLocation}
                 onChangeText={handleSearch}

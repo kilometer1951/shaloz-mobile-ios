@@ -183,6 +183,7 @@ const NewVariantModal = (props) => {
               Option name
             </Text>
             <TextInput
+            placeholderTextColor="#bdbdbd" 
               placeholder="Example - Size"
               style={{
                 borderWidth: 1,
@@ -192,6 +193,7 @@ const NewVariantModal = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
+                color:"#000"
               }}
               value={name}
               onChangeText={(value) => setName(value)}
@@ -239,6 +241,7 @@ const NewVariantModal = (props) => {
           Option value
         </Text>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder="option value"
           style={{
             borderWidth: 1,
@@ -248,6 +251,7 @@ const NewVariantModal = (props) => {
             borderColor: Colors.light_grey,
             borderRadius: 5,
             width: '100%',
+            color:"#000"
           }}
           value={content}
           onChangeText={(value) => setContent(value)}
@@ -287,6 +291,7 @@ const NewVariantModal = (props) => {
           </Tooltip>
         </View>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder="Example - $2.00"
           style={{
             borderWidth: 1,
@@ -296,6 +301,7 @@ const NewVariantModal = (props) => {
             borderColor: Colors.light_grey,
             borderRadius: 5,
             width: '100%',
+            color:"#000"
           }}
           value={content_price}
           onChangeText={(value) => setContent_price(value)}

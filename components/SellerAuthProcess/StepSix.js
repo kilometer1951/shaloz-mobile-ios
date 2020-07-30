@@ -238,6 +238,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
+                  color:"#000"
                 }}
                 value={routingNumber}
                 onChangeText={(value) => setRoutingNumber(value)}
@@ -262,6 +263,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
+                  color:"#000"
                 }}
                 value={accountNumber}
                 onChangeText={(value) => setAccountNumber(value)}
@@ -285,6 +287,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
+                  color:"#000"
                 }}
                 value={confirmAccountNumber}
                 onChangeText={(value) => setConfirmAccountNumber(value)}

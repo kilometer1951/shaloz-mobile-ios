@@ -159,6 +159,7 @@ const MessageModal = (props) => {
             borderColor: Colors.light_grey,
             borderRadius: 5,
             maxHeight: 350,
+            color:"#000"
           }}
           value={messageTextInput}
           onChangeText={(value) => setMessageTextInput(value)}

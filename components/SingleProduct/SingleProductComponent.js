@@ -654,6 +654,7 @@ const SingleProductComponent = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   maxHeight: 200,
+                  color:"#000"
                 }}
                 value={customization_note}
                 onChangeText={(value) => setCustomization_note(value)}

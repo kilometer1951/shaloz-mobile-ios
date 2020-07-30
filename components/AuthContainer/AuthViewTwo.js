@@ -215,6 +215,7 @@ const AuthViewTwo = (props) => {
           Phone Number*
         </Text>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder={'(312) 708-0122*'}
           style={{
             borderWidth: 1,
@@ -223,6 +224,7 @@ const AuthViewTwo = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
+            color:"#000"
           }}
           value={phoneNumber}
           onChangeText={handlePhoneNumber}
@@ -297,6 +299,7 @@ const AuthViewTwo = (props) => {
           Verification Code*
         </Text>
         <TextInput
+        placeholderTextColor="#bdbdbd" 
           placeholder={'Enter Verification Code'}
           style={{
             borderWidth: 1,
@@ -305,6 +308,7 @@ const AuthViewTwo = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
+            color:"#000"
           }}
           value={verification}
           onChangeText={(value) => setVerification(value)}
@@ -393,6 +397,7 @@ const AuthViewTwo = (props) => {
             What's your legal first name*
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -400,6 +405,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={fName}
             onChangeText={(value) => setFname(value)}
@@ -417,6 +423,7 @@ const AuthViewTwo = (props) => {
           </Text>
 
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -424,6 +431,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={lName}
             onChangeText={(value) => setLname(value)}
@@ -438,6 +446,7 @@ const AuthViewTwo = (props) => {
             What's your email*
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             placeholder={'your email*'}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -448,6 +457,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={email}
             onChangeText={(value) => setEmail(value)}
@@ -463,6 +473,7 @@ const AuthViewTwo = (props) => {
             Create your password*
           </Text>
           <TextInput
+          placeholderTextColor="#bdbdbd" 
             placeholder={'create your password*'}
             autoCapitalize="none"
             style={{
@@ -472,7 +483,8 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              marginBottom:10
+              marginBottom:10,
+              color:"#000"
             }}
             value={password}
             onChangeText={(value) => setPassword(value)}

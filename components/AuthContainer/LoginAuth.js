@@ -148,9 +148,11 @@ const [viewToRender, setViewToRender] = useState("login")
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={email}
             onChangeText={(value) => setEmail(value)}
+            placeholderTextColor="#bdbdbd" 
           />
 
           <Text
@@ -171,10 +173,12 @@ const [viewToRender, setViewToRender] = useState("login")
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
+              color:"#000"
             }}
             value={password}
             onChangeText={(value) => setPassword(value)}
             secureTextEntry={true}
+            placeholderTextColor="#bdbdbd" 
           />
 
           <TouchableOpacity
