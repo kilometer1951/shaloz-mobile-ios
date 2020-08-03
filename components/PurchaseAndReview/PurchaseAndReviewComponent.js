@@ -25,6 +25,7 @@ import * as appActions from '../../store/actions/appActions';
 import NetworkError from '../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import Moment from 'moment';
+import FastImage from 'react-native-fast-image';
 
 let BUTTONS = ['Cancel', 'Visit shop', 'Help'];
 let CANCEL_INDEX = 0;
@@ -220,13 +221,13 @@ const PurchaseAndReviewComponent = (props) => {
               }}>
               <View style={{width: '80%', flexDirection: 'row'}}>
                 <View style={{width: '30%'}}>
-                  <Image
-                    source={{uri: result.product.main_image}}
+                  <FastImage
+                    source={{uri: result.product.main_image, priority: FastImage.priority.high}}
                     style={{
                       width: '100%',
                       height: 100,
                     }}
-                    resizeMode="contain"
+                    resizeMode={FastImage.resizeMode.cover}
                   />
                 </View>
                 <View style={{width: '70%', marginLeft: 5}}>

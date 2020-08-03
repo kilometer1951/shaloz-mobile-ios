@@ -5,6 +5,7 @@ import {
   Text,
   TouchableWithoutFeedback,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Fonts from '../../contants/Fonts';
@@ -15,9 +16,7 @@ import {Tooltip} from 'react-native-elements';
 
 import * as appActions from '../../store/actions/appActions';
 import {MaterialIndicator} from 'react-native-indicators';
-import {
-  LineChart,
-} from 'react-native-chart-kit';
+import {LineChart} from 'react-native-chart-kit';
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -32,6 +31,9 @@ function kFormatter(num) {
 const Earnings = (props) => {
   const dispatch = useDispatch();
   const [chart_data, setChart_data] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [orderCount, setOrderCount] = useState(0);
+  const [visitorsCount, setVisitorsCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state.authReducer.user);
   const earnings = useSelector((state) => state.appReducer.earnings);
@@ -46,27 +48,39 @@ const Earnings = (props) => {
 
   useEffect(() => {
     const getEarnings = async () => {
-      await dispatch(
-        appActions.getEarnings(
+      try {
+        setIsLoading(true);
+        await dispatch(
+          appActions.getEarnings(
+            user._id,
+            new Date(start_of_week),
+            new Date(end_of_week),
+          ),
+        );
+        const response = await appActions.fetchSellerWeeklyGraphData(
           user._id,
           new Date(start_of_week),
           new Date(end_of_week),
-        ),
-      );
-      const response = await appActions.fetchSellerWeeklyGraphData(
-        user._id,
-        new Date(start_of_week),
-        new Date(end_of_week),
-      );
-      setChart_data(response.newArr);
+        );
+        setIsLoading(false);
+        setOrderCount(response.orderCount);
+        setVisitorsCount(response.visitorsCount);
+        setChart_data(response.newArr);
+      } catch (e) {
+        setIsLoading(false);
+      }
     };
     getEarnings();
   }, []);
 
   let weekly_earnings;
-  if (earnings.total_earned_per_week === undefined) {
+  if (isLoading) {
     weekly_earnings = (
-      <MaterialIndicator color={Colors.purple_darken} size={25} />
+      <MaterialIndicator
+        color={Colors.purple_darken}
+        size={25}
+        style={{marginBottom: 20, marginTop: 20}}
+      />
     );
   } else {
     weekly_earnings = (
@@ -92,7 +106,22 @@ const Earnings = (props) => {
             .{earnings.total_earned_per_week.split('.')[1]}
           </Text>
         </View>
-
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            flexDirection: 'row',
+            marginBottom: 30,
+          }}>
+          <View style={{display: 'flex', flexDirection: 'row'}}>
+            <Text style={{fontFamily: Fonts.poppins_regular}}>
+              {visitorsCount} Visitor{visitorsCount > 1 && 's'}
+            </Text>
+          </View>
+          <Text style={{fontFamily: Fonts.poppins_regular}}>
+            {orderCount} Orders
+          </Text>
+        </View>
         <View>
           <LineChart
             data={{
@@ -156,6 +185,7 @@ const Earnings = (props) => {
       <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 15}}>
         {start} - {end}
       </Text>
+
       {weekly_earnings}
 
       <View

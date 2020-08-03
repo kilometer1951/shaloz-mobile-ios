@@ -25,6 +25,7 @@ import Colors from '../contants/Colors';
 import * as appActions from '../store/actions/appActions';
 import NetworkError from '../components/NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
+import FastImage from 'react-native-fast-image';
 
 const AdminScreen = (props) => {
   const dispatch = useDispatch();
@@ -180,13 +181,13 @@ const AdminScreen = (props) => {
             }}>
             <View style={{width: '80%', flexDirection: 'row'}}>
               <View style={{width: '30%'}}>
-                <Image
-                  source={{uri: result.product.main_image}}
+                <FastImage
+                  source={{uri: result.product.main_image, priority:FastImage.priority.high}}
                   style={{
                     width: '100%',
                     height: 100,
                   }}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.cover}
                 />
               </View>
               <View style={{width: '70%', marginLeft: 5}}>

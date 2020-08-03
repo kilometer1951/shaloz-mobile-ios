@@ -254,7 +254,7 @@ const Products = (props) => {
         <View style={{width: '80%', flexDirection: 'row'}}>
           <View style={{width: '30%'}}>
             <FastImage
-              source={{uri: item.main_image, priority:FastImage.priority.normal}}
+              source={{uri: item.main_image, priority:FastImage.priority.high}}
               style={{
                 width: '100%',
                 height: 100,

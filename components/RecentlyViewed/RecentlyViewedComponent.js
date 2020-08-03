@@ -23,6 +23,7 @@ import Colors from '../../contants/Colors';
 import Toast from 'react-native-root-toast';
 
 import UpdateMessage from '../UpdateMessage';
+import FastImage from 'react-native-fast-image';
 
 const RecentlyViewedComponent = (props) => {
   const dispatch = useDispatch();
@@ -125,15 +126,15 @@ const RecentlyViewedComponent = (props) => {
           )}
 
           <View>
-            <Image
-              source={{url: item.product.main_image}}
+            <FastImage
+              source={{uri: item.product.main_image, priority: FastImage.priority.high}}
               style={{
                 width: '100%',
                 height: 150,
                 borderTopLeftRadius: 5,
                 borderTopRightRadius: 5,
               }}
-              resizeMode="cover"
+              resizeMode={FastImage.resizeMode.cover}
             />
           </View>
           <View style={{padding: 10}}>

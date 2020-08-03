@@ -82,7 +82,7 @@ const ProductDesignComponent = (props) => {
 
         <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
           <FastImage
-            source={{uri: main_image, priority:FastImage.priority.normal}}
+            source={{uri: main_image, priority:FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,

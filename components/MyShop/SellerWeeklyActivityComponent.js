@@ -186,13 +186,13 @@ const SellerWeeklyActivityComponent = (props) => {
               }}>
               <View style={{width: '80%', flexDirection: 'row'}}>
                 <View style={{width: '30%'}}>
-                  <Image
-                    source={{uri: result.product.main_image}}
+                  <FastImage
+                    source={{uri: result.product.main_image,priority:FastImage.priority.high}}
                     style={{
                       width: '100%',
                       height: 100,
                     }}
-                    resizeMode="contain"
+                    resizeMode={FastImage.resizeMode.cover}
                   />
                 </View>
                 <View style={{width: '70%', marginLeft: 5}}>

@@ -20,6 +20,7 @@ import {MaterialIndicator} from 'react-native-indicators';
 import Moment from 'moment';
 
 import * as appActions from '../store/actions/appActions';
+import FastImage from 'react-native-fast-image';
 
 const MyShopSearchScreen = (props) => {
   const dispatch = useDispatch();
@@ -76,13 +77,13 @@ const MyShopSearchScreen = (props) => {
         }}>
         <View style={{width: '80%', flexDirection: 'row'}}>
           <View style={{width: '30%'}}>
-            <Image
-              source={{uri: item.main_image}}
+            <FastImage
+              source={{uri: item.main_image, priority:FastImage.priority.high}}
               style={{
                 width: '100%',
                 height: 100,
               }}
-              resizeMode="contain"
+              resizeMode={FastImage.resizeMode.cover}
             />
           </View>
           <View style={{width: '70%', marginLeft: 5}}>

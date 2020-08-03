@@ -26,6 +26,7 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import FastImage from 'react-native-fast-image';
 
 const SearchScreen = (props) => {
   const dispatch = useDispatch();
@@ -182,14 +183,14 @@ const SearchScreen = (props) => {
         <View style={styles.topHeader}>
           <View style={styles.topHeaderRow_1}>
             <View>
-              <Image
-                source={{uri: result.shop_logo}}
+              <FastImage
+                source={{uri: result.shop_logo, priority:FastImage.priority.high}}
                 style={{
                   width: 50,
                   height: 50,
                   borderRadius: 50,
                 }}
-                resizeMode="cover"
+                resizeMode={FastImage.resizeMode.cover}
               />
             </View>
             <View style={{marginLeft: 10}}>

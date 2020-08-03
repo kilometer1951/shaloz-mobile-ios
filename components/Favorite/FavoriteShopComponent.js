@@ -146,14 +146,14 @@ const FavoriteShopComponent = (props) => {
         
         <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
           <Image
-            source={{uri: item.seller.shop_logo}}
+            source={{uri: item.seller.shop_logo,priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>

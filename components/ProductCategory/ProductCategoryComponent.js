@@ -25,6 +25,7 @@ import Toast from 'react-native-root-toast';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
+import FastImage from 'react-native-fast-image';
 
 const ProductCategoryComponent = (props) => {
   const dispatch = useDispatch();
@@ -110,15 +111,15 @@ const ProductCategoryComponent = (props) => {
           </View>
         )}
         <View>
-          <Image
-            source={{uri: item.main_image}}
+          <FastImage
+            source={{uri: item.main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>
@@ -187,7 +188,7 @@ const ProductCategoryComponent = (props) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2}}
+        style={{marginTop: 2, marginBottom:20}}
         numColumns={2}
         onEndReachedThreshold={0.5}
         initialNumToRender={20}

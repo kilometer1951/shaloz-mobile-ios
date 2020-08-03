@@ -189,7 +189,7 @@ const FavoriteProductComponent = (props) => {
           <FastImage
             source={{
               uri: item.product.main_image,
-              priority: FastImage.priority.normal,
+              priority: FastImage.priority.high,
             }}
             style={{
               width: '100%',

@@ -48,7 +48,7 @@ const HorizontalProductCard = (props) => {
          <FastImage
             source={{
               uri: result.main_image,
-              priority: FastImage.priority.normal,
+              priority: FastImage.priority.high,
             }}
             style={{
               width: 200,

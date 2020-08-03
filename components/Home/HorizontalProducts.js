@@ -48,7 +48,7 @@ const HorizontalProducts = (props) => {
             style={{width: 170, height: 120, borderRadius: 5}}
             source={{
               uri: result.main_image,
-              priority: FastImage.priority.normal,
+              priority: FastImage.priority.high,
             }}
             resizeMode={FastImage.resizeMode.cover}
           />

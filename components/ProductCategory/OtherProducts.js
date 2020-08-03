@@ -36,7 +36,7 @@ const OtherProducts = (props) => {
             </View>
           )}
           <FastImage
-            source={{uri: result.main_image, priority: FastImage.priority.normal}}
+            source={{uri: result.main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: '100%',
