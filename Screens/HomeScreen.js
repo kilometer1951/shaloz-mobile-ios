@@ -47,13 +47,11 @@ const HomeScreen = (props) => {
   };
 
   useEffect(() => {
-      const updateLastActivity = () => {
-        appActions.updateLastActivity(user._id)
-      }
-      updateLastActivity()
-  },[])
-
-
+    const updateLastActivity = () => {
+      appActions.updateLastActivity(user._id);
+    };
+    updateLastActivity();
+  }, []);
 
   useEffect(() => {
     Linking.getInitialURL()
@@ -75,9 +73,8 @@ const HomeScreen = (props) => {
     const id = route.match(/\/([^\/]+)\/?$/);
     const routeName = route.split('/');
     console.log(routeName);
-    if(Object.entries(user).length === 0) {
+    if (Object.entries(user).length === 0) {
       setIsNotAuthenticated(true);
-      
     } else {
       if (routeName.length !== 0) {
         if (routeName[0] === 'view_orders') {
@@ -93,7 +90,9 @@ const HomeScreen = (props) => {
           props.navigation.navigate('MyShop', {backTitle: 'Back'});
         }
         if (routeName[0] === 'product') {
-          props.navigation.navigate('SingleProduct', {product_id: routeName[1]})
+          props.navigation.navigate('SingleProduct', {
+            product_id: routeName[1],
+          });
         }
         if (routeName[0] === 'cart') {
           dispatch(appActions.SelectedFooterTab('cart'));
@@ -104,12 +103,10 @@ const HomeScreen = (props) => {
             headerTile: 'Shop',
             backTitle: 'Back',
             seller_id: routeName[1],
-          })
+          });
         }
       }
     }
-
-    
   }
 
   //console.log(user);
@@ -214,8 +211,8 @@ const HomeScreen = (props) => {
         />
       ) : (
         <View style={{flex: 1}}>
-          <HomePlaceholder />
           <ProductPlaceholderLoader />
+          <HomePlaceholder />
         </View>
       )}
 

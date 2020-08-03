@@ -22,7 +22,7 @@ import Colors from '../../contants/Colors';
 import UpdatingLoader from '../UpdatingLoader';
 import {ActionSheet} from 'native-base';
 import OtherProducts from '../ProductCategory/OtherProducts';
-import Toast from 'react-native-root-toast';
+import { Toast } from 'native-base';
 import FastImage from 'react-native-fast-image';
 
 const FavoriteProductComponent = (props) => {
@@ -148,15 +148,11 @@ const FavoriteProductComponent = (props) => {
             setIsUpdating(true);
             await dispatch(appActions.removeFavProduct(user._id, product_id));
             setIsUpdating(false);
-            Toast.show('Removed from favorites', {
-              duration: Toast.durations.LONG,
-              position: Toast.positions.BOTTOM,
-              shadow: true,
-              animation: true,
-              hideOnPress: true,
-              delay: 0,
-              backgroundColor: 'red',
-            });
+            Toast.show({
+              text: 'Removed from favorites!',
+              buttonText: 'Okay',
+              type: "danger"
+            })
           } catch (e) {
             setIsUpdating(false);
             setNetworkError(true);

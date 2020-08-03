@@ -20,7 +20,7 @@ import * as appActions from '../../store/actions/appActions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
-import Toast from 'react-native-root-toast';
+import { Toast } from 'native-base';
 
 import UpdateMessage from '../UpdateMessage';
 import FastImage from 'react-native-fast-image';
@@ -75,14 +75,10 @@ const RecentlyViewedComponent = (props) => {
         } else if (buttonIndex === 2) {
           try{
             dispatch(appActions.addFavProduct(user._id,product_id));
-            Toast.show('Added to favorites', {
-              duration: Toast.durations.LONG,
-              position: Toast.positions.BOTTOM,
-              shadow: true,
-              animation: true,
-              hideOnPress: true,
-              delay: 0,
-          })
+            Toast.show({
+              text: 'Added to favorites!',
+              buttonText: 'Okay',
+            })
 
           } catch(e) {
             console.log(e);

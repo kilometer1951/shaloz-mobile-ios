@@ -9,9 +9,7 @@ import {
   
   TouchableOpacity,
   
-  ScrollView,
- 
-  ActionSheetIOS,
+  ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../contants/Colors';
@@ -261,7 +259,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubOne = () =>
-    ActionSheetIOS.showActionSheetWithOptions(
+  ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -279,7 +277,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubTwo = () =>
-    ActionSheetIOS.showActionSheetWithOptions(
+  ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -297,7 +295,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubThree = () =>
-    ActionSheetIOS.showActionSheetWithOptions(
+  ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,

@@ -3,7 +3,7 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import {ActionSheet} from 'native-base';
-import Toast from 'react-native-root-toast';
+import { Toast } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -52,14 +52,10 @@ const ProductList = (props) => {
           try {
             dispatch(appActions.addFavProduct(user._id, product_id));
             // dispatch(appActions.)
-            Toast.show('Added to favorites', {
-              duration: Toast.durations.LONG,
-              position: Toast.positions.BOTTOM,
-              shadow: true,
-              animation: true,
-              hideOnPress: true,
-              delay: 0,
-            });
+            Toast.show({
+              text: 'Added to favorites!',
+              buttonText: 'Okay',
+            })
           } catch (e) {
             console.log(e);
             setNetworkError(true);
