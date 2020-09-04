@@ -55,20 +55,21 @@ const PurchaseAndReviewComponent = (props) => {
   const [page, setPage] = useState(2);
   const [networkError, setNetworkError] = useState(false);
 
-  const openReviewProductModal = async (product_id, product_name) => {
+  const openReviewProductModal = async (product_id, product_name, shop_id) => {
     //dispatch selected cart
     setViewToRender('product');
     setProduct_name(product_name);
     setproduct_id(product_id);
-    setOpenReviewModal(true);
-  };
-
-  const openReviewShop = (shop_id, shop_name) => {
-    setViewToRender('shop');
-    setShop_name(shop_name);
     setShop_id(shop_id);
     setOpenReviewModal(true);
   };
+
+  // const openReviewShop = (shop_id, shop_name) => {
+  //   setViewToRender('shop');
+  //   setShop_name(shop_name);
+  //   setShop_id(shop_id);
+  //   setOpenReviewModal(true);
+  // };
 
   const openAlertModal = (cart_id, seller_id, seller_email, shop_name) => {
     ActionSheet.show(
@@ -222,7 +223,10 @@ const PurchaseAndReviewComponent = (props) => {
               <View style={{width: '80%', flexDirection: 'row'}}>
                 <View style={{width: '30%'}}>
                   <FastImage
-                    source={{uri: result.product.main_image, priority: FastImage.priority.high}}
+                    source={{
+                      uri: result.product.main_image,
+                      priority: FastImage.priority.high,
+                    }}
                     style={{
                       width: '100%',
                       height: 100,
@@ -286,6 +290,7 @@ const PurchaseAndReviewComponent = (props) => {
                   this,
                   result.product._id,
                   result.product.product_name,
+                  result.product.user,
                 )}>
                 <Text
                   style={{
@@ -443,7 +448,7 @@ const PurchaseAndReviewComponent = (props) => {
               fontSize: 15,
               marginTop: 10,
             }}>
-           Sales Tax
+            Sales Tax
           </Text>
           <Text
             style={{
@@ -550,8 +555,8 @@ const PurchaseAndReviewComponent = (props) => {
                     fontFamily: Fonts.poppins_regular,
                     fontSize: 18,
                   }}>
-                  Total = (Qty * Price) + Variant Price  :- of each
-                  product + Processing fee + Shipping total + Sales tax
+                  Total = (Qty * Price) + Variant Price :- of each product +
+                  Processing fee + Shipping total + Sales tax
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
@@ -574,34 +579,6 @@ const PurchaseAndReviewComponent = (props) => {
             ${item.total}
           </Text>
         </View>
-        {item.order_shipped && (
-          <TouchableOpacity
-            onPress={openReviewShop.bind(
-              this,
-              item.seller._id,
-              item.seller.shop_name,
-            )}>
-            <View
-              style={{
-                width: '100%',
-                alignSelf: 'center',
-                padding: 10,
-                backgroundColor: Colors.purple_darken,
-                marginTop: 10,
-                borderRadius: 5,
-              }}>
-              <Text
-                style={{
-                  fontFamily: Fonts.poppins_semibold,
-                  fontSize: 18,
-                  alignSelf: 'center',
-                  color: '#fff',
-                }}>
-                Review shop
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );
@@ -684,3 +661,32 @@ const styles = StyleSheet.create({
 });
 
 export default PurchaseAndReviewComponent;
+
+// {item.order_shipped && (
+//   <TouchableOpacity
+//     onPress={openReviewShop.bind(
+//       this,
+//       item.seller._id,
+//       item.seller.shop_name,
+//     )}>
+//     <View
+//       style={{
+//         width: '100%',
+//         alignSelf: 'center',
+//         padding: 10,
+//         backgroundColor: Colors.purple_darken,
+//         marginTop: 10,
+//         borderRadius: 5,
+//       }}>
+//       <Text
+//         style={{
+//           fontFamily: Fonts.poppins_semibold,
+//           fontSize: 18,
+//           alignSelf: 'center',
+//           color: '#fff',
+//         }}>
+//         Review shop
+//       </Text>
+//     </View>
+//   </TouchableOpacity>
+// )}

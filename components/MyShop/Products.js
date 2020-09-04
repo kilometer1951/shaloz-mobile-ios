@@ -73,7 +73,6 @@ const Products = (props) => {
 
   const handleLoadMoreShopProducts = async () => {
     try {
-      
       if (!endOfFile_shop_product) {
         if (!isLoadingMoreData) {
           setIsLoadingMoreData(true);
@@ -92,7 +91,7 @@ const Products = (props) => {
     props.navigation.navigate('EditShopProduct', {product_data: item});
   };
 
-  const onShareProduct = async (product_name,product_id) => {
+  const onShareProduct = async (product_name, product_id) => {
     try {
       const result = await Share.share({
         message: `Check this product out - ${product_name} from ${user.shop_name} on Shaloz. shaloz://product/${product_id}`,
@@ -128,9 +127,9 @@ const Products = (props) => {
               setFetching(true);
               await appActions.removeFromStock(product_id);
               await dispatch(appActions.getMyShopProducts(user._id, 1));
-             await fetchShopProducts();
-             setPage(2);
-               
+              await fetchShopProducts();
+              setPage(2);
+
               setFetching(false);
             } catch (e) {
               console.log(e);
@@ -184,8 +183,8 @@ const Products = (props) => {
                       product_id,
                       product_qty,
                     );
-                   // fetchShopProducts();
-                     await dispatch(appActions.getMyShopProducts(user._id, 1));
+                    // fetchShopProducts();
+                    await dispatch(appActions.getMyShopProducts(user._id, 1));
                     setFetching(false);
                   } catch (e) {
                     console.log(e);
@@ -254,7 +253,7 @@ const Products = (props) => {
         <View style={{width: '80%', flexDirection: 'row'}}>
           <View style={{width: '30%'}}>
             <FastImage
-              source={{uri: item.main_image, priority:FastImage.priority.high}}
+              source={{uri: item.main_image, priority: FastImage.priority.high}}
               style={{
                 width: '100%',
                 height: 100,
@@ -287,7 +286,15 @@ const Products = (props) => {
               <Text style={{fontFamily: Fonts.poppins_regular}}>
                 {Moment(new Date(item.date)).format('MMM Do, YYYY')}
               </Text>
+              <Text style={{fontFamily: Fonts.poppins_regular}}>
+                Number of views: {item.number_of_views}
+              </Text>
+              <Text style={{fontFamily: Fonts.poppins_regular}}>
+                Last date viewed:{' '}
+                {Moment(new Date(item.last_date_viewed)).format('MMM Do, YYYY')}
+              </Text>
             </View>
+
             <View
               style={{
                 paddingLeft: 5,
@@ -394,6 +401,7 @@ const Products = (props) => {
   );
 
   const search = () => {
+    setPage(2);
     props.navigation.navigate('MyShopSearch');
   };
 

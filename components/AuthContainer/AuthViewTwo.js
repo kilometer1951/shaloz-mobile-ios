@@ -4,10 +4,8 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  
   TextInput,
   TouchableOpacity,
-
   ScrollView,
   Alert,
 } from 'react-native';
@@ -120,28 +118,22 @@ const AuthViewTwo = (props) => {
   };
 
   const handleConfirm = async () => {
-    try{
+    try {
       setIsLoading(true);
-    await dispatch(
-      authActions.createAcctount(
-        fName,
-        lName,
-        phoneNumber,
-        email,
-        password,
-      ),
-    );
-    
-    setIsLoading(false);
-    setAuthViewToRender('sellerView');
-    } catch(e) {
-      setIsLoading(false)
+      await dispatch(
+        authActions.createAcctount(fName, lName, phoneNumber, email, password),
+      );
+
+      setIsLoading(false);
+      setAuthViewToRender('sellerView');
+    } catch (e) {
+      setIsLoading(false);
       Alert.alert(
-        'User exist',
-        ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+        'User exist or email looks fake',
+        '',
+        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
         {cancelable: false},
       );
-      
     }
   };
 
@@ -176,7 +168,8 @@ const AuthViewTwo = (props) => {
       if (password === '') {
         Alert.alert(
           'Please create a password',
-          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          '',
+          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
         return;
@@ -215,7 +208,7 @@ const AuthViewTwo = (props) => {
           Phone Number*
         </Text>
         <TextInput
-        placeholderTextColor="#bdbdbd" 
+          placeholderTextColor="#bdbdbd"
           placeholder={'(312) 708-0122*'}
           style={{
             borderWidth: 1,
@@ -224,7 +217,7 @@ const AuthViewTwo = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
-            color:"#000"
+            color: '#000',
           }}
           value={phoneNumber}
           onChangeText={handlePhoneNumber}
@@ -299,7 +292,7 @@ const AuthViewTwo = (props) => {
           Verification Code*
         </Text>
         <TextInput
-        placeholderTextColor="#bdbdbd" 
+          placeholderTextColor="#bdbdbd"
           placeholder={'Enter Verification Code'}
           style={{
             borderWidth: 1,
@@ -308,7 +301,7 @@ const AuthViewTwo = (props) => {
             padding: 10,
             borderColor: Colors.light_grey,
             borderRadius: 5,
-            color:"#000"
+            color: '#000',
           }}
           value={verification}
           onChangeText={(value) => setVerification(value)}
@@ -397,7 +390,7 @@ const AuthViewTwo = (props) => {
             What's your legal first name*
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -405,7 +398,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={fName}
             onChangeText={(value) => setFname(value)}
@@ -423,7 +416,7 @@ const AuthViewTwo = (props) => {
           </Text>
 
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -431,7 +424,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={lName}
             onChangeText={(value) => setLname(value)}
@@ -446,7 +439,7 @@ const AuthViewTwo = (props) => {
             What's your email*
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             placeholder={'your email*'}
             keyboardType="email-address"
             autoCapitalize="none"
@@ -457,7 +450,7 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={email}
             onChangeText={(value) => setEmail(value)}
@@ -473,7 +466,7 @@ const AuthViewTwo = (props) => {
             Create your password*
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             placeholder={'create your password*'}
             autoCapitalize="none"
             style={{
@@ -483,15 +476,14 @@ const AuthViewTwo = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              marginBottom:10,
-              color:"#000"
+              marginBottom: 10,
+              color: '#000',
             }}
             value={password}
             onChangeText={(value) => setPassword(value)}
             secureTextEntry={true}
           />
 
-       
           <View>
             {isLoading ? (
               <MaterialIndicator

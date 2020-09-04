@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
@@ -15,15 +14,13 @@ import {MaterialIndicator} from 'react-native-indicators';
 import UpdateMessage from './UpdateMessage';
 import NetworkError from './NetworkError';
 import * as appActions from '../store/actions/appActions';
-import {ActionSheet} from "native-base"
-import { Toast } from 'native-base';
+import {ActionSheet} from 'native-base';
+import {Toast} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../contants/Fonts';
 import Colors from '../contants/Colors';
 import FastImage from 'react-native-fast-image';
-
-
 
 const ProductComponent = (props) => {
   const dispatch = useDispatch();
@@ -66,7 +63,7 @@ const ProductComponent = (props) => {
   };
 
   const openActionSheet = (seller_id, product_id) =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Visit shop', 'Add to favorite'],
         cancelButtonIndex: 0,
@@ -83,7 +80,7 @@ const ProductComponent = (props) => {
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
+            });
           } catch (e) {
             console.log(e);
             setNetworkError(true);
@@ -92,14 +89,11 @@ const ProductComponent = (props) => {
       },
     );
 
-
-
   String.prototype.trunc =
-  String.prototype.trunc ||
-  function (n) {
-    return this.length > n ? this.substr(0, n - 1) + '...' : this;
-  };
-
+    String.prototype.trunc ||
+    function (n) {
+      return this.length > n ? this.substr(0, n - 1) + '...' : this;
+    };
 
   const renderItem = ({item}) => (
     <TouchableWithoutFeedback
@@ -114,9 +108,14 @@ const ProductComponent = (props) => {
             </Text>
           </View>
         )}
-        <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
+        <View
+          style={{
+            backgroundColor: '#e1e4e8',
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}>
           <FastImage
-            source={{uri: item.main_image,priority:FastImage.priority.high}}
+            source={{uri: item.main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
@@ -127,16 +126,16 @@ const ProductComponent = (props) => {
           />
         </View>
         <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
                 flex: 1,
                 flexWrap: 'wrap',
                 fontFamily: Fonts.poppins_regular,
                 height: 45,
-                fontSize:15
+                fontSize: 15,
               }}>
-            {item.product_name.trunc(35)}
+              {item.product_name.trunc(35)}
             </Text>
           </View>
 
@@ -160,10 +159,9 @@ const ProductComponent = (props) => {
               flexDirection: 'row',
               marginTop: 5,
               justifyContent: 'space-between',
-
             }}>
             <View style={{marginTop: 2, flexDirection: 'row'}}>
-              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize:18}}>
+              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
                 ${displayPrice(item.product_price, item.discount)}
               </Text>
               {item.discount !== '' && (
@@ -172,7 +170,7 @@ const ProductComponent = (props) => {
             </View>
             <TouchableOpacity
               onPress={openActionSheet.bind(this, item.user, item._id)}>
-              <Icon name="ios-more" size={30} color={Colors.grey_darken}/>
+              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
             </TouchableOpacity>
           </View>
         </View>
@@ -196,7 +194,7 @@ const ProductComponent = (props) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2,marginBottom:20}}
+        style={{marginTop: 2, marginBottom: 20}}
         numColumns={2}
         onEndReachedThreshold={0.5}
         initialNumToRender={20}
@@ -232,8 +230,6 @@ const ProductComponent = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
-
-    
     </View>
   );
 };
@@ -280,8 +276,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
-
+    marginTop: 4,
   },
 });
 

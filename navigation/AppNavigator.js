@@ -38,6 +38,7 @@ import Test from '../Screens/Test';
 import AdminScreen from '../Screens/AdminScreen';
 import SellerShippingLocationScreen from '../Screens/SellerShippingLocationScreen';
 import ShopsFilterScreen from '../Screens/ShopsFilterScreen';
+import SearchProductScreen from '../Screens/SearchProductScreen';
 
 const TabScreens = createBottomTabNavigator({
   Home: {screen: HomeScreen, navigationOptions: {tabBarVisible: false}},
@@ -50,6 +51,7 @@ const TabScreens = createBottomTabNavigator({
 const AppNavigator = createStackNavigator(
   {
     Tabs: TabScreens,
+    SearchProduct: SearchProductScreen,
     SingleProduct: SingleProductScreen,
     Product: ProductScreen,
     Search: SearchScreen,
@@ -80,7 +82,7 @@ const AppNavigator = createStackNavigator(
 );
 
 const MainNavigator = createSwitchNavigator({
- // Test: Test,
+  // Test: Test,
   StartUpScreen: StartUpScreen,
   App: AppNavigator,
 });

@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,7 +28,6 @@ const ProductScreen = (props) => {
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-
   const backTitle = props.navigation.getParam('backTitle');
   const headerTile = props.navigation.getParam('headerTile');
 
@@ -44,11 +42,11 @@ const ProductScreen = (props) => {
           setNetworkError(true);
           return;
         }
-        
+
         setData(response.data);
       } catch (e) {
         console.log(e);
-        
+
         setIsLoading(false);
         setNetworkError(true);
       }
@@ -56,35 +54,33 @@ const ProductScreen = (props) => {
     fetchProduct_all();
   }, []);
 
-
   const handleLoadMore = async () => {
-   try{
-    if (!endOfFile) {
-      if (!isLoadingMoreData) {
-        setIsLoadingMoreData(true);
-        const response = await appActions.fetchProduct_all(user._id, page);
-        setIsLoadingMoreData(false);
-        if (!response.status) {
-          console.log('error parsing server');
-          return;
-        }
-        if (response.endOfFile) {
-          setEndOfFile(true);
-          return;
-        }
+    try {
+      if (!endOfFile) {
+        if (!isLoadingMoreData) {
+          setIsLoadingMoreData(true);
+          const response = await appActions.fetchProduct_all(user._id, page);
+          setIsLoadingMoreData(false);
+          if (!response.status) {
+            console.log('error parsing server');
+            return;
+          }
+          if (response.endOfFile) {
+            setEndOfFile(true);
+            return;
+          }
           console.log(endOfFile);
           setPage((prev) => (prev = prev + 1));
-        await setData((prev) => [...prev, ...response.data]);
+          await setData((prev) => [...prev, ...response.data]);
+        }
       }
-    }
-   }catch (e) {
-    console.log(e);
-    
-    setIsLoading(false);
-    setNetworkError(true);
-  }
-  };
+    } catch (e) {
+      console.log(e);
 
+      setIsLoading(false);
+      setNetworkError(true);
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -99,8 +95,6 @@ const ProductScreen = (props) => {
     setData(response.data);
     setIsRefreshing(false);
   };
-
-  
 
   let view;
 
@@ -131,7 +125,6 @@ const ProductScreen = (props) => {
       />
     );
   }
-
 
   return (
     <View style={styles.screen}>

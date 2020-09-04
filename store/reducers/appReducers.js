@@ -30,7 +30,8 @@ import {
   ADMIN_FETCH_PURCHASE_PACKAGE,
   LOAD_MORE_ADMIN_FETCH_PURCHASE_PACKAGE,
   HANDLE_UPDATE_CART_AFTER_PURCHASE,
-  
+  GET_MY_SHOP_SEARCH_PRODUCTS,
+  USER_REWARD_DATA,
 } from '../actions/appActions';
 
 const initialState = {
@@ -60,13 +61,26 @@ const initialState = {
   seller_weekly_activity: [],
   purchased_orders: [],
   admin_purchase_packages: [],
+  myShopSearchProducts: [],
+  userRewardData: {},
   //   message_shop_name:"",
   // message_seller_id:""
   selected_footer_tab: 'home',
 };
 export default (state = initialState, action) => {
   switch (action.type) {
-   
+    case USER_REWARD_DATA:
+      return {
+        ...state,
+        userRewardData: action.payload,
+      };
+
+    case GET_MY_SHOP_SEARCH_PRODUCTS:
+      return {
+        ...state,
+        myShopSearchProducts: action.myShopSearchProducts,
+        endOfFile_shop_product: false,
+      };
 
     case HANDLE_UPDATE_CART_AFTER_PURCHASE:
       const updated = state.cart_data.filter(

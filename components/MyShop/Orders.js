@@ -58,11 +58,10 @@ const Orders = (props) => {
   };
 
   useEffect(() => {
-    
     fetchShopOrderData();
   }, []);
 
-  const confirmTracking = (cart_id,tracking_number) => {
+  const confirmTracking = (cart_id, tracking_number) => {
     Alert.alert(
       'Confirm tracking number',
       tracking_number,
@@ -84,24 +83,27 @@ const Orders = (props) => {
                 tracking_number,
               );
               //dispatch order
-              fetchShopOrderData()
-             // await dispatch(appActions.getEarnings(user._id));
+              fetchShopOrderData();
+              // await dispatch(appActions.getEarnings(user._id));
 
               setIsUpdating(false);
-              console.log(response);
 
               if (!response.event_not_found) {
                 setIsUpdating(false);
                 Alert.alert(
                   'Error handling tracking number. This tracking number is either invalid or has been cancelled due to late or delayed shipping. Contact support. You can contact us through the help section of the app or by selecting the more icon on the order. Have your orderID ready thanks.',
-                  ''[
-                    {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
-                  ],
+                  '',
+                  [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
                   {cancelable: false},
                 );
                 return;
               }
-             // setUpdateMessage('You got paid');
+              Alert.alert(
+                'Your order has been fulfilled successfully. We have notified the buyer and your payment is been processed.',
+                '',
+                [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                {cancelable: false},
+              );
             } catch (e) {
               console.log(e);
 
@@ -126,11 +128,12 @@ const Orders = (props) => {
         text: 'OK',
         onPress: async (tracking_number) => {
           if (tracking_number !== '') {
-            confirmTracking(cart_id,tracking_number);
+            confirmTracking(cart_id, tracking_number);
           } else {
             Alert.alert(
               'Tracking number is required',
-              ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+              '',
+              [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
               {cancelable: false},
             );
             return;
@@ -140,11 +143,44 @@ const Orders = (props) => {
     ]);
   };
 
-  const openAlertModal = (cart_id, buyer_email) => {
+  const processRefund = async (cart_id, amount_to_return) => {
+    try {
+      setIsUpdating(true);
+      const response = await appActions.processRefund(
+        cart_id,
+        amount_to_return,
+      );
+
+      setIsUpdating(false);
+      fetchShopOrderData();
+      if (!response.status) {
+        setIsLoading(false);
+        Alert.alert(
+          'Error processing refund. If this error persist, please contact support',
+          '',
+          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+
+      Alert.alert(
+        'Refund proceed successfully.',
+        '',
+        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+        {cancelable: false},
+      );
+    } catch (e) {
+      setIsRefreshing(false);
+      setNetworkError(true);
+    }
+  };
+
+  const openAlertModal = (cart_id, buyer_email, amount_to_return) => {
     //  setOrderID(cart_id);
     ActionSheet.show(
       {
-        options: ['Cancel', 'Help'],
+        options: ['Cancel', 'Help', 'Refund'],
         cancelButtonIndex: 0,
         tintColor: '#000',
       },
@@ -159,6 +195,8 @@ const Orders = (props) => {
               cart_id +
               ' ......',
           );
+        } else if (buttonIndex === 2) {
+          processRefund(cart_id, amount_to_return);
         }
       },
     );
@@ -214,7 +252,7 @@ const Orders = (props) => {
           }}
           key={index}>
           <Text>
-        {result.name}: {result.content} (+${result.price})
+            {result.name}: {result.content} (+${result.price})
           </Text>
         </View>
       );
@@ -325,14 +363,14 @@ const Orders = (props) => {
         marginTop: 5,
         paddingBottom: 20,
       }}>
-          <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-            Date added
-          </Text>
-          <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-            {Moment(item.date_user_checked_out).format('MMM Do, YYYY')}
-          </Text>
-        </View>
+          Date added
+        </Text>
+        <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
+          {Moment(item.date_user_checked_out).format('MMM Do, YYYY')}
+        </Text>
+      </View>
       <View
         style={{
           flexDirection: 'row',
@@ -351,7 +389,16 @@ const Orders = (props) => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={openAlertModal.bind(this, item._id, item.user.email)}>
+          onPress={openAlertModal.bind(
+            this,
+            item._id,
+            item.user.email,
+            (
+              parseFloat(item.total) -
+              parseFloat(item.processing_fee) -
+              parseFloat(item.tax)
+            ).toFixed(2),
+          )}>
           <Icon name="ios-more" size={30} />
         </TouchableOpacity>
       </View>
@@ -397,11 +444,11 @@ const Orders = (props) => {
               fontSize: 15,
               marginTop: 10,
             }}>
-            {item.shippment_price === "0.00" ? "Promotion" : "$"+item.shippment_price}
+            {item.shippment_price === '0.00'
+              ? 'Promotion'
+              : '$' + item.shippment_price}
           </Text>
         </View>
-
-       
 
         {item.discount_applied != '0.00' && (
           <View
@@ -455,16 +502,16 @@ const Orders = (props) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-         <View style={{flexDirection:"row"}}>
-         <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 20,
-              marginTop: 10,
-            }}>
-            Order total ({item.items.length} item(s)):
-          </Text>
-          <Tooltip
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 20,
+                marginTop: 10,
+              }}>
+              Order total ({item.items.length} item(s)):
+            </Text>
+            <Tooltip
               popover={
                 <Text
                   style={{
@@ -473,7 +520,7 @@ const Orders = (props) => {
                     fontSize: 18,
                   }}>
                   Total = (Qty * Price) + Variant Price :- of each product +
-                    Shipping total
+                  Shipping total
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
@@ -486,7 +533,7 @@ const Orders = (props) => {
                 color={Colors.purple_darken}
               />
             </Tooltip>
-         </View>
+          </View>
 
           <Text
             style={{
@@ -495,9 +542,10 @@ const Orders = (props) => {
               marginTop: 10,
             }}>
             $
-            {(parseFloat(item.total) -( parseFloat(item.processing_fee) + parseFloat(item.tax))).toFixed(
-              2,
-            )}
+            {(
+              parseFloat(item.total) -
+              (parseFloat(item.processing_fee) + parseFloat(item.tax))
+            ).toFixed(2)}
           </Text>
         </View>
         <TouchableOpacity

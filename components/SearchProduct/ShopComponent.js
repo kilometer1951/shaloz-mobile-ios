@@ -22,75 +22,18 @@ import Colors from '../../contants/Colors';
 import * as appActions from '../../store/actions/appActions';
 import FastImage from 'react-native-fast-image';
 
-const FavoriteShopComponent = (props) => {
+const ShopComponent_ = (props) => {
+  const {otherProducts, otherShops} = props;
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
-  const fav_shop_data = useSelector((state) => state.appReducer.fav_shop_data);
-  const endOfFile_fav_shop = useSelector(
-    (state) => state.appReducer.endOfFile_fav_shop,
-  );
-  const [networkError, setNetworkError] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
+  const [networkError, setNetworkError] = useState(false);
   const [page, setPage] = useState(2);
-
-  const [otherProducts, setOtherProducts] = useState([]);
-  const [shops, setShops] = useState([]);
-
-  useEffect(() => {
-    const fetchFavShop = async () => {
-      try {
-        setIsLoading(true);
-        await dispatch(appActions.fetchFavShop(user._id, 1));
-        const response = await appActions.fechProductByCategory(
-          user._id,
-          '',
-          '',
-          '',
-          1,
-        );
-        setOtherProducts(response.otherProducts);
-        setShops(response.shops);
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e);
-        setIsLoading(false);
-        setNetworkError(true);
-      }
-    };
-    fetchFavShop();
-  }, []);
-
-  const handleRefresh = async () => {
-    try {
-      setIsRefreshing(true);
-      await dispatch(appActions.fetchFavShop(user._id, 1));
-      setPage(2);
-      setIsRefreshing(false);
-    } catch (e) {
-      setIsloading(false);
-      setNetworkError(true);
-    }
-  };
-
-  const handleLoadMore = async () => {
-    try {
-      if (!endOfFile_fav_shop) {
-        if (!isLoadingMoreData) {
-          setIsLoadingMoreData(true);
-          await dispatch(appActions.handleLoadMoreFavShop(user._id, page));
-          setIsLoadingMoreData(false);
-          setPage((prev) => (prev = prev + 1));
-        }
-      }
-    } catch (e) {
-      setIsLoadingMoreData(false);
-      setNetworkError(true);
-    }
-  };
+  const [endOfFile, setEndOfFile] = useState(false);
+  const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   String.prototype.trunc =
     String.prototype.trunc ||
@@ -98,47 +41,63 @@ const FavoriteShopComponent = (props) => {
       return this.length > n ? this.substr(0, n - 1) + '...' : this;
     };
 
-  const displayPrice = (product_price, discount) => {
-    if (discount === '') {
-      return product_price;
-    } else {
-      let price = parseInt(product_price);
-      let _discount = parseInt(discount);
-
-      let total_d = _discount / 100;
-      let total_p = price * total_d;
-      let total = price - total_p;
-
-      return total;
-    }
-  };
-
-  const openActionSheet = () =>
-    ActionSheet.show(
-      {
-        options: ['Cancel', 'Visit shop'],
-        cancelButtonIndex: 0,
-        tintColor: '#000',
-      },
-      (buttonIndex) => {
-        if (buttonIndex === 0) {
-          // cancel action
-        } else if (buttonIndex === 1) {
-          console.log('Visit shop');
-        }
-      },
-    );
   const openSingleScreen = (seller_id) => {
     props.navigation.navigate('Shops', {
       headerTile: 'Shop',
-      backTitle: 'Favorites',
+      backTitle: 'Search',
       seller_id: seller_id,
     });
   };
 
+  const handleLoadMore = async () => {
+    try {
+      if (!endOfFile) {
+        if (!isLoadingMoreData) {
+          setIsLoadingMoreData(true);
+          const response = await appActions.loadMoreDynamicSearchShopData(
+            user._id,
+            props.searchInput,
+            page,
+          );
+          setIsLoadingMoreData(false);
+          if (!response.status) {
+            console.log('error parsing server');
+            return;
+          }
+          if (response.endOfFile) {
+            setEndOfFile(true);
+            return;
+          }
+          setPage((prev) => (prev = prev + 1));
+          await props.setDataShop((prev) => [...prev, ...response.shops]);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+      setIsLoading(false);
+      setNetworkError(true);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    setEndOfFile(false);
+    setPage(2);
+    const response = await appActions.searchRefreshDynamicShop(
+      user._id,
+      props.searchInput,
+    );
+    if (!response.status) {
+      //console.log('error parsing server');
+      return;
+    }
+    //  console.log(response);
+    props.setDataShop(response.shops);
+    setIsRefreshing(false);
+  };
+
   const renderItem = ({item}) => (
-    <TouchableWithoutFeedback
-      onPress={openSingleScreen.bind(this, item.seller._id)}>
+    <TouchableWithoutFeedback onPress={openSingleScreen.bind(this, item._id)}>
       <View style={styles.productCard}>
         <View
           style={{
@@ -148,7 +107,7 @@ const FavoriteShopComponent = (props) => {
           }}>
           <FastImage
             source={{
-              uri: item.seller.shop_logo,
+              uri: item.shop_logo,
               priority: FastImage.priority.high,
             }}
             style={{
@@ -162,7 +121,7 @@ const FavoriteShopComponent = (props) => {
         </View>
         <View style={{padding: 10}}>
           <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 20}}>
-            {item.seller.shop_name.trunc(20)}
+            {item.shop_name.trunc(20)}
           </Text>
         </View>
       </View>
@@ -170,7 +129,7 @@ const FavoriteShopComponent = (props) => {
   );
 
   let view;
-  if (fav_shop_data.length === 0) {
+  if (props.dataShop.length === 0) {
     view = (
       <ScrollView>
         <View style={{marginTop: '10%'}}>
@@ -181,12 +140,12 @@ const FavoriteShopComponent = (props) => {
               padding: 20,
               textAlign: 'center',
             }}>
-            You have not added any favorite shop(s)
+            No shops to show for {props.searchInput}
           </Text>
           <OtherProducts
             dataN={otherProducts}
             navigation={props.navigation}
-            shops={shops}
+            shops={otherShops}
           />
         </View>
       </ScrollView>
@@ -204,12 +163,12 @@ const FavoriteShopComponent = (props) => {
           />
         }
         showsVerticalScrollIndicator={false}
-        data={fav_shop_data}
+        data={props.dataShop}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         style={{marginTop: 2, marginBottom: 20}}
         numColumns={2}
-        extraData={fav_shop_data}
+        extraData={props.dataShop}
         onEndReachedThreshold={0.5}
         initialNumToRender={20}
         onMomentumScrollBegin={() => {
@@ -225,7 +184,7 @@ const FavoriteShopComponent = (props) => {
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
-            {endOfFile_fav_shop && fav_shop_data.length > 16 && (
+            {endOfFile && props.dataShop.length > 16 && (
               <Text
                 style={{
                   fontFamily: Fonts.poppins_regular,
@@ -304,4 +263,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavoriteShopComponent;
+export default ShopComponent_;

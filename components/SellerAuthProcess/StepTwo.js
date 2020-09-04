@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -27,7 +28,13 @@ import * as authActions from '../../store/actions/authActions';
 
 const StepTwo = (props) => {
   const dispatch = useDispatch();
-  const {setShopName, shopName, setViewToRender, setViewNumber,closeModal} = props;
+  const {
+    setShopName,
+    shopName,
+    setViewToRender,
+    setViewNumber,
+    closeModal,
+  } = props;
   const user = useSelector((state) => state.authReducer.user);
 
   const [activityIndicator, setActivityIndicator] = useState(false);
@@ -36,6 +43,8 @@ const StepTwo = (props) => {
   const [displayError, setDisplayError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+  const [isLoadingCheck, setIsLoadingCheck] = useState(false);
+  const [storeExist, setStoreExist] = useState(false);
 
   const myApiKey = 'AIzaSyDEeUA1zS0cT-YHR8UyawDsYkoJop-enog';
   const myLocation = (section) => {
@@ -127,6 +136,23 @@ const StepTwo = (props) => {
     }
   };
 
+  let storeExistView;
+  if (shopName !== '') {
+    if (storeExist) {
+      storeExistView = (
+        <View style={{marginTop: 15, marginLeft: 10}}>
+          <Icon name="ios-checkmark-circle" size={25} color="green" />
+        </View>
+      );
+    } else {
+      storeExistView = (
+        <View style={{marginTop: 15, marginLeft: 10}}>
+          <Icon name="ios-close-circle" size={25} color="red" />
+        </View>
+      );
+    }
+  }
+
   return (
     <View style={{}}>
       {isLoading ? (
@@ -171,14 +197,22 @@ const StepTwo = (props) => {
             </View>
           </SafeAreaView>
           <View style={{width: '100%'}}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: Fonts.poppins_semibold,
-                marginTop: 15,
-              }}>
-              Create your shop name*
-            </Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: Fonts.poppins_semibold,
+                  marginTop: 15,
+                }}>
+                Create your shop name*
+              </Text>
+              {isLoadingCheck && (
+                <View style={{marginTop: 19, marginLeft: 10}}>
+                  <ActivityIndicator color="#000" />
+                </View>
+              )}
+              {storeExistView}
+            </View>
             <TextInput
               style={{
                 borderWidth: 1,
@@ -188,63 +222,109 @@ const StepTwo = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
-                color:"#000"
+                color: '#000',
               }}
               value={shopName}
               onChangeText={(value) => setShopName(value)}
               autoFocus={true}
+              onEndEditing={async () => {
+                if (shopName !== '') {
+                  try {
+                    setIsLoadingCheck(true);
+                    const response = await authActions.checkIfStoreExist(
+                      shopName,
+                    );
+                    setIsLoadingCheck(false);
+                    if (response.status) {
+                      setStoreExist(false);
+                    } else {
+                      setStoreExist(true);
+                    }
+                  } catch (e) {
+                    console.log(e);
+                    setIsLoadingCheck(false);
+                    setNetworkError(true);
+                  }
+                }
+              }}
             />
           </View>
-          <View style={{width: '100%', flexDirection: 'row'}}>
-            <View
-              style={{
-                width: shopName !== '' && shopLocation !== '' ? '80%' : '100%',
-              }}>
-              <Text
+          {shopName !== '' && (
+            <View style={{width: '100%', flexDirection: 'row'}}>
+              <View
                 style={{
-                  fontSize: 20,
-                  fontFamily: Fonts.poppins_semibold,
-                  marginTop: 15,
+                  width:
+                    shopName !== '' && shopLocation !== '' ? '80%' : '100%',
                 }}>
-                Shop location
-              </Text>
-              <TextInput
-                style={{
-                  borderWidth: 1,
-                  fontSize: 20,
-                  fontFamily: Fonts.poppins_regular,
-                  padding: 10,
-                  borderColor: Colors.light_grey,
-                  borderRadius: 5,
-                  width: '100%',
-                  color:"#000"
-                }}
-                value={shopLocation}
-                onChangeText={handleSearch}
-              />
-            </View>
-
-            <View style={{width: '20%', marginTop: 30}}>
-              {shopName !== '' && shopLocation !== '' && (
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    ReactNativeHapticFeedback.trigger('impactLight', {
-                      enableVibrateFallback: true,
-                      ignoreAndroidSystemSettings: false,
-                    });
-                    goToSection();
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontFamily: Fonts.poppins_semibold,
+                    marginTop: 15,
                   }}>
-                  <View style={styles.button}>
-                    <Icon
-                      name="md-arrow-round-forward"
-                      size={40}
-                      color="white"
-                    />
-                  </View>
-                </TouchableWithoutFeedback>
-              )}
+                  Shop location
+                </Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    fontSize: 20,
+                    fontFamily: Fonts.poppins_regular,
+                    padding: 10,
+                    borderColor: Colors.light_grey,
+                    borderRadius: 5,
+                    width: '100%',
+                    color: '#000',
+                  }}
+                  value={shopLocation}
+                  onChangeText={handleSearch}
+                />
+              </View>
+
+              <View style={{width: '20%', marginTop: 30}}>
+                {shopName !== '' && shopLocation !== '' && (
+                  <TouchableWithoutFeedback
+                    onPress={async () => {
+                      ReactNativeHapticFeedback.trigger('impactLight', {
+                        enableVibrateFallback: true,
+                        ignoreAndroidSystemSettings: false,
+                      });
+
+                      const response = await authActions.checkIfStoreExist(
+                        shopName,
+                      );
+                      if (response.status) {
+                        setStoreExist(false);
+                        Alert.alert(
+                          'Store with that name already exist. Your store name has to unique',
+                          '',
+                          [
+                            {
+                              text: 'Ok',
+                              onPress: () => console.log('Cancel Pressed!'),
+                            },
+                          ],
+                          {cancelable: false},
+                        );
+                        return;
+                      } else {
+                        setStoreExist(true);
+                      }
+
+                      goToSection();
+                    }}>
+                    <View style={styles.button}>
+                      <Icon
+                        name="md-arrow-round-forward"
+                        size={40}
+                        color="white"
+                      />
+                    </View>
+                  </TouchableWithoutFeedback>
+                )}
+              </View>
             </View>
-          </View>
+          )}
+
           {displayError && (
             <View>
               <Text
@@ -257,57 +337,62 @@ const StepTwo = (props) => {
               </Text>
             </View>
           )}
-          <View>
-            {!activityIndicator ? (
-              <TouchableOpacity
-                style={styles.locationButton}
-                onPress={myLocation}>
-                <Icon
-                  name="md-locate"
-                  size={20}
-                  style={{marginRight: 10, marginTop: 3}}
-                  color={Colors.pink}
-                />
-                <Text
+          {shopName !== '' && (
+            <View>
+              {!activityIndicator ? (
+                <TouchableOpacity
+                  style={styles.locationButton}
+                  onPress={myLocation}>
+                  <Icon
+                    name="md-locate"
+                    size={20}
+                    style={{marginRight: 10, marginTop: 3}}
+                    color={Colors.pink}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      color: '#000',
+                      fontFamily: Fonts.poppins_regular,
+                    }}>
+                    Use my current location
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <View
                   style={{
-                    fontSize: 20,
-                    color: '#000',
-                    fontFamily: Fonts.poppins_regular,
+                    marginTop: 30,
                   }}>
-                  Use my current location
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <View
-                style={{
-                  marginTop: 30,
-                }}>
-                <MaterialIndicator color={Colors.pink} />
-              </View>
-            )}
-          </View>
-          <FlatList
-            data={searchData}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                style={styles.listView}
-                onPress={() => {
-                  // setLocationLat(item.geometry.location.lat);
-                  // setLocationLng(item.geometry.location.lng);
-                  setShopLocation(item.formatted_address);
-                }}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontFamily: Fonts.poppins_regular,
+                  <MaterialIndicator color={Colors.pink} />
+                </View>
+              )}
+            </View>
+          )}
+          {shopName !== '' && (
+            <FlatList
+              data={searchData}
+              renderItem={({item, index}) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.listView}
+                  onPress={() => {
+                    // setLocationLat(item.geometry.location.lat);
+                    // setLocationLng(item.geometry.location.lng);
+                    setShopLocation(item.formatted_address);
                   }}>
-                  {item.formatted_address}
-                </Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-            style={{height: '100%'}}
-          />
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontFamily: Fonts.poppins_regular,
+                    }}>
+                    {item.formatted_address}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item.id}
+              style={{height: '100%'}}
+            />
+          )}
         </View>
       )}
       {networkError && (

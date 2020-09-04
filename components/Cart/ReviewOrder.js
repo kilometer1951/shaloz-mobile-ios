@@ -5,9 +5,11 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
+  Platform,
+  Alert,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import ViewPager from '@react-native-community/viewpager';
 import stripe, {PaymentCardTextField} from 'tipsi-stripe';
 import {Tooltip} from 'react-native-elements';
 import NetworkError from '../NetworkError';
@@ -20,6 +22,17 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+
+import Modal from 'react-native-modal';
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight =
+  Platform.OS === 'ios'
+    ? Dimensions.get('window').height
+    : require('react-native-extra-dimensions-android').get(
+        'REAL_WINDOW_HEIGHT',
+      );
+
 const ReviewOrder = (props) => {
   const dispatch = useDispatch();
   const {
@@ -28,6 +41,8 @@ const ReviewOrder = (props) => {
     setModalToDisplay,
     openCheckoutModal,
   } = props;
+  const [redeemModalIsOpen, setRedeemModalIsOpen] = useState(false);
+
   const [viewToRender, setViewToRender] = useState('review');
   const selected_cart = useSelector((state) => state.appReducer.selected_cart);
   const card_id = useSelector((state) => state.appReducer.card_id);
@@ -35,6 +50,9 @@ const ReviewOrder = (props) => {
     (state) => state.appReducer.check_out_info,
   );
   const user = useSelector((state) => state.authReducer.user);
+  const userRewardData = useSelector(
+    (state) => state.appReducer.userRewardData,
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -189,7 +207,7 @@ const ReviewOrder = (props) => {
       ).toFixed(2);
 
       //standard tax is 3
-      const tax_cal = (parseFloat(total_cal) * 0.03);
+      const tax_cal = parseFloat(total_cal) * 0.03;
 
       const total = (parseFloat(total_cal) + parseFloat(tax_cal)).toFixed(2);
 
@@ -346,6 +364,41 @@ const ReviewOrder = (props) => {
           </Text>
         </View>
         {renderItems}
+        <TouchableOpacity onPress={() => setRedeemModalIsOpen(true)}>
+          <View
+            style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: Fonts.poppins_regular,
+              }}>
+              You have {userRewardData.points} points
+            </Text>
+            <View
+              style={{
+                marginLeft: 10,
+                backgroundColor: userRewardData.can_redeem_points
+                  ? '#00C851'
+                  : '#bdbdbd',
+                borderRadius: 30,
+                paddingLeft: 10,
+                paddingRight: 10,
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily: Fonts.poppins_regular,
+                }}>
+                Redeem
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
         <View
           style={{
             marginTop: 20,
@@ -393,9 +446,9 @@ const ReviewOrder = (props) => {
                     fontFamily: Fonts.poppins_regular,
                     fontSize: 18,
                   }}>
-                  Shipping costs are calculated based on two cateria which are:
+                  Shipping costs are calculated based on two criteria which are:
                   The total weight of each product and distance. We compare
-                  prices accross shipping carriers to get you the best price.
+                  prices across shipping carriers to get you the best price.
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
@@ -612,6 +665,102 @@ const ReviewOrder = (props) => {
         )}
         {isLoading && <UpdatingLoader />}
       </ScrollView>
+      <Modal
+        isVisible={redeemModalIsOpen}
+        onBackButtonPress={
+          Platform.OS === 'android' ? () => setRedeemModalIsOpen(false) : null
+        }
+        onBackdropPress={() => setRedeemModalIsOpen(false)}
+        useNativeDriver={true}
+        hideModalContentWhileAnimating={true}
+        deviceWidth={deviceWidth}
+        deviceHeight={deviceHeight}
+        onSwipeComplete={() => setRedeemModalIsOpen(false)}
+        swipeDirection={['up', 'down']}
+        style={{justifyContent: 'flex-end', margin: 0}}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            height: '55%',
+            padding: 10,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+          <View
+            style={{
+              width: 100,
+              height: 5,
+              backgroundColor: '#bdbdbd',
+              alignSelf: 'center',
+              borderRadius: 20,
+            }}
+          />
+          <View style={{alignItems: 'center'}}>
+            <AnimatedCircularProgress
+              size={220}
+              width={15}
+              fill={userRewardData.points / 10}
+              tintColor={Colors.pink}
+              backgroundColor={Colors.blue}>
+              {(fill) => (
+                <View>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_regular,
+                      fontSize: 30,
+                      color: Colors.blue,
+                    }}>
+                    {userRewardData.points}
+                  </Text>
+                </View>
+              )}
+            </AnimatedCircularProgress>
+            <View>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 20,
+                  marginTop: 10,
+                }}>
+                1 point = 0.004 cents. Points can help reduce your total. You
+                need to have a total of 1000 points or higher in order redeem
+                your points
+              </Text>
+            </View>
+          </View>
+          <View style={{bottom: 15}}>
+            <TouchableOpacity
+              disabled={userRewardData.can_redeem_points ? false : true}
+              onPress={() => {
+                Alert.alert(
+                  'We are working really had to enable this feature',
+                  '',
+                  [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                  {cancelable: false},
+                );
+              }}>
+              <View
+                style={{
+                  width: '100%',
+                  padding: 10,
+                  backgroundColor: Colors.blue,
+                  borderRadius: 5,
+                  opacity: userRewardData.can_redeem_points ? 1 : 0.5,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 18,
+                    alignSelf: 'center',
+                    color: '#fff',
+                  }}>
+                  Redeem points
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

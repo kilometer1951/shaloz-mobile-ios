@@ -22,6 +22,7 @@ import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import ShopsComponent from '../components/Shops/ShopsComponent';
 import Variants from '../components/MyShop/Variants';
 import Products from '../components/MyShop/Products';
+import Reviews from '../components/MyShop/Reviews';
 import Orders from '../components/MyShop/Orders';
 import MyShopHome from '../components/MyShop/MyShopHome';
 import HomeOrderSection from '../components/MyShop/HomeOrderSection';
@@ -30,7 +31,7 @@ import ShopSettings from '../components/MyShop/ShopSettings';
 import CompletedOrderSection from '../components/MyShop/CompletedOrderSection';
 import NetworkError from '../components/NetworkError';
 import VerificationModal from '../components/VerificationModal';
-import OpenCategorySectionModal from "../Modal/OpenCategorySectionModal"
+import OpenCategorySectionModal from '../Modal/OpenCategorySectionModal';
 
 import * as appActions from '../store/actions/appActions';
 
@@ -77,8 +78,8 @@ const MyShopScreen = (props) => {
         setOpenCategoryModal(true);
       }
     };
-    openShopCategorySelection()
-  },[]);
+    openShopCategorySelection();
+  }, []);
 
   const handleRefreshHome = async () => {
     try {
@@ -263,6 +264,7 @@ const MyShopScreen = (props) => {
           }>
           <Products navigation={props.navigation} />
         </Tab>
+
         <Tab
           heading={
             <TabHeading style={{backgroundColor: '#fff'}}>
@@ -287,11 +289,29 @@ const MyShopScreen = (props) => {
                   fontFamily: Fonts.poppins_regular,
                   fontSize: 15,
                 }}>
+                Reviews
+              </Text>
+            </TabHeading>
+          }>
+          <Reviews navigation={props.navigation} />
+        </Tab>
+        <Tab
+          heading={
+            <TabHeading style={{backgroundColor: '#fff'}}>
+              <Text
+                style={{
+                  marginLeft: 5,
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 15,
+                }}>
                 Settings
               </Text>
             </TabHeading>
           }>
-          <ShopSettings navigation={props.navigation} setOpenCategoryModal={setOpenCategoryModal}/>
+          <ShopSettings
+            navigation={props.navigation}
+            setOpenCategoryModal={setOpenCategoryModal}
+          />
         </Tab>
       </Tabs>
       {networkError && (

@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -184,7 +185,10 @@ const SearchScreen = (props) => {
           <View style={styles.topHeaderRow_1}>
             <View>
               <FastImage
-                source={{uri: result.shop_logo, priority:FastImage.priority.high}}
+                source={{
+                  uri: result.shop_logo,
+                  priority: FastImage.priority.high,
+                }}
                 style={{
                   width: 50,
                   height: 50,
@@ -250,13 +254,26 @@ const SearchScreen = (props) => {
             </View>
             <View style={{width: '90%'}}>
               <TextInput
-              placeholderTextColor="#bdbdbd" 
+                placeholderTextColor="#bdbdbd"
                 placeholder="Search for anything"
                 onChangeText={dynamicSearchAllProducts}
                 value={searchInput}
                 autoFocus={!browseByCategory ? true : false}
-                style={{fontFamily: Fonts.poppins_regular, width: '100%',color:"#000"}}
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  width: '100%',
+                  color: '#000',
+                }}
                 onFocus={() => setBrowseByCategory(false)}
+                returnKeyType="search"
+                onSubmitEditing={() => {
+                  //go to a new screen
+                  if (searchInput !== '') {
+                    props.navigation.navigate('SearchProduct', {
+                      searchInput: searchInput,
+                    });
+                  }
+                }}
               />
             </View>
 
@@ -295,7 +312,7 @@ const SearchScreen = (props) => {
                     paddingBottom: 10,
                     justifyContent: 'space-between',
                     paddingRight: 5,
-                    marginBottom:10
+                    marginBottom: 10,
                   }}>
                   <Text
                     style={{fontFamily: Fonts.poppins_semibold, fontSize: 15}}>
@@ -306,7 +323,7 @@ const SearchScreen = (props) => {
                   </View>
                 </View>
               </TouchableOpacity>
-           
+
               <TouchableOpacity
                 onPress={() => {
                   setBrowseByCategory(true);
@@ -352,7 +369,11 @@ const SearchScreen = (props) => {
                     </Text>
                   )}
 
-                    {isLoading ? shopLoader : <View style={{marginBottom:30}}>{renderShops}</View>}
+                  {isLoading ? (
+                    shopLoader
+                  ) : (
+                    <View style={{marginBottom: 30}}>{renderShops}</View>
+                  )}
                 </View>
               </View>
             </View>
@@ -433,8 +454,6 @@ const styles = StyleSheet.create({
 });
 
 export default SearchScreen;
-
-
 
 // <TouchableOpacity
 // onPress={() => {

@@ -85,28 +85,13 @@ const ShopReviews = (props) => {
     setIsRefreshing(false);
   };
 
-  const navigateToProduct = (product_id) => {
-    // const img = [
-    //   {
-    //     source: {
-    //       uri: path,
-    //     },
-    //   },
-    // ];
-    // setPreviewData((prev) => [...img]);
-    // setPreviewModal(true);
-
-    props.navigation.push('SingleProduct', {product_id: product_id});
-  };
-
   const imageViewData = (product) => {
     return (
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View style={{padding: 10, flexDirection: 'row'}}>
           <TouchableOpacity>
             <View style={{width: 80, height: 80, marginRight: 10}}>
-              <TouchableWithoutFeedback
-                onPress={navigateToProduct.bind(this, product._id)}>
+              <TouchableWithoutFeedback>
                 <FastImage
                   source={{
                     uri: product.main_image,
@@ -124,8 +109,7 @@ const ShopReviews = (props) => {
           {product.sub_image_1 !== '' && (
             <TouchableOpacity>
               <View style={{width: 80, height: 80, marginRight: 10}}>
-                <TouchableWithoutFeedback
-                  onPress={navigateToProduct.bind(this, product._id)}>
+                <TouchableWithoutFeedback>
                   <FastImage
                     source={{
                       uri: product.sub_image_1,
@@ -145,8 +129,7 @@ const ShopReviews = (props) => {
           {product.sub_image_2 !== '' && (
             <TouchableOpacity>
               <View style={{width: 80, height: 80, marginRight: 10}}>
-                <TouchableWithoutFeedback
-                  onPress={navigateToProduct.bind(this, product._id)}>
+                <TouchableWithoutFeedback>
                   <FastImage
                     source={{
                       uri: product.sub_image_2,
@@ -166,8 +149,7 @@ const ShopReviews = (props) => {
           {product.sub_image_3 !== '' && (
             <TouchableOpacity>
               <View style={{width: 80, height: 80, marginRight: 10}}>
-                <TouchableWithoutFeedback
-                  onPress={navigateToProduct.bind(this, product._id)}>
+                <TouchableWithoutFeedback>
                   <FastImage
                     source={{
                       uri: product.sub_image_3,
@@ -189,8 +171,7 @@ const ShopReviews = (props) => {
   };
 
   const renderItem = ({item}) => (
-    <TouchableWithoutFeedback
-      onPress={navigateToProduct.bind(this, item.product._id)}>
+    <TouchableWithoutFeedback>
       <View>
         <View style={styles.container}>
           <View style={{flexDirection: 'row'}}>
@@ -248,7 +229,7 @@ const ShopReviews = (props) => {
               padding: 20,
               marginTop: '30%',
             }}>
-            No review(s) to show
+            No review(s) to show.
           </Text>
         </View>
       </View>

@@ -62,10 +62,10 @@ const Earnings = (props) => {
           new Date(start_of_week),
           new Date(end_of_week),
         );
-        setIsLoading(false);
         setOrderCount(response.orderCount);
         setVisitorsCount(response.visitorsCount);
         setChart_data(response.newArr);
+        setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
       }
@@ -95,7 +95,8 @@ const Earnings = (props) => {
             $
           </Text>
           <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 100}}>
-            {kFormatter(earnings.total_earned_per_week.split('.')[0])}
+            {earnings.total_earned_per_week !== undefined &&
+              kFormatter(earnings.total_earned_per_week.split('.')[0])}
           </Text>
           <Text
             style={{
@@ -103,7 +104,9 @@ const Earnings = (props) => {
               fontSize: 35,
               lineHeight: 80,
             }}>
-            .{earnings.total_earned_per_week.split('.')[1]}
+            .
+            {earnings.total_earned_per_week !== undefined &&
+              earnings.total_earned_per_week.split('.')[1]}
           </Text>
         </View>
         <View

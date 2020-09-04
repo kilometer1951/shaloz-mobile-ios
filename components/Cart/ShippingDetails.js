@@ -49,6 +49,7 @@ const ShippingDetails = (props) => {
       try {
         setIsLoading(true);
         const response = await appActions.shippingDetails(user._id);
+        dispatch(appActions.userRewards(response.userRewardData));
         setIsLoading(false);
 
         if (!response.status) {
@@ -223,10 +224,13 @@ const ShippingDetails = (props) => {
     try {
       //update cart item
       setIsLoading(true);
-      for(let i = 0; i<selected_cart.items.length; i++){
-        await appActions.updateCartItemPrice(selected_cart._id, user._id,selected_cart.items[i]._id);
+      for (let i = 0; i < selected_cart.items.length; i++) {
+        await appActions.updateCartItemPrice(
+          selected_cart._id,
+          user._id,
+          selected_cart.items[i]._id,
+        );
       }
-
 
       //calculate shipping
       if (selected_cart.seller.offers_free_shipping) {
@@ -237,14 +241,14 @@ const ShippingDetails = (props) => {
 
         if (total <= 0) {
           //apply free shipping free shipping
-            setIsLoading(true);
+          setIsLoading(true);
           await dispatch(appActions.updateAddress(data));
           await dispatch(appActions.fetchUsersCards(user._id));
           setIsLoading(false);
           animateView1_out(true);
         } else {
           //calculate shipping
-           setIsLoading(true)
+          setIsLoading(true);
           await dispatch(appActions.updateAddress(data));
           //get shipping rate
           let shippingAmount = [];
@@ -272,7 +276,7 @@ const ShippingDetails = (props) => {
         }
       } else {
         //calculate shipping
-         setIsLoading(true)
+        setIsLoading(true);
         await dispatch(appActions.updateAddress(data));
         //get shipping rate
         let shippingAmount = [];
@@ -336,7 +340,7 @@ const ShippingDetails = (props) => {
             Country
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             editable={false}
             style={{
               borderWidth: 1,
@@ -345,7 +349,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={country}
           />
@@ -360,7 +364,7 @@ const ShippingDetails = (props) => {
             Full name*
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -368,7 +372,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={full_name}
             onChangeText={(value) => setFull_name(value)}
@@ -385,7 +389,7 @@ const ShippingDetails = (props) => {
             Street address*
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -393,7 +397,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={street_address}
             onChangeText={(value) => setStreet_address(value)}
@@ -410,15 +414,15 @@ const ShippingDetails = (props) => {
             Apt / Suite / Other (optional)
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
               fontFamily: Fonts.poppins_regular,
               padding: 10,
               borderColor: Colors.light_grey,
-              borderRadius: 5, 
-              color:"#000"
+              borderRadius: 5,
+              color: '#000',
             }}
             value={apt_suite_other}
             onChangeText={(value) => setApt_suite_other(value)}
@@ -435,7 +439,7 @@ const ShippingDetails = (props) => {
             Zip Code
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -443,7 +447,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={zip_code}
             onChangeText={(value) => setZip_code(value)}
@@ -461,7 +465,7 @@ const ShippingDetails = (props) => {
             City
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -469,7 +473,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={city}
             onChangeText={(value) => setCity(value)}
@@ -486,7 +490,7 @@ const ShippingDetails = (props) => {
             State
           </Text>
           <TextInput
-          placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
             style={{
               borderWidth: 1,
               fontSize: 20,
@@ -494,7 +498,7 @@ const ShippingDetails = (props) => {
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={state}
             onChangeText={(value) => setState(value)}

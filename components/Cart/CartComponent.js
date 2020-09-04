@@ -11,6 +11,8 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
@@ -542,13 +544,15 @@ const CartComponent = (props) => {
               <View style={{width: '80%', flexDirection: 'row'}}>
                 <View style={{width: '30%'}}>
                   <FastImage
-                    source={{uri: result.product.main_image, priority: FastImage.priority.normal                    }}
+                    source={{
+                      uri: result.product.main_image,
+                      priority: FastImage.priority.normal,
+                    }}
                     style={{
                       width: '100%',
                       height: 100,
                     }}
                     resizeMode={FastImage.resizeMode.cover}
-
                   />
                 </View>
                 <View style={{width: '70%', marginLeft: 5}}>
@@ -786,7 +790,8 @@ const CartComponent = (props) => {
                     fontFamily: Fonts.poppins_regular,
                     fontSize: 18,
                   }}>
-                  Total = (Qty * Original Price) + Variant Price - of each product
+                  Total = (Qty * Original Price) + Variant Price - of each
+                  product
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
@@ -907,7 +912,7 @@ const CartComponent = (props) => {
         <CheckoutModal
           openCheckoutModal={openCheckoutModal}
           setOpenCheckoutModal={setOpenCheckoutModal}
-          navigation = {props.navigation}
+          navigation={props.navigation}
         />
       )}
     </View>
@@ -964,6 +969,7 @@ const CartComponent = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+
       {isLoading && <UpdatingLoader />}
     </View>
   );

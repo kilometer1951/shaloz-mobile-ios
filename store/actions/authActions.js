@@ -4,10 +4,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 export const USER_INFO = 'USER_INFO';
 export const CHANGE_SHOP_LOGO = 'CHANGE_SHOP_LOGO';
-export const HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS = 'HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS';
+export const HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS =
+  'HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS';
 export const LOGOUT = 'LOGOUT';
 export const UPDATE_SHOP_CATEGORY = 'UPDATE_SHOP_CATEGORY';
 
+export const checkIfStoreExist = async (shopName) => {
+  const response = await fetch(`${URL}/api/check_shop_name/${shopName}`);
+  const resData = await response.json();
+  return resData;
+};
 
 export const logout = (user) => {
   return async (dispatch) => {
@@ -17,8 +23,6 @@ export const logout = (user) => {
     });
   };
 };
-
-
 
 export const updateDetails = async (seller_id, first_name, last_name) => {
   //  return async dispatch => {
@@ -37,37 +41,30 @@ export const updateDetails = async (seller_id, first_name, last_name) => {
   return resData;
 };
 
-
-
-
-export const changeShopLogo =  (photo, source, user_id) => {
+export const changeShopLogo = (photo, source, user_id) => {
   return async (dispatch) => {
     let formData = new FormData();
-  formData.append('photo', photo);
-  const response = await fetch(`${URL}/api/upload_shop_image/${user_id}`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'multipart/form-data',
-    },
-    body: formData,
-  });
-  dispatch({type:CHANGE_SHOP_LOGO,source:source })
-  }
+    formData.append('photo', photo);
+    const response = await fetch(`${URL}/api/upload_shop_image/${user_id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    });
+    dispatch({type: CHANGE_SHOP_LOGO, source: source});
+  };
 };
 
-
-
-export const updateShopLocationShopNameSettings =  (data) => {
+export const updateShopLocationShopNameSettings = (data) => {
   return (dispatch) => {
-  dispatch({type:HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS,payload:data })
-  }
+    dispatch({
+      type: HANDLE_SHOP_NAME_SHOP_LOCATION_CAHNGE_SETTINGS,
+      payload: data,
+    });
+  };
 };
-
-
-
-
-
 
 export const upload = async (photo) => {
   let formData = new FormData();
@@ -84,7 +81,6 @@ export const upload = async (photo) => {
   return resData;
 };
 
-
 export const verifiyPhoneNumber = async (phone) => {
   //  return async dispatch => {
   const response = await fetch(`${URL}/api/verification`, {
@@ -100,7 +96,13 @@ export const verifiyPhoneNumber = async (phone) => {
   return resData;
 };
 
-export const createAcctount = (first_name, last_name, phone, email,password) => {
+export const createAcctount = (
+  first_name,
+  last_name,
+  phone,
+  email,
+  password,
+) => {
   return async (dispatch) => {
     const response = await fetch(`${URL}/api/signup_buyer`, {
       method: 'POST',
@@ -112,7 +114,7 @@ export const createAcctount = (first_name, last_name, phone, email,password) => 
         last_name,
         phone,
         email,
-        password
+        password,
       }),
     });
     const resData = await response.json();
@@ -134,14 +136,13 @@ export const verifyUser = async (phone) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      phone
+      phone,
     }),
   });
 
   const resData = await response.json();
   return resData;
 };
-
 
 export const loginUser = async (email, password) => {
   const response = await fetch(`${URL}/api/login_users`, {
@@ -170,7 +171,6 @@ export const dispatchUpdatedAccount = (user) => {
 
 export const dispatchUser = (user) => {
   return async (dispatch) => {
-    
     await AsyncStorage.setItem('@userData', JSON.stringify(user));
     dispatch({
       type: USER_INFO,
@@ -178,7 +178,6 @@ export const dispatchUser = (user) => {
     });
   };
 };
-
 
 export const userInfo = (user_id) => {
   return async (dispatch) => {
@@ -312,25 +311,21 @@ export const addStripeAccountBankingInfo = async (
   return resData;
 };
 
-
-
 export const updateShopCategories = (selectedCategories, shop_id) => {
-  return async dispatch => {
-   
+  return async (dispatch) => {
     const response = await fetch(`${URL}/api/update_shop_category/${shop_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        selectedCategories
+        selectedCategories,
       }),
     });
 
     dispatch({
-      type:UPDATE_SHOP_CATEGORY,
-      payload:selectedCategories
-    })
-
-  }
+      type: UPDATE_SHOP_CATEGORY,
+      payload: selectedCategories,
+    });
+  };
 };

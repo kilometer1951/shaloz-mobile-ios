@@ -3,7 +3,7 @@ import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import {ActionSheet} from 'native-base';
-import { Toast } from 'native-base';
+import {Toast} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -55,7 +55,7 @@ const ProductList = (props) => {
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
+            });
           } catch (e) {
             console.log(e);
             setNetworkError(true);
@@ -77,7 +77,7 @@ const ProductList = (props) => {
     return (
       <View style={{width: '49%'}} key={result._id}>
         <ProductDesignComponent
-          openSingleScreen={openSingleScreen.bind(this,result._id)}
+          openSingleScreen={openSingleScreen.bind(this, result._id)}
           discount={result.discount}
           main_image={result.main_image}
           product_name={result.product_name}
@@ -98,7 +98,8 @@ const ProductList = (props) => {
           padding: 1,
           marginTop: 10,
           width: '100%',
-          padding: 10,
+          paddingRight: 10,
+          paddingLeft: 10,
         }}>
         <Text style={{fontSize: 17, fontFamily: Fonts.poppins_regular}}>
           {props.heading}
@@ -113,11 +114,11 @@ const ProductList = (props) => {
             }
 
             if (props.heading !== 'Shop All Categories') {
-              if(props.heading === "Workout Supplements"){
+              if (props.heading === 'Workout Supplements') {
                 props.navigation.navigate('ProductCategory', {
                   backTitle: 'Home',
-                  headerTile:"Workout Supplements",
-                  main_cat: "Workout Supplements & Equipments",
+                  headerTile: 'Workout Supplements',
+                  main_cat: 'Workout Supplements & Equipments',
                   sub_cat_one: '',
                   sub_cat_two: '',
                 });
@@ -130,9 +131,7 @@ const ProductList = (props) => {
                   sub_cat_two: '',
                 });
               }
-             
             } else {
-
               props.navigation.navigate('Product', {
                 backTitle: 'Home',
                 headerTile: 'Products',

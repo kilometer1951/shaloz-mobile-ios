@@ -47,19 +47,19 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>To save media's you take to your libary</string>
+	<string>To save media&apos;s you take to your libary</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Use to take pictures to set as your profile image and allow you to take selfies to add as your portfolio</string>
+	<string>Use to take pictures to set as your store image</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We use your location to connect you with healh and beauty professionals in your area</string>
+	<string>We use your location to connect you with buyers in your area</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We use your location to connect you with healh and beauty professionals in your area</string>
+	<string>We use your location to connect you with buyers in your area</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We use your location to connect you with healh and beauty professionals in your area</string>
+	<string>We use your location to connect you with buyers in your area</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>To save photos and videos you take to your libary</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>we use your Photo Libary Access to allow you upload images to your portfolio</string>
+	<string>We use your Photo Libary Access to allow you upload images that represent your store</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-ExtraLightItalic.ttf</string>

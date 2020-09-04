@@ -23,7 +23,6 @@ export const FETCH_HOME_DATA = 'FETCH_HOME_DATA';
 export const CART_DATA = 'CART_DATA';
 export const SELECTED_CART = 'SELECTED_CART';
 
-
 export const CHECK_OUT_INFO = 'CHECK_OUT_INFO';
 export const CARDS = 'CARDS';
 export const SELECTED_CARD = 'SELECTED_CARD';
@@ -45,6 +44,9 @@ export const GET_EARNINGS = 'GET_EARNINGS';
 export const OPEN_MESSAGE_MODAL = 'OPEN_MESSAGE_MODAL';
 
 export const SELECTED_FOOTER_TAB = 'SELECTED_FOOTER_TAB';
+
+export const GET_MY_SHOP_SEARCH_PRODUCTS = 'GET_MY_SHOP_SEARCH_PRODUCTS';
+export const USER_REWARD_DATA = 'USER_REWARD_DATA';
 
 export const ADMIN_FETCH_PURCHASE_PACKAGE = 'ADMIN_FETCH_PURCHASE_PACKAGE';
 export const LOAD_MORE_ADMIN_FETCH_PURCHASE_PACKAGE =
@@ -334,6 +336,7 @@ export const reviewProduct = async (
   product_id,
   comment,
   rateNumber,
+  shop_id,
 ) => {
   const response = await fetch(`${URL}/api/add/review_product`, {
     method: 'POST',
@@ -345,6 +348,7 @@ export const reviewProduct = async (
       product_id,
       comment,
       rateNumber,
+      shop_id,
     }),
   });
   const resData = await response.json();
@@ -626,6 +630,22 @@ export const getMyShopProducts = (user_id, page) => {
   };
 };
 
+export const getMyShopSearchProducts = (user_id, page) => {
+  return async (dispatch) => {
+    const response = await fetch(
+      `${URL}/api/view/my_shop_product/${user_id}?page=${page}`,
+    );
+    const resData = await response.json();
+    if (!resData.status) {
+      throw new Error(false);
+    }
+    dispatch({
+      type: GET_MY_SHOP_SEARCH_PRODUCTS,
+      myShopSearchProducts: resData.my_shop_product,
+    });
+  };
+};
+
 export const handleLoadMoreShopProducts = (user_id, page) => {
   return async (dispatch) => {
     const response = await fetch(
@@ -815,8 +835,8 @@ export const searchShopProduct = (user_id, value) => {
       throw new Error(false);
     }
     dispatch({
-      type: GET_MY_SHOP_PRODUCTS,
-      myShopProducts: resData.my_shop_product,
+      type: GET_MY_SHOP_SEARCH_PRODUCTS,
+      myShopSearchProducts: resData.my_shop_product,
     });
   };
 };
@@ -1154,6 +1174,50 @@ export const dynamicSearchAllProducts = async (user_id, value) => {
   return resData;
 };
 
+export const searchDynamicProduct = async (user_id, value) => {
+  const response = await fetch(
+    `${URL}/api/dynamic_search/search_product/${user_id}/${value}`,
+  );
+  const resData = await response.json();
+  return resData;
+};
+
+export const searchRefreshDynamicProduct = async (user_id, value) => {
+  const response = await fetch(
+    `${URL}/api/dynamic_search/refresh_search_product/${user_id}/${value}`,
+  );
+  const resData = await response.json();
+  return resData;
+};
+
+export const searchRefreshDynamicShop = async (user_id, value) => {
+  const response = await fetch(
+    `${URL}/api/dynamic_search/refresh_search_shop/${user_id}/${value}`,
+  );
+  const resData = await response.json();
+  return resData;
+};
+
+export const loadMoreDynamicSearchProductData = async (
+  user_id,
+  value,
+  page,
+) => {
+  const response = await fetch(
+    `${URL}/api/dynamic_search/load_more_product_data/${user_id}/${value}?page=${page}`,
+  );
+  const resData = await response.json();
+  return resData;
+};
+
+export const loadMoreDynamicSearchShopData = async (user_id, value, page) => {
+  const response = await fetch(
+    `${URL}/api/dynamic_search/load_more_shop_data/${user_id}/${value}?page=${page}`,
+  );
+  const resData = await response.json();
+  return resData;
+};
+
 export const fechProductByCategory = async (
   user_id,
   main_cat,
@@ -1291,6 +1355,15 @@ export const shippingDetails = async (user_id) => {
   const response = await fetch(`${URL}/api/view/shipping_details/${user_id}`);
   const resData = await response.json();
   return resData;
+};
+
+export const userRewards = (userRewardData) => {
+  return (dispatch) => {
+    dispatch({
+      type: USER_REWARD_DATA,
+      payload: userRewardData,
+    });
+  };
 };
 
 export const validateAddress = async (data) => {
@@ -1458,39 +1531,48 @@ export const updateCartAfterPurchase = (cart_id) => {
   };
 };
 
-
 export const fetchCategoryForSelection = async () => {
-  const response = await fetch(
-    `${URL}/api/admin/view/main_category`,
-  );
+  const response = await fetch(`${URL}/api/admin/view/main_category`);
   const resData = await response.json();
   return resData;
 };
 
-
-
 export const updateLastActivity = (user_id) => {
-    fetch(`${URL}/api/update_user_last_activity`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id
-      }),
-    });
+  fetch(`${URL}/api/update_user_last_activity`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      user_id,
+    }),
+  });
 };
 
-
-
-export const trackVisitors = (seller_id,user_id) => {
+export const trackVisitors = (seller_id, user_id) => {
   fetch(`${URL}/api/track_store_visitors`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      user_id,seller_id
+      user_id,
+      seller_id,
     }),
   });
+};
+
+export const processRefund = async (cart_id, amount_to_return) => {
+  const response = await fetch(`${URL}/api/seller/refund_order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      cart_id,
+      amount_to_return,
+    }),
+  });
+  const resData = await response.json();
+  return resData;
 };

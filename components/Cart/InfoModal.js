@@ -1,13 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
- 
-  TouchableOpacity,
-  
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -98,7 +90,6 @@ const InfoModal = (props) => {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'destructive',
-
                   },
                   {
                     text: 'OK',
@@ -115,7 +106,7 @@ const InfoModal = (props) => {
                           );
                           await dispatch(appActions.fetchCartData(user._id, 1));
                           setIsLoading(false);
-                          onClose()
+                          onClose();
                         } catch (e) {
                           setIsLoading(false);
                           setNetworkError(true);

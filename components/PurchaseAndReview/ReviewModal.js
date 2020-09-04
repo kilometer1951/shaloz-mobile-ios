@@ -6,11 +6,9 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   TouchableOpacity,
- 
   ScrollView,
   TextInput,
   Modal,
- 
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import * as appActions from '../../store/actions/appActions';
@@ -40,12 +38,23 @@ const ReviewModal = (props) => {
   const [rateNumber_shop, setRateNumber_shop] = useState(5);
 
   const submitReview = () => {
-    appActions.reviewProduct(user._id, product_id, reviewText, rateNumber);
+    appActions.reviewProduct(
+      user._id,
+      product_id,
+      reviewText,
+      rateNumber,
+      shop_id,
+    );
     setOpenReviewModal(false);
   };
 
   const submitReview_shop = () => {
-    appActions.submitReview_shop(user._id, shop_id, reviewText_shop, rateNumber_shop);
+    appActions.submitReview_shop(
+      user._id,
+      shop_id,
+      reviewText_shop,
+      rateNumber_shop,
+    );
     setOpenReviewModal(false);
   };
 
@@ -96,7 +105,7 @@ const ReviewModal = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   height: 200,
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={reviewText}
                 onChangeText={(value) => setReviewText(value)}
@@ -168,7 +177,7 @@ const ReviewModal = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   height: 200,
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={reviewText_shop}
                 onChangeText={(value) => setReviewText_shop(value)}
