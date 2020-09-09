@@ -104,6 +104,15 @@ export const createAcctount = (
   password,
 ) => {
   return async (dispatch) => {
+    fetch(`${URL}/api/mail_chimp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
     const response = await fetch(`${URL}/api/signup_buyer`, {
       method: 'POST',
       headers: {

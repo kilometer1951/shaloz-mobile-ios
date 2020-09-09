@@ -34,7 +34,7 @@ const AuthViewOne = (props) => {
     <ScrollView
       onContentSizeChange={onContentSizeChange}
       scrollEnabled={scrollEnabled}>
-      <Svg width="100%" height="590">
+      <Svg width="100%" height="630">
         <Rect x="0" y="0" width="100%" height="100%" fill="#fbe9e7" />
         <SafeAreaView>
           <View style={{padding: 20}}>
@@ -42,6 +42,25 @@ const AuthViewOne = (props) => {
               Welcome to Shaloz, the world's most imaginative marketplace
             </Text>
             <View>
+              <View style={{flexDirection: 'row'}}>
+                <View>
+                  <View style={styles.viewBorder}>
+                    <Icon name="ios-trophy" size={25} />
+                  </View>
+                </View>
+                <View style={{width: '90%'}}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_regular,
+                      fontSize: 17,
+                      marginLeft: 10,
+                      marginTop: 20,
+                    }}>
+                    Earn points while you shop for the things you love
+                  </Text>
+                </View>
+              </View>
+
               <View style={{flexDirection: 'row'}}>
                 <View>
                   <View style={styles.viewBorder}>

@@ -41,7 +41,7 @@ const CreateSellerAccountMessage = (props) => {
     <ScrollView
       onContentSizeChange={onContentSizeChange}
       scrollEnabled={scrollEnabled}>
-      <Svg width="100%" height="590">
+      <Svg width="100%" height="660">
         <Rect x="0" y="0" width="100%" height="100%" fill="#fbe9e7" />
         <SafeAreaView>
           <View style={{padding: 20}}>
@@ -84,8 +84,8 @@ const CreateSellerAccountMessage = (props) => {
                       marginLeft: 10,
                       marginTop: 20,
                     }}>
-                    Simple, transparent, no additional monthly fees,
-                    Secure transactions, Automatic deposits and Seller protection.
+                    Simple, transparent, no additional monthly fees, Secure
+                    transactions, Automatic deposits and Seller protection.
                   </Text>
                 </View>
               </View>
@@ -125,6 +125,25 @@ const CreateSellerAccountMessage = (props) => {
                   </Text>
                 </View>
               </View>
+              <View style={{flexDirection: 'row'}}>
+                <View>
+                  <View style={styles.viewBorder}>
+                    <Icon name="ios-timer" size={25} />
+                  </View>
+                </View>
+                <View style={{width: '90%'}}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_regular,
+                      fontSize: 17,
+                      marginLeft: 10,
+                      marginTop: 20,
+                    }}>
+                    Spend less time managing your shop and more time on the fun
+                    stuff.
+                  </Text>
+                </View>
+              </View>
               <View style={{flexDirection: 'row', marginTop: 10}}>
                 <View>
                   <View style={styles.viewBorder}>
@@ -147,7 +166,7 @@ const CreateSellerAccountMessage = (props) => {
           </View>
         </SafeAreaView>
       </Svg>
-      <Svg height="100" width="100%">
+      <Svg height="90" width="100%">
         <Path
           d="M0.00,49.98 C149.99,150.00 271.49,-49.98 500.00,49.98 L500.00,0.00 L0.00,0.00 Z"
           stroke="none"
@@ -155,7 +174,7 @@ const CreateSellerAccountMessage = (props) => {
         />
       </Svg>
       <TouchableWithoutFeedback onPress={props.getStarted}>
-        <View style={[{...styles.button}, {marginTop: 50}]}>
+        <View style={[{...styles.button}, {marginTop: 10}]}>
           <Text
             style={{
               fontFamily: Fonts.poppins_semibold,
