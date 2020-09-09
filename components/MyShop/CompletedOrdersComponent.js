@@ -24,6 +24,7 @@ import * as appActions from '../../store/actions/appActions';
 import NetworkError from '../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import UpdateMessage from '../UpdateMessage';
+import FastImage from 'react-native-fast-image';
 
 const CompletedOrdersComponent = (props) => {
   const dispatch = useDispatch();
@@ -124,6 +125,58 @@ const CompletedOrdersComponent = (props) => {
     return (parseInt(qty) * parseFloat(price)).toFixed(2);
   };
 
+  const calculateDiscount = (items) => {
+    let total_discount = 0.0;
+    for (let i = 0; i < items.length; i++) {
+      let discount =
+        items[i].discount !== '' ? parseFloat(items[i].discount) : 0.0;
+      total_discount += discount;
+    }
+
+    return total_discount.toFixed(2);
+  };
+
+  const calculateTotalDiscount = (cart) => {
+    let discount_from_items = parseFloat(calculateDiscount(cart.items));
+    let store_discount = cart.store_promotion_discount_is_applied
+      ? parseFloat(cart.store_promotion_discount)
+      : 0.0;
+
+    return (discount_from_items + store_discount).toFixed(2);
+  };
+
+  const calculateVariant = (selected_variant_value) => {
+    let total = 0.0;
+    for (let i = 0; i < selected_variant_value.length; i++) {
+      let price = parseFloat(selected_variant_value[i].price);
+      total += price;
+    }
+    return total;
+  };
+
+  const orderTotal = (cart) => {
+    let total = 0.0;
+    for (let i = 0; i < cart.items.length; i++) {
+      let price =
+        parseFloat(cart.items[i].price) +
+        parseFloat(
+          cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
+        ) +
+        parseFloat(calculateVariant(cart.items[i].selected_variant_value));
+
+      total += price;
+    }
+    return (parseFloat(total) + parseFloat(cart.shippment_price)).toFixed(2);
+  };
+
+  const clientPaid = (cart) => {
+    let total =
+      parseFloat(orderTotal(cart)) + parseFloat(cart.amount_in_cash_redeemed);
+    return (
+      parseFloat(total) - parseFloat(calculateTotalDiscount(cart))
+    ).toFixed(2);
+  };
+
   const displayVariants = (selected_variant_value) => {
     return selected_variant_value.map((result, index, array) => {
       return (
@@ -140,7 +193,7 @@ const CompletedOrdersComponent = (props) => {
           }}
           key={index}>
           <Text>
-        {result.name}: {result.content} (+${result.price})
+            {result.name}: {result.content} (+${result.price})
           </Text>
         </View>
       );
@@ -165,15 +218,18 @@ const CompletedOrdersComponent = (props) => {
                 width: '100%',
                 flexDirection: 'row',
               }}>
-              <View style={{width: '80%', flexDirection: 'row'}}>
-                <View style={{width: '30%'}}>
-                  <Image
-                    source={{uri: result.product.main_image}}
+              <View style={{width: '70%', flexDirection: 'row'}}>
+                <View style={{width: '35%'}}>
+                  <FastImage
+                    source={{
+                      uri: result.product.main_image,
+                      priority: FastImage.priority.high,
+                    }}
                     style={{
                       width: '100%',
                       height: 100,
                     }}
-                    resizeMode="contain"
+                    resizeMode={FastImage.resizeMode.cover}
                   />
                 </View>
                 <View style={{width: '70%', marginLeft: 5}}>
@@ -196,17 +252,37 @@ const CompletedOrdersComponent = (props) => {
                   <View
                     style={{
                       padding: 5,
+                      backgroundColor: '#fbe9e7',
                       marginTop: 5,
                       borderRadius: 20,
+                      width: 180,
                     }}>
-                    <Text
-                      style={{fontFamily: Fonts.poppins_regular, fontSize: 17}}>
-                      sub-total ${parseFloat(result.price).toFixed(2)}
+                    <Text style={{fontFamily: Fonts.poppins_regular}}>
+                      Qty in your shop : {result.product.product_qty}
                     </Text>
                   </View>
                 </View>
               </View>
+              <View style={{width: '30%', alignSelf: 'flex-end'}}>
+                {result.discount !== '' && (
+                  <Text style={styles.previousPrice}>
+                    $
+                    {(
+                      parseFloat(result.price) + parseFloat(result.discount)
+                    ).toFixed(2)}
+                  </Text>
+                )}
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 18,
+                    alignSelf: 'flex-end',
+                  }}>
+                  ${parseFloat(result.price).toFixed(2)}
+                </Text>
+              </View>
             </View>
+
             {result.product_personalization_note !== '' && (
               <View style={{padding: 10}}>
                 <Text
@@ -303,6 +379,9 @@ const CompletedOrdersComponent = (props) => {
             justifyContent: 'space-between',
             marginBottom: 10,
             flexWrap: '',
+            borderBottomWidth: 0.4,
+            borderBottomColor: Colors.light_grey,
+            paddingBottom: 10,
           }}>
           <Text
             style={{
@@ -323,11 +402,148 @@ const CompletedOrdersComponent = (props) => {
               : '$' + item.shippment_price}
           </Text>
         </View>
+        {item.buyer_hasRedeemedPoints && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              Points (Paid By Shaloz)
+            </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_regular,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              ${item.amount_in_cash_redeemed}
+            </Text>
+          </View>
+        )}
+
+        {item.discount_applied === 'true' && (
+          <View>
+            {item.store_promotion_discount_is_applied && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Store discount(%{item.store_promotion_discount_percentage} of
+                  initial price)
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${item.store_promotion_discount}
+                </Text>
+              </View>
+            )}
+
+            {calculateDiscount(item.items) != '0.00' && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Discount from items
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${calculateDiscount(item.items)}
+                </Text>
+              </View>
+            )}
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+              }}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_semibold,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                Total Discount
+              </Text>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                -$
+                {calculateTotalDiscount(item)}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              Order Total
+            </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_regular,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              ${orderTotal(item)}
+            </Text>
+          </View>
+        </View>
+
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginBottom: 10,
+            borderTopWidth: 0.4,
+            borderTopColor: Colors.light_grey,
+            flexWrap: 'wrap',
           }}>
           <Text
             style={{
@@ -335,7 +551,7 @@ const CompletedOrdersComponent = (props) => {
               fontSize: 15,
               marginTop: 10,
             }}>
-            Platform fee
+            Platform fee (includes bank deposit fee)
           </Text>
           {item.theshop_takes === '' ? (
             <Text
@@ -393,7 +609,6 @@ const CompletedOrdersComponent = (props) => {
             </Text>
           )}
         </View>
-        
 
         <View
           style={{
@@ -403,16 +618,16 @@ const CompletedOrdersComponent = (props) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-         <View style={{flexDirection:"row"}}>
-         <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 20,
-              marginTop: 10,
-            }}>
-            Order total ({item.items.length} item(s)):
-          </Text>
-          <Tooltip
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 20,
+                marginTop: 10,
+              }}>
+              Client Paid ({item.items.length} item(s)):
+            </Text>
+            <Tooltip
               popover={
                 <Text
                   style={{
@@ -421,7 +636,7 @@ const CompletedOrdersComponent = (props) => {
                     fontSize: 18,
                   }}>
                   Total = (Qty * Price) + Variant Price :- of each product +
-                    Shipping total
+                  Shipping total
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
@@ -434,23 +649,19 @@ const CompletedOrdersComponent = (props) => {
                 color={Colors.purple_darken}
               />
             </Tooltip>
-         </View>
+          </View>
           <Text
             style={{
               fontFamily: Fonts.poppins_semibold,
               fontSize: 18,
               marginTop: 10,
             }}>
-            $
-            {(parseFloat(item.total) -( parseFloat(item.processing_fee) + parseFloat(item.tax))).toFixed(
-              2,
-            )}
+            ${clientPaid(item)}
           </Text>
         </View>
       </View>
     </View>
   );
-
   let view;
   if (completed_orders.length === 0) {
     view = (
@@ -556,6 +767,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     shadowColor: Colors.grey_darken,
     marginTop: 5,
+  },
+  previousPrice: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    fontFamily: Fonts.poppins_regular,
+    fontSize: 18,
+    alignSelf: 'flex-end',
   },
 });
 

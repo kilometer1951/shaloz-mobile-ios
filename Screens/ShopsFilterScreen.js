@@ -57,8 +57,6 @@ const ProductScreen = (props) => {
     setData(response.data);
   };
 
-
-
   const categories = catData.map((result, index) => {
     return (
       <TouchableOpacity
@@ -108,7 +106,10 @@ const ProductScreen = (props) => {
         if (!endOfFile) {
           if (!isLoadingMoreData) {
             setIsLoadingMoreData(true);
-            const response = await appActions.fetchShopsProduct(seller_id, page);
+            const response = await appActions.fetchShopsProduct(
+              seller_id,
+              page,
+            );
             setIsLoadingMoreData(false);
             if (!response.status) {
               console.log('error parsing server');
@@ -135,7 +136,7 @@ const ProductScreen = (props) => {
           if (!isLoadingMoreData) {
             setIsLoadingMoreData(true);
             const response = await appActions.applyShopFilter(
-                seller_id,
+              seller_id,
               main_cat,
               page,
             );

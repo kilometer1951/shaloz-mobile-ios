@@ -86,7 +86,7 @@ const CompletedOrderSection = (props) => {
               borderBottomColor: Colors.light_grey,
               borderBottomWidth: 0.5,
             }}>
-            <View style={{width: '80%', flexDirection: 'row'}}>
+            <View style={{width: '70%', flexDirection: 'row'}}>
               <View style={{width: '30%'}}>
                 <Image
                   source={{uri: result.product.main_image}}
@@ -128,7 +128,15 @@ const CompletedOrderSection = (props) => {
                 </View>
               </View>
             </View>
-            <View style={{width: '24%', alignSelf: 'flex-end'}}>
+            <View style={{width: '30%', alignSelf: 'flex-end'}}>
+              {result.discount !== '' && (
+                <Text style={styles.previousPrice}>
+                  $
+                  {(
+                    parseFloat(result.price) + parseFloat(result.discount)
+                  ).toFixed(2)}
+                </Text>
+              )}
               <Text
                 style={{
                   fontFamily: Fonts.poppins_regular,
@@ -160,16 +168,6 @@ const CompletedOrderSection = (props) => {
               <Icons name="ios-stats" size={20} color={Colors.pink} />
               <Text style={styles.textStyle}>{data.user.first_name}</Text>
             </View>
-            <Text
-              style={[
-                {...styles.textStyle},
-                {fontFamily: Fonts.poppins_semibold, fontSize: 15},
-              ]}>
-              $
-              {(parseFloat(data.total) -( parseFloat(data.processing_fee) + parseFloat(data.tax))).toFixed(
-              2,
-            )}
-            </Text>
           </View>
 
           <View style={{paddingHorizontal: 19}}>
@@ -284,6 +282,13 @@ const styles = StyleSheet.create({
   textStyle: {
     fontFamily: Fonts.poppins_regular,
     marginLeft: 10,
+  },
+  previousPrice: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    fontFamily: Fonts.poppins_regular,
+    fontSize: 13,
+    alignSelf: 'flex-end',
   },
 });
 

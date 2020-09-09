@@ -541,8 +541,8 @@ const CartComponent = (props) => {
                 width: '100%',
                 flexDirection: 'row',
               }}>
-              <View style={{width: '80%', flexDirection: 'row'}}>
-                <View style={{width: '30%'}}>
+              <View style={{width: '70%', flexDirection: 'row'}}>
+                <View style={{width: '35%'}}>
                   <FastImage
                     source={{
                       uri: result.product.main_image,
@@ -588,7 +588,7 @@ const CartComponent = (props) => {
                   </View>
                 </View>
               </View>
-              <View style={{width: '20%', alignSelf: 'flex-end'}}>
+              <View style={{width: '30%', alignSelf: 'flex-end'}}>
                 {result.product.discount !== '' && (
                   <Text style={styles.previousPrice}>
                     ${parseFloat(result.product.product_price).toFixed(2)}

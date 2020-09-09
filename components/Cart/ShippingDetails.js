@@ -28,6 +28,7 @@ const ShippingDetails = (props) => {
     animateView1_out,
   } = props;
   const user = useSelector((state) => state.authReducer.user);
+
   const selected_cart = useSelector((state) => state.appReducer.selected_cart);
 
   const [country, setCountry] = useState('United States');
@@ -50,6 +51,12 @@ const ShippingDetails = (props) => {
         setIsLoading(true);
         const response = await appActions.shippingDetails(user._id);
         dispatch(appActions.userRewards(response.userRewardData));
+        dispatch(
+          appActions.loyaltyPoint(
+            response.loyalty_point_response.buyer_hasRedeemedPoints,
+            response.loyalty_point_response.amount_in_cash_redeemed,
+          ),
+        );
         setIsLoading(false);
 
         if (!response.status) {
@@ -224,13 +231,7 @@ const ShippingDetails = (props) => {
     try {
       //update cart item
       setIsLoading(true);
-      for (let i = 0; i < selected_cart.items.length; i++) {
-        await appActions.updateCartItemPrice(
-          selected_cart._id,
-          user._id,
-          selected_cart.items[i]._id,
-        );
-      }
+      await appActions.updateCartItemPrice(selected_cart._id, user._id);
 
       //calculate shipping
       if (selected_cart.seller.offers_free_shipping) {
@@ -283,7 +284,7 @@ const ShippingDetails = (props) => {
 
         for (let i = 0; i < selected_cart.items.length; i++) {
           //calculate shipping qty
-          const total_qty =
+          const total_weight =
             parseFloat(selected_cart.items[i].qty) *
             parseFloat(selected_cart.items[i].product.product_weight);
           const unit = selected_cart.items[i].product.product_weight_unit;
@@ -291,8 +292,12 @@ const ShippingDetails = (props) => {
           const res = await appActions.getShippingRate(
             user._id,
             selected_cart.seller._id,
-            total_qty,
+            total_weight,
             unit,
+            selected_cart.items[i].product._id,
+            selected_cart.items[i].product.product_weight,
+            selected_cart._id,
+            selected_cart.items[i].qty,
           );
           shippingAmount.push(res.amount);
         }
@@ -307,7 +312,7 @@ const ShippingDetails = (props) => {
       setIsLoading(false);
       Alert.alert(
         'Error',
-        'We could not calculate shipping on this address. Please check your shipping address.',
+        'We could not calculate shipping on this address. This might be due to an incorrect address or the weight limit for shipment has been exceeded. Max weight limit is 150 pounds. Contact support if you need any assistance. Thanks!',
         [
           {
             text: 'Ok',

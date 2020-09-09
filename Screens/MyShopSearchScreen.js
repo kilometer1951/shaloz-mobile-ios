@@ -368,9 +368,10 @@ const MyShopSearchScreen = (props) => {
           </View>
         </View>
         <TouchableOpacity
+          disabled={item.product_approval_status ? false : true}
           onPress={onShareProduct.bind(this, item.product_name, item._id)}>
           <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-            Share
+            {item.product_approval_status ? 'Share' : 'under-review'}
           </Text>
         </TouchableOpacity>
       </View>

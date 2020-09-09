@@ -3,20 +3,19 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
   Image,
   RefreshControl,
-  
+  ScrollView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import NetworkError from '../NetworkError';
 import ProductPlaceholderLoader from '../ProductPlaceholderLoader';
 import {MaterialIndicator} from 'react-native-indicators';
-import {ActionSheet} from "native-base"
+import {ActionSheet} from 'native-base';
 import Toast from 'react-native-root-toast';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -24,6 +23,8 @@ import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import * as appActions from '../../store/actions/appActions';
 import UpdateMessage from '../UpdateMessage';
+import OtherProducts from '../ProductCategory/OtherProducts';
+import FastImage from 'react-native-fast-image';
 
 const ShopDeals = (props) => {
   const dispatch = useDispatch();
@@ -39,9 +40,11 @@ const ShopDeals = (props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
   const [updateMessage, setUpdateMessage] = useState('');
+  const [otherProducts, setOtherProducts] = useState([]);
+  const [shops, setShops] = useState([]);
 
   const openActionSheet = (product_id) =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Add to favorite'],
         cancelButtonIndex: 0,
@@ -60,9 +63,7 @@ const ShopDeals = (props) => {
               animation: true,
               hideOnPress: true,
               delay: 0,
-          })
-
-
+            });
           } catch (e) {
             console.log(e);
             setNetworkError(true);
@@ -97,6 +98,8 @@ const ShopDeals = (props) => {
       try {
         setIsLoading(true);
         const response = await appActions.fetchShopsDeals(seller_id, 1);
+        setOtherProducts(response.otherProducts);
+        setShops(response.shops);
         setIsLoading(false);
         if (!response.status) {
           setIsLoading(false);
@@ -156,7 +159,6 @@ const ShopDeals = (props) => {
     setIsRefreshing(false);
   };
 
-
   const renderItem = ({item}) => (
     <TouchableWithoutFeedback
       onPress={() =>
@@ -170,27 +172,32 @@ const ShopDeals = (props) => {
             </Text>
           </View>
         )}
-        <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
-          <Image
-            source={{uri: item.main_image}}
+        <View
+          style={{
+            backgroundColor: '#e1e4e8',
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}>
+          <FastImage
+            source={{uri: item.main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
                 flex: 1,
                 flexWrap: 'wrap',
                 fontFamily: Fonts.poppins_regular,
                 height: 49,
-                fontSize:15
+                fontSize: 15,
               }}>
               {item.product_name.trunc(35)}
             </Text>
@@ -216,7 +223,7 @@ const ShopDeals = (props) => {
               justifyContent: 'space-between',
             }}>
             <View style={{marginTop: 2, flexDirection: 'row'}}>
-            <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
+              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
                 ${displayPrice(item.product_price, item.discount)}
               </Text>
               {item.discount !== '' && (
@@ -224,7 +231,7 @@ const ShopDeals = (props) => {
               )}
             </View>
             <TouchableOpacity onPress={openActionSheet.bind(this, item._id)}>
-            <Icon name="ios-more" size={30} color={Colors.grey_darken} />
+              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
             </TouchableOpacity>
           </View>
         </View>
@@ -233,20 +240,30 @@ const ShopDeals = (props) => {
   );
 
   let view;
+  let other_view = (
+    <OtherProducts
+      dataN={otherProducts}
+      navigation={props.navigation}
+      shops={shops}
+    />
+  );
   if (data.length === 0) {
     view = (
-      <View style={{alignSelf: 'center', marginTop: '40%', padding: 25}}>
-        <Text
-          style={{
-            fontFamily: Fonts.poppins_light,
-            fontSize: 20,
-            fontWeight: '300',
-            textAlign: 'center',
-            padding: 20,
-          }}>
-          No products to show
-        </Text>
-      </View>
+      <ScrollView>
+        <View style={{alignSelf: 'center', marginTop: '10%', padding: 25}}>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_light,
+              fontSize: 20,
+              fontWeight: '300',
+              textAlign: 'center',
+              padding: 20,
+            }}>
+            No product(s) to show
+          </Text>
+        </View>
+        {other_view}
+      </ScrollView>
     );
   } else {
     view = (
@@ -311,7 +328,6 @@ const ShopDeals = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
-      
     </View>
   );
 };
@@ -358,8 +374,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
-
+    marginTop: 4,
   },
 });
 

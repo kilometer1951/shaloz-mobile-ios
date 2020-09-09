@@ -25,6 +25,7 @@ import * as appActions from '../../store/actions/appActions';
 import NetworkError from '../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import UpdateMessage from '../UpdateMessage';
+import FastImage from 'react-native-fast-image';
 
 const Orders = (props) => {
   const dispatch = useDispatch();
@@ -145,30 +146,63 @@ const Orders = (props) => {
 
   const processRefund = async (cart_id, amount_to_return) => {
     try {
-      setIsUpdating(true);
-      const response = await appActions.processRefund(
-        cart_id,
-        amount_to_return,
-      );
-
-      setIsUpdating(false);
-      fetchShopOrderData();
-      if (!response.status) {
-        setIsLoading(false);
-        Alert.alert(
-          'Error processing refund. If this error persist, please contact support',
-          '',
-          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-          {cancelable: false},
-        );
-        return;
-      }
-
-      Alert.alert(
-        'Refund proceed successfully.',
+      Alert.prompt(
+        'Can we know why you are issuing a refund on this items?',
         '',
-        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-        {cancelable: false},
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'destructive',
+          },
+          {
+            text: 'Submit',
+            onPress: async (refund_reason) => {
+              if (refund_reason !== '') {
+                setIsUpdating(true);
+                const response = await appActions.processRefund(
+                  cart_id,
+                  amount_to_return,
+                  refund_reason,
+                );
+
+                setIsUpdating(false);
+                fetchShopOrderData();
+                if (!response.status) {
+                  setIsLoading(false);
+                  Alert.alert(
+                    'Error processing refund. If this error persist, please contact support',
+                    '',
+                    [
+                      {
+                        text: 'Ok',
+                        onPress: () => console.log('Cancel Pressed!'),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
+                  return;
+                }
+
+                Alert.alert(
+                  'Refund proceed successfully.',
+                  '',
+                  [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                  {cancelable: false},
+                );
+              } else {
+                Alert.alert(
+                  'A reason is required',
+                  ''[
+                    {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
+                  ],
+                  {cancelable: false},
+                );
+                return;
+              }
+            },
+          },
+        ],
       );
     } catch (e) {
       setIsRefreshing(false);
@@ -176,27 +210,157 @@ const Orders = (props) => {
     }
   };
 
-  const openAlertModal = (cart_id, buyer_email, amount_to_return) => {
+  const issueRefundPerItem = async (product_id, cart_id) => {
+    Alert.prompt(
+      'Can we know why you are issuing a refund on this items?',
+      '',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'destructive',
+        },
+        {
+          text: 'Submit',
+          onPress: async (refund_reason) => {
+            if (refund_reason !== '') {
+              setIsUpdating(true);
+              const response = await appActions.issueRefundPerItem(
+                product_id,
+                cart_id,
+                refund_reason,
+                'seller',
+              );
+
+              setIsUpdating(false);
+              fetchShopOrderData();
+              if (!response.status) {
+                setIsLoading(false);
+                Alert.alert(
+                  'Error processing refund. If this error persist, please contact support',
+                  '',
+                  [
+                    {
+                      text: 'Ok',
+                      onPress: () => console.log('Cancel Pressed!'),
+                    },
+                  ],
+                  {cancelable: false},
+                );
+                return;
+              }
+
+              Alert.alert(
+                'Refund proceed successfully.',
+                '',
+                [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                {cancelable: false},
+              );
+            } else {
+              Alert.alert(
+                'A reason is required',
+                ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                {cancelable: false},
+              );
+              return;
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const openAlertModal = (cart, buyer_email, amount_to_return) => {
     //  setOrderID(cart_id);
     ActionSheet.show(
       {
-        options: ['Cancel', 'Help', 'Refund'],
+        options: ['Cancel', 'Help', 'Refund all items'],
         cancelButtonIndex: 0,
         tintColor: '#000',
+        destructiveButtonIndex: 2,
       },
-      (buttonIndex) => {
+      async (buttonIndex) => {
         if (buttonIndex === 0) {
           // cancel action
         } else if (buttonIndex === 1) {
           Linking.openURL(
             'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
-              cart_id +
+              cart._id +
               '&body=My orderID is ' +
-              cart_id +
+              cart._id +
               ' ......',
           );
         } else if (buttonIndex === 2) {
-          processRefund(cart_id, amount_to_return);
+          Alert.prompt(
+            'Can we know why you are issuing a refund on this items?',
+            '',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'destructive',
+              },
+              {
+                text: 'Submit',
+                onPress: async (refund_reason) => {
+                  if (refund_reason !== '') {
+                    setIsUpdating(true);
+                    let response = {status: false};
+                    for (let i = 0; i < cart.items.length; i++) {
+                      response = await appActions.issueRefundPerItem(
+                        cart.items[i].product._id,
+                        cart._id,
+                        refund_reason,
+                        'seller',
+                      );
+                    }
+
+                    setIsUpdating(false);
+                    fetchShopOrderData();
+                    if (!response.status) {
+                      setIsLoading(false);
+                      Alert.alert(
+                        'Error processing refund. If this error persist, please contact support',
+                        '',
+                        [
+                          {
+                            text: 'Ok',
+                            onPress: () => console.log('Cancel Pressed!'),
+                          },
+                        ],
+                        {cancelable: false},
+                      );
+                      return;
+                    }
+
+                    Alert.alert(
+                      'Refund proceed successfully.',
+                      '',
+                      [
+                        {
+                          text: 'Ok',
+                          onPress: () => console.log('Cancel Pressed!'),
+                        },
+                      ],
+                      {cancelable: false},
+                    );
+                  } else {
+                    Alert.alert(
+                      'A reason is required',
+                      ''[
+                        {
+                          text: 'Ok',
+                          onPress: () => console.log('Cancel Pressed!'),
+                        }
+                      ],
+                      {cancelable: false},
+                    );
+                    return;
+                  }
+                },
+              },
+            ],
+          );
         }
       },
     );
@@ -234,6 +398,58 @@ const Orders = (props) => {
 
   const getPricePerItem = (price, qty) => {
     return (parseInt(qty) * parseFloat(price)).toFixed(2);
+  };
+
+  const calculateDiscount = (items) => {
+    let total_discount = 0.0;
+    for (let i = 0; i < items.length; i++) {
+      let discount =
+        items[i].discount !== '' ? parseFloat(items[i].discount) : 0.0;
+      total_discount += discount;
+    }
+
+    return total_discount.toFixed(2);
+  };
+
+  const calculateTotalDiscount = (cart) => {
+    let discount_from_items = parseFloat(calculateDiscount(cart.items));
+    let store_discount = cart.store_promotion_discount_is_applied
+      ? parseFloat(cart.store_promotion_discount)
+      : 0.0;
+
+    return (discount_from_items + store_discount).toFixed(2);
+  };
+
+  const calculateVariant = (selected_variant_value) => {
+    let total = 0.0;
+    for (let i = 0; i < selected_variant_value.length; i++) {
+      let price = parseFloat(selected_variant_value[i].price);
+      total += price;
+    }
+    return total;
+  };
+
+  const orderTotal = (cart) => {
+    let total = 0.0;
+    for (let i = 0; i < cart.items.length; i++) {
+      let price =
+        parseFloat(cart.items[i].price) +
+        parseFloat(
+          cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
+        ) +
+        parseFloat(calculateVariant(cart.items[i].selected_variant_value));
+
+      total += price;
+    }
+    return (parseFloat(total) + parseFloat(cart.shippment_price)).toFixed(2);
+  };
+
+  const clientPaid = (cart) => {
+    let total =
+      parseFloat(orderTotal(cart)) + parseFloat(cart.amount_in_cash_redeemed);
+    return (
+      parseFloat(total) - parseFloat(calculateTotalDiscount(cart))
+    ).toFixed(2);
   };
 
   const displayVariants = (selected_variant_value) => {
@@ -277,15 +493,18 @@ const Orders = (props) => {
                 width: '100%',
                 flexDirection: 'row',
               }}>
-              <View style={{width: '80%', flexDirection: 'row'}}>
-                <View style={{width: '30%'}}>
-                  <Image
-                    source={{uri: result.product.main_image}}
+              <View style={{width: '70%', flexDirection: 'row'}}>
+                <View style={{width: '35%'}}>
+                  <FastImage
+                    source={{
+                      uri: result.product.main_image,
+                      priority: FastImage.priority.high,
+                    }}
                     style={{
                       width: '100%',
                       height: 100,
                     }}
-                    resizeMode="contain"
+                    resizeMode={FastImage.resizeMode.cover}
                   />
                 </View>
                 <View style={{width: '70%', marginLeft: 5}}>
@@ -319,7 +538,15 @@ const Orders = (props) => {
                   </View>
                 </View>
               </View>
-              <View style={{width: '20%', alignSelf: 'flex-end'}}>
+              <View style={{width: '30%', alignSelf: 'flex-end'}}>
+                {result.discount !== '' && (
+                  <Text style={styles.previousPrice}>
+                    $
+                    {(
+                      parseFloat(result.price) + parseFloat(result.discount)
+                    ).toFixed(2)}
+                  </Text>
+                )}
                 <Text
                   style={{
                     fontFamily: Fonts.poppins_semibold,
@@ -342,6 +569,29 @@ const Orders = (props) => {
                 </Text>
               </View>
             )}
+            <View
+              style={{
+                borderTopColor: Colors.light_grey,
+                borderTopWidth: 1,
+              }}>
+              <TouchableOpacity
+                style={{width: '40%'}}
+                onPress={issueRefundPerItem.bind(
+                  this,
+                  result.product._id,
+                  cart_id,
+                  parseFloat(result.price).toFixed(2),
+                )}>
+                <View style={{padding: 10}}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_regular,
+                    }}>
+                    Refund item
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       );
@@ -391,7 +641,7 @@ const Orders = (props) => {
         <TouchableOpacity
           onPress={openAlertModal.bind(
             this,
-            item._id,
+            item,
             item.user.email,
             (
               parseFloat(item.total) -
@@ -404,8 +654,7 @@ const Orders = (props) => {
       </View>
       <Text style={{fontFamily: Fonts.poppins_regular, color: 'red'}}>
         Please do not ship items separately. All items must be shipped together.
-        For us to process your earnings, you must add a tracking number to this
-        order.
+        For this order to be fulfilled, you must add a tracking number.
       </Text>
       {renderProducts(item.items, item._id)}
 
@@ -450,7 +699,7 @@ const Orders = (props) => {
           </Text>
         </View>
 
-        {item.discount_applied != '0.00' && (
+        {item.buyer_hasRedeemedPoints && (
           <View
             style={{
               flexDirection: 'row',
@@ -463,7 +712,7 @@ const Orders = (props) => {
                 fontSize: 15,
                 marginTop: 10,
               }}>
-              Discount
+              Points (Paid By Shaloz)
             </Text>
             <Text
               style={{
@@ -471,10 +720,118 @@ const Orders = (props) => {
                 fontSize: 15,
                 marginTop: 10,
               }}>
-              -${item.discount_applied}
+              ${item.amount_in_cash_redeemed}
             </Text>
           </View>
         )}
+
+        {item.discount_applied === 'true' && (
+          <View>
+            {item.store_promotion_discount_is_applied && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Store discount(%{item.store_promotion_discount_percentage} of
+                  initial price)
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${item.store_promotion_discount}
+                </Text>
+              </View>
+            )}
+
+            {calculateDiscount(item.items) != '0.00' && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Discount from items
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${calculateDiscount(item.items)}
+                </Text>
+              </View>
+            )}
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+              }}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_semibold,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                Total Discount
+              </Text>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                -$
+                {calculateTotalDiscount(item)}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              Order Total
+            </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_regular,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              ${orderTotal(item)}
+            </Text>
+          </View>
+        </View>
 
         <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
           <Text
@@ -509,7 +866,7 @@ const Orders = (props) => {
                 fontSize: 20,
                 marginTop: 10,
               }}>
-              Order total ({item.items.length} item(s)):
+              Client Paid ({item.items.length} item(s)):
             </Text>
             <Tooltip
               popover={
@@ -541,11 +898,7 @@ const Orders = (props) => {
               fontSize: 18,
               marginTop: 10,
             }}>
-            $
-            {(
-              parseFloat(item.total) -
-              (parseFloat(item.processing_fee) + parseFloat(item.tax))
-            ).toFixed(2)}
+            ${clientPaid(item)}
           </Text>
         </View>
         <TouchableOpacity
@@ -683,6 +1036,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     shadowColor: Colors.grey_darken,
     marginTop: 5,
+  },
+  previousPrice: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    fontFamily: Fonts.poppins_regular,
+    fontSize: 18,
+    alignSelf: 'flex-end',
   },
 });
 

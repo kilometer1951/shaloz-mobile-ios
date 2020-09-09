@@ -183,7 +183,7 @@ const SellerShippingLocationScreen = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-              Shop name / Shop location
+              Shop location
             </Text>
           </View>
           <View style={{width: '20%'}}>
@@ -205,34 +205,7 @@ const SellerShippingLocationScreen = (props) => {
           </View>
         </View>
       </SafeAreaView>
-      <View style={{width: '100%', padding: 10}}>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: Fonts.poppins_semibold,
-            marginTop: 15,
-          }}>
-          Update your shop name
-        </Text>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            fontSize: 20,
-            fontFamily: Fonts.poppins_regular,
-            padding: 10,
-            borderColor: Colors.light_grey,
-            borderRadius: 5,
-            width: '100%',
-            color:"#000"
-          }}
-          value={shopName}
-          onChangeText={(value) => {
-            setUpdateButton(true);
-            setShopName(value);
-          }}
-          autoFocus={true}
-        />
-      </View>
+
       <View style={{width: '100%', flexDirection: 'row', padding: 10}}>
         <View
           style={{
@@ -254,7 +227,7 @@ const SellerShippingLocationScreen = (props) => {
               borderColor: Colors.light_grey,
               borderRadius: 5,
               width: '100%',
-              color:"#000"
+              color: '#000',
             }}
             value={shopLocation}
             onChangeText={handleSearch}
@@ -371,3 +344,32 @@ const styles = StyleSheet.create({
 });
 
 export default SellerShippingLocationScreen;
+
+// <View style={{width: '100%', padding: 10}}>
+// <Text
+//   style={{
+//     fontSize: 20,
+//     fontFamily: Fonts.poppins_semibold,
+//     marginTop: 15,
+//   }}>
+//   Update your shop name
+// </Text>
+// <TextInput
+//   style={{
+//     borderWidth: 1,
+//     fontSize: 20,
+//     fontFamily: Fonts.poppins_regular,
+//     padding: 10,
+//     borderColor: Colors.light_grey,
+//     borderRadius: 5,
+//     width: '100%',
+//     color: '#000',
+//   }}
+//   value={shopName}
+//   onChangeText={(value) => {
+//     setUpdateButton(true);
+//     setShopName(value);
+//   }}
+//   autoFocus={true}
+// />
+// </View>

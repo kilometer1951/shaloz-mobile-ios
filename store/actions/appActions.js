@@ -44,6 +44,7 @@ export const GET_EARNINGS = 'GET_EARNINGS';
 export const OPEN_MESSAGE_MODAL = 'OPEN_MESSAGE_MODAL';
 
 export const SELECTED_FOOTER_TAB = 'SELECTED_FOOTER_TAB';
+export const LOYALTY_POINT_CONTENT = 'LOYALTY_POINT_CONTENT';
 
 export const GET_MY_SHOP_SEARCH_PRODUCTS = 'GET_MY_SHOP_SEARCH_PRODUCTS';
 export const USER_REWARD_DATA = 'USER_REWARD_DATA';
@@ -52,7 +53,24 @@ export const ADMIN_FETCH_PURCHASE_PACKAGE = 'ADMIN_FETCH_PURCHASE_PACKAGE';
 export const LOAD_MORE_ADMIN_FETCH_PURCHASE_PACKAGE =
   'LOAD_MORE_ADMIN_FETCH_PURCHASE_PACKAGE';
 
-export const updateCartItemPrice = async (cart_id, user_id, item_id) => {
+export const submitFeedback = async (user_id, feedBackAppSection, content) => {
+  const response = await fetch(`${URL}/api/admin/submit_app_feed_back`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      feedBackAppSection,
+      user_id,
+      content,
+    }),
+  });
+  const resData = await response.json();
+
+  return resData;
+};
+
+export const updateCartItemPrice = async (cart_id, user_id) => {
   const response = await fetch(`${URL}/api/update_cart_item_price`, {
     method: 'POST',
     headers: {
@@ -61,7 +79,29 @@ export const updateCartItemPrice = async (cart_id, user_id, item_id) => {
     body: JSON.stringify({
       cart_id,
       user_id,
-      item_id,
+    }),
+  });
+  const resData = await response.json();
+
+  return resData;
+};
+
+export const issueRefundPerItem = async (
+  product_id,
+  cart_id,
+  refund_reason,
+  refund_issued_by,
+) => {
+  const response = await fetch(`${URL}/api/seller/refund_on_product`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      product_id,
+      cart_id,
+      refund_reason,
+      refund_issued_by,
     }),
   });
   const resData = await response.json();
@@ -1366,6 +1406,41 @@ export const userRewards = (userRewardData) => {
   };
 };
 
+export const redeemPoints = async (
+  user_id,
+  amount_in_points_redeemed,
+  amount_in_cash_redeemed,
+) => {
+  const response = await fetch(`${URL}/api/redeem_points`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      user_id,
+      amount_in_points_redeemed,
+      amount_in_cash_redeemed,
+    }),
+  });
+
+  return;
+};
+
+export const loyaltyPoint = (
+  buyer_hasRedeemedPoints,
+  amount_in_cash_redeemed,
+) => {
+  return (dispatch) => {
+    dispatch({
+      type: LOYALTY_POINT_CONTENT,
+      payload: {
+        buyer_hasRedeemedPoints,
+        amount_in_cash_redeemed,
+      },
+    });
+  };
+};
+
 export const validateAddress = async (data) => {
   const response = await fetch(`${URL}/api/validate_address`, {
     method: 'POST',
@@ -1451,9 +1526,18 @@ export const selectCard = (card_id) => {
   };
 };
 
-export const getShippingRate = async (user_id, seller_id, total_qty, unit) => {
+export const getShippingRate = async (
+  user_id,
+  seller_id,
+  total_weight,
+  unit,
+  product_id,
+  product_weight,
+  cart_id,
+  product_qty,
+) => {
   const response = await fetch(
-    `${URL}/api/view/get_shipping_rate/${user_id}/${seller_id}/${total_qty}/${unit}`,
+    `${URL}/api/view/get_shipping_rate/${user_id}/${seller_id}/${total_weight}/${unit}/${product_id}/${product_weight}/${cart_id}/${product_qty}`,
   );
   const resData = await response.json();
   if (!resData.status) {
@@ -1562,7 +1646,11 @@ export const trackVisitors = (seller_id, user_id) => {
   });
 };
 
-export const processRefund = async (cart_id, amount_to_return) => {
+export const processRefund = async (
+  cart_id,
+  amount_to_return,
+  refund_reason,
+) => {
   const response = await fetch(`${URL}/api/seller/refund_order`, {
     method: 'POST',
     headers: {
@@ -1571,6 +1659,7 @@ export const processRefund = async (cart_id, amount_to_return) => {
     body: JSON.stringify({
       cart_id,
       amount_to_return,
+      refund_reason,
     }),
   });
   const resData = await response.json();

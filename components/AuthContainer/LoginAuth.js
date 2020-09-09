@@ -4,10 +4,8 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-
   TextInput,
   TouchableOpacity,
- 
   ScrollView,
   Alert,
 } from 'react-native';
@@ -20,7 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import {Card} from 'react-native-elements';
-import ForgotPasswordAuth from './ForgotPasswordAuth'
+import ForgotPasswordAuth from './ForgotPasswordAuth';
 
 import * as authActions from '../../store/actions/authActions';
 import * as appActions from '../../store/actions/appActions';
@@ -34,7 +32,7 @@ const validateEmail = (email) => {
 const LoginAuth = (props) => {
   const dispatch = useDispatch();
   const {setAuthViewToRender, authViewToRender, setIsNotAuthenticated} = props;
-const [viewToRender, setViewToRender] = useState("login")
+  const [viewToRender, setViewToRender] = useState('login');
   const [email, setEmail] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
@@ -53,20 +51,20 @@ const [viewToRender, setViewToRender] = useState("login")
 
       if (email === '') {
         Alert.alert(
-            'Please enter your email',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-            {cancelable: false},
-          );
-          return;
+          'Please enter your email',
+          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
         return;
       } else if (!validateEmail(email)) {
         Alert.alert(
-            'Email not valid',
-            ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-            {cancelable: false},
-          );
+          'Email not valid',
+          ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
         return;
-      } 
+      }
 
       if (password === '') {
         Alert.alert(
@@ -78,48 +76,47 @@ const [viewToRender, setViewToRender] = useState("login")
       }
 
       setIsLoading(true);
-     const response = await authActions.loginUser(email, password)
-     
+      const response = await authActions.loginUser(email, password);
 
-      if(!response.status){
+      if (!response.status) {
         setIsLoading(false);
-          if(response.message === "user not found"){
-            Alert.alert('Error', 'Incorrect email or password', [
-              { text: "OK", onPress: () => console.log("OK Pressed") }
-              ],
-              { cancelable: true });
-            return;
-          }
+        if (response.message === 'user not found') {
+          Alert.alert(
+            'Error',
+            'Incorrect email or password',
+            [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+            {cancelable: true},
+          );
+          return;
+        }
       } else {
         await dispatch(appActions.fetchHomeProducts(response.user._id));
-        await dispatch(authActions.dispatchUser(response.user))
+        await dispatch(appActions.fetchCartData(response.user._id, 1));
+        await dispatch(authActions.dispatchUser(response.user));
         setIsLoading(false);
         setIsNotAuthenticated(false);
       }
 
-      //authenticate user 
-
-   
+      //authenticate user
     } catch (e) {
-        console.log(e);
-        
+      console.log(e);
+
       setIsLoading(false);
       setNetworkError(true);
     }
   };
 
   const backButton = () => {
-   if(viewToRender === "login"){
-    setAuthViewToRender('getStarted');
-   } else {
-    setViewToRender("login")
-   }
+    if (viewToRender === 'login') {
+      setAuthViewToRender('getStarted');
+    } else {
+      setViewToRender('login');
+    }
   };
 
-
-  let view 
-  if(viewToRender === "login") {
-      view = 
+  let view;
+  if (viewToRender === 'login') {
+    view = (
       <KeyboardAwareScrollView
         scrollEnabled={true}
         enableAutomaticScroll={true}
@@ -148,11 +145,11 @@ const [viewToRender, setViewToRender] = useState("login")
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={email}
             onChangeText={(value) => setEmail(value)}
-            placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
           />
 
           <Text
@@ -173,18 +170,18 @@ const [viewToRender, setViewToRender] = useState("login")
               padding: 10,
               borderColor: Colors.light_grey,
               borderRadius: 5,
-              color:"#000"
+              color: '#000',
             }}
             value={password}
             onChangeText={(value) => setPassword(value)}
             secureTextEntry={true}
-            placeholderTextColor="#bdbdbd" 
+            placeholderTextColor="#bdbdbd"
           />
 
           <TouchableOpacity
             style={{paddingHorizontal: 3, marginTop: 10}}
             onPress={() => {
-                setViewToRender("forgot_password");
+              setViewToRender('forgot_password');
             }}>
             <Text
               style={{
@@ -243,8 +240,9 @@ const [viewToRender, setViewToRender] = useState("login")
           </View>
         </ScrollView>
       </KeyboardAwareScrollView>
-  } else{
-   view  = <ForgotPasswordAuth setIsNotAuthenticated={setIsNotAuthenticated}/>
+    );
+  } else {
+    view = <ForgotPasswordAuth setIsNotAuthenticated={setIsNotAuthenticated} />;
   }
   return (
     <View style={{flex: 1}}>

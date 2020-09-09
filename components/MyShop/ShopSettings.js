@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Fonts from '../../contants/Fonts';
@@ -156,7 +157,7 @@ const ShopSettings = (props) => {
                     fontSize: 18,
                     marginLeft: 15,
                   }}>
-                 Change shop location/shop name
+                  Update shop location
                 </Text>
               </View>
               <Icon
@@ -186,6 +187,40 @@ const ShopSettings = (props) => {
                     marginLeft: 15,
                   }}>
                   Update shop categories
+                </Text>
+              </View>
+              <Icon
+                name="ios-arrow-forward"
+                style={{paddingRight: 20, marginTop: 3}}
+                size={20}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            marginTop: 20,
+            borderBottomWidth: 0.5,
+            borderBottomColor: Colors.light_grey,
+            paddingBottom: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(
+                'mailto:support@shaloz.com?cc=&subject=&body=body',
+              );
+            }}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 18,
+                    marginLeft: 15,
+                  }}>
+                  Support
                 </Text>
               </View>
               <Icon

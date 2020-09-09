@@ -29,6 +29,7 @@ import Moment from 'moment';
 import OptionModal from './OptionModal';
 import * as appActions from '../../store/actions/appActions';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import FastImage from 'react-native-fast-image';
 
 const SingleProductComponent = (props) => {
   const dispatch = useDispatch();
@@ -78,7 +79,8 @@ const SingleProductComponent = (props) => {
     pressAction,
     setNewQty,
     newQty,
-    reviewCount,setVariantsBorderColor
+    reviewCount,
+    setVariantsBorderColor,
   } = props;
 
   String.prototype.trunc =
@@ -177,8 +179,8 @@ const SingleProductComponent = (props) => {
               fontSize: 17,
               color: 'red',
             }}>
-            Out of stock. We do not advise
-            buying items that are out of stock to prevent shipping delays.
+            Out of stock. We do not advise buying items that are out of stock to
+            prevent shipping delays.
           </Text>
         </TouchableWithoutFeedback>
       );
@@ -272,7 +274,12 @@ const SingleProductComponent = (props) => {
           onPress={pressAction.bind(this, result._id)}
           key={index}>
           <View style={styles.productCard}>
-            <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
+            <View
+              style={{
+                backgroundColor: '#e1e4e8',
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+              }}>
               {result.discount !== '' && (
                 <View style={styles.discountContainer}>
                   <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
@@ -324,16 +331,17 @@ const SingleProductComponent = (props) => {
         <View style={styles.topHeader}>
           <View style={styles.topHeaderRow_1}>
             <View>
-              <Image
+              <FastImage
                 source={{
                   uri: productData.user.shop_logo,
+                  priority: FastImage.priority.normal,
                 }}
                 style={{
                   width: 50,
                   height: 50,
                   borderRadius: 50,
                 }}
-                resizeMode="cover"
+                resizeMode={FastImage.resizeMode.cover}
               />
             </View>
             <View style={{marginLeft: 5}}>
@@ -374,7 +382,7 @@ const SingleProductComponent = (props) => {
         </View>
       </TouchableWithoutFeedback>
       <ViewPager
-        style={{height: 400, backgroundColor: "#e1e4e8"}}
+        style={{height: 400, backgroundColor: '#e1e4e8'}}
         initialPage={0}
         showPageIndicator="true"
         scrollEnabled={true}
@@ -383,13 +391,16 @@ const SingleProductComponent = (props) => {
         <View key="1">
           <TouchableWithoutFeedback
             onPress={handleImagePreivew.bind(this, productData.main_image)}>
-            <Image
-              source={{uri: productData.main_image}}
+            <FastImage
+              source={{
+                uri: productData.main_image,
+                priority: FastImage.priority.high,
+              }}
               style={{
                 width: '100%',
                 height: 400,
               }}
-              resizeMode="cover"
+              resizeMode={FastImage.resizeMode.cover}
             />
           </TouchableWithoutFeedback>
         </View>
@@ -398,13 +409,16 @@ const SingleProductComponent = (props) => {
           <View key="2">
             <TouchableWithoutFeedback
               onPress={handleImagePreivew.bind(this, productData.sub_image_1)}>
-              <Image
-                source={{uri: productData.sub_image_1}}
+              <FastImage
+                source={{
+                  uri: productData.sub_image_1,
+                  priority: FastImage.priority.high,
+                }}
                 style={{
                   width: '100%',
                   height: 400,
                 }}
-                resizeMode="cover"
+                resizeMode={FastImage.resizeMode.cover}
               />
             </TouchableWithoutFeedback>
           </View>
@@ -414,13 +428,16 @@ const SingleProductComponent = (props) => {
           <View key="3">
             <TouchableWithoutFeedback
               onPress={handleImagePreivew.bind(this, productData.sub_image_2)}>
-              <Image
-                source={{uri: productData.sub_image_2}}
+              <FastImage
+                source={{
+                  uri: productData.sub_image_2,
+                  priority: FastImage.priority.high,
+                }}
                 style={{
                   width: '100%',
                   height: 400,
                 }}
-                resizeMode="cover"
+                resizeMode={FastImage.resizeMode.cover}
               />
             </TouchableWithoutFeedback>
           </View>
@@ -430,13 +447,16 @@ const SingleProductComponent = (props) => {
           <View key="4">
             <TouchableWithoutFeedback
               onPress={handleImagePreivew.bind(this, productData.sub_image_3)}>
-              <Image
-                source={{uri: productData.sub_image_3}}
+              <FastImage
+                source={{
+                  uri: productData.sub_image_3,
+                  priority: FastImage.priority.high,
+                }}
                 style={{
                   width: '100%',
                   height: 300,
                 }}
-                resizeMode="cover"
+                resizeMode={FastImage.resizeMode.cover}
               />
             </TouchableWithoutFeedback>
           </View>
@@ -654,7 +674,7 @@ const SingleProductComponent = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   maxHeight: 200,
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={customization_note}
                 onChangeText={(value) => setCustomization_note(value)}

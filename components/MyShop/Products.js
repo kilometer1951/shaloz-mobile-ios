@@ -48,6 +48,7 @@ const Products = (props) => {
     try {
       setIsloading(true);
       await dispatch(appActions.getMyShopProducts(user._id, 1));
+      setPage(2);
       setIsloading(false);
     } catch (e) {
       setIsloading(false);
@@ -128,8 +129,6 @@ const Products = (props) => {
               await appActions.removeFromStock(product_id);
               await dispatch(appActions.getMyShopProducts(user._id, 1));
               await fetchShopProducts();
-              setPage(2);
-
               setFetching(false);
             } catch (e) {
               console.log(e);
@@ -153,7 +152,7 @@ const Products = (props) => {
         await appActions.handleAddToStockWithOutQty(product_id);
         await dispatch(appActions.getMyShopProducts(user._id, 1));
         await fetchShopProducts();
-        setPage(2);
+
         setFetching(false);
       } catch (e) {
         console.log(e);
@@ -173,7 +172,7 @@ const Products = (props) => {
             style: 'destructive',
           },
           {
-            text: 'OK',
+            text: 'Update',
             onPress: async (product_qty) => {
               if (product_qty !== '') {
                 if (!Number.isNaN(parseInt(product_qty))) {
@@ -183,7 +182,7 @@ const Products = (props) => {
                       product_id,
                       product_qty,
                     );
-                    // fetchShopProducts();
+                    await fetchShopProducts();
                     await dispatch(appActions.getMyShopProducts(user._id, 1));
                     setFetching(false);
                   } catch (e) {
@@ -250,8 +249,8 @@ const Products = (props) => {
           borderBottomColor: Colors.light_grey,
           borderBottomWidth: 0.5,
         }}>
-        <View style={{width: '80%', flexDirection: 'row'}}>
-          <View style={{width: '30%'}}>
+        <View style={{width: '70%', flexDirection: 'row'}}>
+          <View style={{width: '40%'}}>
             <FastImage
               source={{uri: item.main_image, priority: FastImage.priority.high}}
               style={{
@@ -327,7 +326,7 @@ const Products = (props) => {
             </View>
           </View>
         </View>
-        <View style={{width: '20%', alignSelf: 'flex-end'}}>
+        <View style={{width: '30%', alignSelf: 'flex-end'}}>
           <Text
             style={{
               fontFamily: Fonts.poppins_semibold,
@@ -390,10 +389,12 @@ const Products = (props) => {
             )}
           </View>
         </View>
+
         <TouchableOpacity
+          disabled={item.product_approval_status ? false : true}
           onPress={onShareProduct.bind(this, item.product_name, item._id)}>
           <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-            Share
+            {item.product_approval_status ? 'Share' : 'under-review'}
           </Text>
         </TouchableOpacity>
       </View>

@@ -134,7 +134,7 @@ const Earnings = (props) => {
                 },
               ],
             }}
-            width={Dimensions.get('window').width - 50} // from react-native
+            width={Dimensions.get('window').width - 30} // from react-native
             height={220}
             yAxisLabel="$"
             yAxisSuffix=""

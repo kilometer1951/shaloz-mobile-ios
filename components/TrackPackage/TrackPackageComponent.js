@@ -243,8 +243,8 @@ const TrackPackageComponent = (props) => {
                 width: '100%',
                 flexDirection: 'row',
               }}>
-              <View style={{width: '80%', flexDirection: 'row'}}>
-                <View style={{width: '30%'}}>
+              <View style={{width: '70%', flexDirection: 'row'}}>
+                <View style={{width: '35%'}}>
                   <Image
                     source={{uri: result.product.main_image}}
                     style={{
@@ -274,7 +274,15 @@ const TrackPackageComponent = (props) => {
                 </View>
               </View>
 
-              <View style={{width: '20%', alignSelf: 'flex-end'}}>
+              <View style={{width: '30%', alignSelf: 'flex-end'}}>
+                {result.discount !== '' && (
+                  <Text style={styles.previousPrice}>
+                    $
+                    {(
+                      parseFloat(result.price) + parseFloat(result.discount)
+                    ).toFixed(2)}
+                  </Text>
+                )}
                 <Text
                   style={{
                     fontFamily: Fonts.poppins_semibold,
@@ -372,111 +380,6 @@ const TrackPackageComponent = (props) => {
           marginTop: 15,
           borderTopColor: Colors.light_grey,
         }}>
-        <Text
-          style={{
-            fontFamily: Fonts.poppins_semibold,
-            fontSize: 18,
-            marginTop: 10,
-          }}>
-          Order Details
-        </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            Processing fee
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            ${item.processing_fee}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-           Sales Tax
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            ${item.tax}
-          </Text>
-        </View>
-        {item.discount_applied != '0.00' && (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 10,
-            }}>
-            <Text
-              style={{
-                fontFamily: Fonts.poppins_semibold,
-                fontSize: 15,
-                marginTop: 10,
-              }}>
-              Discount
-            </Text>
-            <Text
-              style={{
-                fontFamily: Fonts.poppins_regular,
-                fontSize: 15,
-                marginTop: 10,
-              }}>
-              -${item.discount_applied}
-            </Text>
-          </View>
-        )}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            Shipping total (estimated from usps)
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            {item.shippment_price === '0.00'
-              ? 'Promotion'
-              : '$' + item.shippment_price}
-          </Text>
-        </View>
-
         <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
           <Text
             style={{
@@ -496,55 +399,6 @@ const TrackPackageComponent = (props) => {
           </Text>
         </View>
 
-        <View
-          style={{
-            borderTopWidth: 0.4,
-            marginTop: 15,
-            borderTopColor: Colors.light_grey,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                fontFamily: Fonts.poppins_semibold,
-                fontSize: 20,
-                marginTop: 10,
-              }}>
-              Order total ({item.items.length} item(s)):
-            </Text>
-            <Tooltip
-              popover={
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: Fonts.poppins_regular,
-                    fontSize: 18,
-                  }}>
-                  Total = (Qty * Price) + Variant Price :- of each product +
-                  Processing fee + Shipping total + Sales tax
-                </Text>
-              }
-              backgroundColor={Colors.purple_darken}
-              height={150}
-              width={400}>
-              <Icon
-                name="ios-help-circle"
-                size={20}
-                style={{marginTop: 4, marginLeft: 5, marginTop: 12}}
-                color={Colors.purple_darken}
-              />
-            </Tooltip>
-          </View>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 18,
-              marginTop: 10,
-            }}>
-            ${item.total}
-          </Text>
-        </View>
         {renderTrackingButton(item.tracking_number, item.expected_arrival_date)}
       </View>
     </View>
@@ -624,6 +478,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     shadowColor: Colors.grey_darken,
     marginTop: 5,
+  },
+  previousPrice: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    fontFamily: Fonts.poppins_regular,
+    fontSize: 18,
+    alignSelf: 'flex-end',
   },
 });
 

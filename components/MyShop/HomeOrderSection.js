@@ -1,10 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import * as appActions from '../../store/actions/appActions';
 import {MaterialIndicator} from 'react-native-indicators';
@@ -56,12 +51,6 @@ const HomeOrderSection = (props) => {
               <Icons name="ios-cart" size={20} color={Colors.pink} />
               <Text style={styles.textStyle}>{data.user.first_name}</Text>
             </View>
-            <Text style={styles.textStyle}>
-              $
-              {(parseFloat(data.total) -( parseFloat(data.processing_fee) + parseFloat(data.tax))).toFixed(
-              2,
-            )}
-            </Text>
           </View>
 
           <View style={{paddingHorizontal: 19}}>
@@ -84,7 +73,13 @@ const HomeOrderSection = (props) => {
 
   if (shop_orders.length === 0) {
     viewToRender = (
-      <View style={{alignItems: 'center', marginTop: 23, marginBottom: 20, height:130}}>
+      <View
+        style={{
+          alignItems: 'center',
+          marginTop: 23,
+          marginBottom: 20,
+          height: 130,
+        }}>
         {isLoading ? (
           <MaterialIndicator color={Colors.purple_darken} size={30} />
         ) : (
@@ -93,7 +88,7 @@ const HomeOrderSection = (props) => {
               fontFamily: Fonts.poppins_regular,
               fontSize: 15,
               color: Colors.grey_darken,
-              marginTop:50
+              marginTop: 50,
             }}>
             You have no orders yet
           </Text>

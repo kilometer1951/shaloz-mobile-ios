@@ -16,6 +16,7 @@ import NetworkError from '../NetworkError';
 import PaymentError from '../PaymentError';
 import UpdatingLoader from '../UpdatingLoader';
 import * as appActions from '../../store/actions/appActions';
+import {MaterialIndicator} from 'react-native-indicators';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -53,8 +54,15 @@ const ReviewOrder = (props) => {
   const userRewardData = useSelector(
     (state) => state.appReducer.userRewardData,
   );
+  const buyer_hasRedeemedPoints = useSelector(
+    (state) => state.appReducer.buyer_hasRedeemedPoints,
+  );
+  const amount_in_cash_redeemed = useSelector(
+    (state) => state.appReducer.amount_in_cash_redeemed,
+  );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedeemingPoints, setIsRedeemingPoints] = useState(false);
 
   const [networkError, setNetworkError] = useState(false);
 
@@ -84,29 +92,63 @@ const ReviewOrder = (props) => {
     }
   };
 
+  const pay = async () => {
+    //checkout
+
+    const response = await appActions.checkOutAndPay(
+      user._id,
+      selected_cart._id,
+      card_id,
+      subTotal,
+      shippingTotal,
+      tax,
+      processing_fee,
+      total,
+      discount,
+    );
+
+    if (!response.status) {
+      setIsLoading(false);
+      setPaymentError(true);
+      return;
+    }
+    //go to success modal
+    setModalToDisplay('succ');
+  };
+
   const checkOutAndPay = async () => {
     try {
-      //checkout
-      setIsLoading(true);
-      const response = await appActions.checkOutAndPay(
-        user._id,
-        selected_cart._id,
-        card_id,
-        subTotal,
-        shippingTotal,
-        tax,
-        processing_fee,
-        total,
-        discount,
-      );
-      setIsLoading(false);
-      if (!response.status) {
+      if (userRewardData.can_redeem_points) {
+        //ask user if they want to redeem
+        Alert.alert(
+          `You have a total of ${userRewardData.points} points. Will you like to redeem your points?`,
+          '',
+          [
+            {
+              text: 'No',
+              onPress: async () => {
+                setIsLoading(true);
+                await pay();
+                setIsLoading(false);
+              },
+            },
+            {
+              text: 'Yes',
+              onPress: async () => {
+                setIsLoading(true);
+                await redeemPoints();
+                await pay();
+                setIsLoading(false);
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      } else {
+        setIsLoading(true);
+        await pay();
         setIsLoading(false);
-        setPaymentError(true);
-        return;
       }
-      //go to success modal
-      setModalToDisplay('succ');
     } catch (e) {
       setIsLoading(false);
       setPaymentError(true);
@@ -212,8 +254,13 @@ const ReviewOrder = (props) => {
       const total = (parseFloat(total_cal) + parseFloat(tax_cal)).toFixed(2);
 
       setTax(tax_cal.toFixed(2));
-
-      setTotal(total);
+      if (buyer_hasRedeemedPoints) {
+        const t = parseFloat(amount_in_cash_redeemed);
+        const n_t = (parseFloat(total) - t).toFixed(2);
+        setTotal(n_t);
+      } else {
+        setTotal(total);
+      }
     };
 
     getSubTotal();
@@ -221,6 +268,46 @@ const ReviewOrder = (props) => {
 
   const getPricePerItem = (price, qty) => {
     return (parseInt(qty) * parseFloat(price)).toFixed(2);
+  };
+
+  const redeemPoints = async () => {
+    try {
+      setIsRedeemingPoints(true);
+      await appActions.redeemPoints(
+        user._id,
+        userRewardData.points,
+        (parseFloat(userRewardData.points) * 0.002).toFixed(2),
+        true,
+      );
+
+      dispatch(appActions.userRewards({points: 0, can_redeem_points: false}));
+
+      dispatch(
+        appActions.loyaltyPoint(
+          true,
+          (parseFloat(userRewardData.points) * 0.002).toFixed(2),
+        ),
+      );
+
+      //reduce total
+      setTotal(
+        (parseFloat(total) - parseFloat(userRewardData.points) * 0.002).toFixed(
+          2,
+        ),
+      );
+
+      setIsRedeemingPoints(false);
+      setRedeemModalIsOpen(false);
+    } catch (e) {
+      console.log(e);
+      setIsRedeemingPoints(false);
+      Alert.alert(
+        'Error redeeming points, if this error persist please contact support. Thanks!',
+        '',
+        [{text: 'OK', onPress: () => console.log()}],
+        {cancelable: false},
+      );
+    }
   };
 
   const displayVariants = (selected_variant_value) => {
@@ -308,23 +395,24 @@ const ReviewOrder = (props) => {
               )}
             </View>
           </View>
-
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                fontFamily: Fonts.poppins_regular,
-                fontSize: 17,
-                marginTop: 6,
-                marginRight: 10,
-              }}>
-              Variants:
-            </Text>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}>
-              {displayVariants(result.selected_variant_value)}
-            </ScrollView>
-          </View>
+          {result.selected_variant_value.length !== 0 && (
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 17,
+                  marginTop: 6,
+                  marginRight: 10,
+                }}>
+                Variants:
+              </Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                {displayVariants(result.selected_variant_value)}
+              </ScrollView>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -576,6 +664,33 @@ const ReviewOrder = (props) => {
             ${processing_fee}
           </Text>
         </View>
+        {buyer_hasRedeemedPoints && (
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: Fonts.poppins_semibold,
+                }}>
+                Points
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: Fonts.poppins_semibold,
+              }}>
+              -${amount_in_cash_redeemed}
+            </Text>
+          </View>
+        )}
+
         {discount != '0.00' && (
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text
@@ -722,42 +837,67 @@ const ReviewOrder = (props) => {
                   fontSize: 20,
                   marginTop: 10,
                 }}>
-                1 point = 0.004 cents. Points can help reduce your total. You
-                need to have a total of 1000 points or higher in order redeem
-                your points
+                1 point = 0.002 cents. Points can help reduce your total.
+                In-order to redeem points, you need to have a point balance of
+                1000 or higher.
               </Text>
             </View>
           </View>
           <View style={{bottom: 15}}>
-            <TouchableOpacity
-              disabled={userRewardData.can_redeem_points ? false : true}
-              onPress={() => {
-                Alert.alert(
-                  'We are working really had to enable this feature',
-                  '',
-                  [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-                  {cancelable: false},
-                );
-              }}>
-              <View
-                style={{
-                  width: '100%',
-                  padding: 10,
-                  backgroundColor: Colors.blue,
-                  borderRadius: 5,
-                  opacity: userRewardData.can_redeem_points ? 1 : 0.5,
-                }}>
-                <Text
+            {isRedeemingPoints ? (
+              <TouchableOpacity disabled={true}>
+                <View
                   style={{
-                    fontFamily: Fonts.poppins_semibold,
-                    fontSize: 18,
-                    alignSelf: 'center',
-                    color: '#fff',
+                    width: '100%',
+                    padding: 10,
+                    backgroundColor: Colors.blue,
+                    borderRadius: 5,
+                    opacity: 0.5,
                   }}>
-                  Redeem points
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <MaterialIndicator
+                    color="#fff"
+                    style={{
+                      marginRight: 14,
+                      alignSelf: 'center',
+                      position: 'absolute',
+                      marginTop: 4,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_semibold,
+                      fontSize: 18,
+                      alignSelf: 'center',
+                      color: '#fff',
+                    }}>
+                    Redeem points
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                disabled={userRewardData.can_redeem_points ? false : true}
+                onPress={redeemPoints}>
+                <View
+                  style={{
+                    width: '100%',
+                    padding: 10,
+                    backgroundColor: Colors.blue,
+                    borderRadius: 5,
+                    opacity: userRewardData.can_redeem_points ? 1 : 0.5,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.poppins_semibold,
+                      fontSize: 18,
+                      alignSelf: 'center',
+                      color: '#fff',
+                    }}>
+                    Redeem points
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Modal>
@@ -775,7 +915,7 @@ const styles = StyleSheet.create({
     textDecorationStyle: 'solid',
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
-    fontSize: 18,
+    fontSize: 17,
   },
 });
 

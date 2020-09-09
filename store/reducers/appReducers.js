@@ -32,6 +32,7 @@ import {
   HANDLE_UPDATE_CART_AFTER_PURCHASE,
   GET_MY_SHOP_SEARCH_PRODUCTS,
   USER_REWARD_DATA,
+  LOYALTY_POINT_CONTENT,
 } from '../actions/appActions';
 
 const initialState = {
@@ -66,9 +67,17 @@ const initialState = {
   //   message_shop_name:"",
   // message_seller_id:""
   selected_footer_tab: 'home',
+  buyer_hasRedeemedPoints: false,
+  amount_in_cash_redeemed: '',
 };
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOYALTY_POINT_CONTENT:
+      return {
+        ...state,
+        buyer_hasRedeemedPoints: action.payload.buyer_hasRedeemedPoints,
+        amount_in_cash_redeemed: action.payload.amount_in_cash_redeemed,
+      };
     case USER_REWARD_DATA:
       return {
         ...state,

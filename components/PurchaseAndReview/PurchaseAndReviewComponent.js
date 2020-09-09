@@ -134,6 +134,65 @@ const PurchaseAndReviewComponent = (props) => {
     return (parseInt(qty) * parseFloat(price)).toFixed(2);
   };
 
+  const calculateDiscount = (items) => {
+    let total_discount = 0.0;
+    for (let i = 0; i < items.length; i++) {
+      let discount =
+        items[i].discount !== '' ? parseFloat(items[i].discount) : 0.0;
+      total_discount += discount;
+    }
+
+    return total_discount.toFixed(2);
+  };
+
+  const calculateTotalDiscount = (cart) => {
+    let discount_from_items = parseFloat(calculateDiscount(cart.items));
+    let store_discount = cart.store_promotion_discount_is_applied
+      ? parseFloat(cart.store_promotion_discount)
+      : 0.0;
+
+    return (discount_from_items + store_discount).toFixed(2);
+  };
+
+  const calculateVariant = (selected_variant_value) => {
+    let total = 0.0;
+    for (let i = 0; i < selected_variant_value.length; i++) {
+      let price = parseFloat(selected_variant_value[i].price);
+      total += price;
+    }
+    return total;
+  };
+
+  const orderTotal = (cart) => {
+    let total = 0.0;
+    for (let i = 0; i < cart.items.length; i++) {
+      let price =
+        parseFloat(cart.items[i].price) +
+        parseFloat(
+          cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
+        ) +
+        parseFloat(calculateVariant(cart.items[i].selected_variant_value));
+
+      total += price;
+    }
+    return (
+      parseFloat(total) +
+      parseFloat(cart.shippment_price) +
+      parseFloat(cart.processing_fee) +
+      parseFloat(cart.tax)
+    ).toFixed(2);
+  };
+
+  const clientPaid = (cart) => {
+    let total = (
+      parseFloat(orderTotal(cart)) -
+      parseFloat(cart.amount_in_cash_redeemed) -
+      parseFloat(calculateTotalDiscount(cart))
+    ).toFixed(2);
+
+    return parseFloat(total).toFixed(2);
+  };
+
   const displayVariants = (selected_variant_value) => {
     return selected_variant_value.map((result, index, array) => {
       return (
@@ -220,8 +279,8 @@ const PurchaseAndReviewComponent = (props) => {
                 width: '100%',
                 flexDirection: 'row',
               }}>
-              <View style={{width: '80%', flexDirection: 'row'}}>
-                <View style={{width: '30%'}}>
+              <View style={{width: '70%', flexDirection: 'row'}}>
+                <View style={{width: '35%'}}>
                   <FastImage
                     source={{
                       uri: result.product.main_image,
@@ -253,7 +312,15 @@ const PurchaseAndReviewComponent = (props) => {
                   </View>
                 </View>
               </View>
-              <View style={{width: '20%', alignSelf: 'flex-end'}}>
+              <View style={{width: '30%', alignSelf: 'flex-end'}}>
+                {result.discount !== '' && (
+                  <Text style={styles.previousPrice}>
+                    $
+                    {(
+                      parseFloat(result.price) + parseFloat(result.discount)
+                    ).toFixed(2)}
+                  </Text>
+                )}
                 <Text
                   style={{
                     fontFamily: Fonts.poppins_semibold,
@@ -425,6 +492,31 @@ const PurchaseAndReviewComponent = (props) => {
               fontSize: 15,
               marginTop: 10,
             }}>
+            Shipping total (estimated from usps)
+          </Text>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_regular,
+              fontSize: 15,
+              marginTop: 10,
+            }}>
+            {item.shippment_price === '0.00'
+              ? 'Promotion'
+              : '$' + item.shippment_price}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 10,
+          }}>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_semibold,
+              fontSize: 15,
+              marginTop: 10,
+            }}>
             Processing fee
           </Text>
           <Text
@@ -459,7 +551,7 @@ const PurchaseAndReviewComponent = (props) => {
             ${item.tax}
           </Text>
         </View>
-        {item.discount_applied != '0.00' && (
+        {item.buyer_hasRedeemedPoints && (
           <View
             style={{
               flexDirection: 'row',
@@ -472,7 +564,7 @@ const PurchaseAndReviewComponent = (props) => {
                 fontSize: 15,
                 marginTop: 10,
               }}>
-              Discount
+              Points
             </Text>
             <Text
               style={{
@@ -480,35 +572,116 @@ const PurchaseAndReviewComponent = (props) => {
                 fontSize: 15,
                 marginTop: 10,
               }}>
-              -${item.discount_applied}
+              -${item.amount_in_cash_redeemed}
             </Text>
           </View>
         )}
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-          }}>
-          <Text
+        {item.discount_applied === 'true' && (
+          <View
+            style={{borderTopWidth: 0.4, borderTopColor: Colors.light_grey}}>
+            {item.store_promotion_discount_is_applied && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Store discount(%{item.store_promotion_discount_percentage} of
+                  initial price)
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${item.store_promotion_discount}
+                </Text>
+              </View>
+            )}
+            {calculateDiscount(item.items) != '0.00' && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_semibold,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  Discount from items
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: Fonts.poppins_regular,
+                    fontSize: 15,
+                    marginTop: 10,
+                  }}>
+                  -${calculateDiscount(item.items)}
+                </Text>
+              </View>
+            )}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 10,
+              }}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_semibold,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                Total Discount
+              </Text>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 15,
+                  marginTop: 10,
+                }}>
+                -$
+                {calculateTotalDiscount(item)}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
+          <View
             style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 15,
-              marginTop: 10,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
             }}>
-            Shipping total (estimated from usps)
-          </Text>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              fontSize: 15,
-              marginTop: 10,
-            }}>
-            {item.shippment_price === '0.00'
-              ? 'Promotion'
-              : '$' + item.shippment_price}
-          </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              Order Total
+            </Text>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_regular,
+                fontSize: 15,
+                marginTop: 10,
+              }}>
+              ${orderTotal(item)}
+            </Text>
+          </View>
         </View>
 
         <View style={{borderTopWidth: 0.5, borderTopColor: Colors.light_grey}}>
@@ -542,7 +715,7 @@ const PurchaseAndReviewComponent = (props) => {
             <Text
               style={{
                 fontFamily: Fonts.poppins_semibold,
-                fontSize: 20,
+                fontSize: 18,
                 marginTop: 10,
               }}>
               Order total ({item.items.length} item(s)):
@@ -576,7 +749,7 @@ const PurchaseAndReviewComponent = (props) => {
               fontSize: 18,
               marginTop: 10,
             }}>
-            ${item.total}
+            ${clientPaid(item)}
           </Text>
         </View>
       </View>
@@ -657,6 +830,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     shadowColor: Colors.grey_darken,
     marginTop: 5,
+  },
+  previousPrice: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
+    fontFamily: Fonts.poppins_regular,
+    fontSize: 18,
+    alignSelf: 'flex-end',
   },
 });
 

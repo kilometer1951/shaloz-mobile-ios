@@ -3,28 +3,29 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
   Image,
   RefreshControl,
-
+  ScrollView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import NetworkError from '../NetworkError';
 import ProductPlaceholderLoader from '../ProductPlaceholderLoader';
 import {MaterialIndicator} from 'react-native-indicators';
-import {ActionSheet} from "native-base"
-import ShopHeader from './ShopHeader'
+import {ActionSheet} from 'native-base';
+import ShopHeader from './ShopHeader';
+import OtherProducts from '../ProductCategory/OtherProducts';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import * as appActions from '../../store/actions/appActions';
 import UpdateMessage from '../UpdateMessage';
-import { Toast } from 'native-base';
+import {Toast} from 'native-base';
+import FastImage from 'react-native-fast-image';
 
 const ShopProducts = (props) => {
   const dispatch = useDispatch();
@@ -38,11 +39,12 @@ const ShopProducts = (props) => {
   const [data, setData] = useState([]);
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [otherProducts, setOtherProducts] = useState([]);
+  const [shops, setShops] = useState([]);
   const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
   const [updateMessage, setUpdateMessage] = useState('');
   const openActionSheet = (product_id) =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Add to favorite'],
         cancelButtonIndex: 0,
@@ -57,9 +59,7 @@ const ShopProducts = (props) => {
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
-
-
+            });
           } catch (e) {
             console.log(e);
             setNetworkError(true);
@@ -94,6 +94,8 @@ const ShopProducts = (props) => {
       try {
         setIsLoading(true);
         const response = await appActions.fetchShopsProduct(seller_id, 1);
+        setOtherProducts(response.otherProducts);
+        setShops(response.shops);
         setIsLoading(false);
         if (!response.status) {
           setIsLoading(false);
@@ -156,7 +158,7 @@ const ShopProducts = (props) => {
   const renderItem = ({item}) => (
     <TouchableWithoutFeedback
       onPress={() =>
-        props.navigation.push("SingleProduct",{product_id:item._id})
+        props.navigation.push('SingleProduct', {product_id: item._id})
       }>
       <View style={styles.productCard}>
         {item.discount !== '' && (
@@ -166,27 +168,32 @@ const ShopProducts = (props) => {
             </Text>
           </View>
         )}
-        <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
-          <Image
-            source={{uri: item.main_image}}
+        <View
+          style={{
+            backgroundColor: '#e1e4e8',
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}>
+          <FastImage
+            source={{uri: item.main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </View>
         <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
                 flex: 1,
                 flexWrap: 'wrap',
                 fontFamily: Fonts.poppins_regular,
                 height: 49,
-                fontSize:15
+                fontSize: 15,
               }}>
               {item.product_name.trunc(35)}
             </Text>
@@ -212,7 +219,7 @@ const ShopProducts = (props) => {
               justifyContent: 'space-between',
             }}>
             <View style={{marginTop: 2, flexDirection: 'row'}}>
-            <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
+              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
                 ${displayPrice(item.product_price, item.discount)}
               </Text>
               {item.discount !== '' && (
@@ -220,7 +227,7 @@ const ShopProducts = (props) => {
               )}
             </View>
             <TouchableOpacity onPress={openActionSheet.bind(this, item._id)}>
-            <Icon name="ios-more" size={30} color={Colors.grey_darken} />
+              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
             </TouchableOpacity>
           </View>
         </View>
@@ -229,27 +236,37 @@ const ShopProducts = (props) => {
   );
 
   let view;
+  let other_view = (
+    <OtherProducts
+      dataN={otherProducts}
+      navigation={props.navigation}
+      shops={shops}
+    />
+  );
   if (data.length === 0) {
     view = (
-      <View style={{alignSelf: 'center', marginTop: '40%', padding: 25}}>
-        <Text
-          style={{
-            fontFamily: Fonts.poppins_light,
-            fontSize: 20,
-            fontWeight: '300',
-            textAlign: 'center',
-            padding: 20,
-          }}>
-          No product(s) to show
-        </Text>
-      </View>
+      <ScrollView>
+        <View style={{alignSelf: 'center', marginTop: '10%', padding: 25}}>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_light,
+              fontSize: 20,
+              fontWeight: '300',
+              textAlign: 'center',
+              padding: 20,
+            }}>
+            No product(s) to show
+          </Text>
+        </View>
+        {other_view}
+      </ScrollView>
     );
   } else {
     view = (
       <FlatList
-      ListHeaderComponent={
-        <ShopHeader navigation={props.navigation} seller_id={seller_id}/>
-      }
+        ListHeaderComponent={
+          <ShopHeader navigation={props.navigation} seller_id={seller_id} />
+        }
         refreshControl={
           <RefreshControl
             onRefresh={handleRefresh}
@@ -263,7 +280,7 @@ const ShopProducts = (props) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom:15,}}
+        style={{marginTop: 2, marginBottom: 15}}
         numColumns={2}
         onEndReachedThreshold={0.5}
         initialNumToRender={20}
@@ -310,7 +327,6 @@ const ShopProducts = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
-       
     </View>
   );
 };
@@ -357,8 +373,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
-
+    marginTop: 4,
   },
 });
 

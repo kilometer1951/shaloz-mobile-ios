@@ -5,7 +5,7 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
- 
+  ScrollView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +16,7 @@ import DealsComponent from '../components/Deals/DealsComponent';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import NetworkError from '../components/NetworkError';
 import * as appActions from '../store/actions/appActions';
+import OtherProducts from '../components/ProductCategory/OtherProducts';
 
 const ProductScreen = (props) => {
   const dispatch = useDispatch();
@@ -27,7 +28,8 @@ const ProductScreen = (props) => {
   const [deals, setDeals] = useState([]);
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [otherProducts, setOtherProducts] = useState([]);
+  const [shops, setShops] = useState([]);
   const backTitle = props.navigation.getParam('backTitle');
   const headerTile = props.navigation.getParam('headerTile');
 
@@ -36,6 +38,8 @@ const ProductScreen = (props) => {
       try {
         setIsLoading(true);
         const response = await appActions.fetchDeals(user._id, 1);
+        setOtherProducts(response.otherProducts);
+        setShops(response.shops);
         setIsLoading(false);
         if (!response.status) {
           setIsLoading(false);
@@ -89,20 +93,35 @@ const ProductScreen = (props) => {
 
   let view;
 
+  let other_view;
+
+  if (deals.length <= 10 || deals.length === 0) {
+    other_view = (
+      <OtherProducts
+        dataN={otherProducts}
+        navigation={props.navigation}
+        shops={shops}
+      />
+    );
+  }
+
   if (deals.length === 0) {
     view = (
-      <View style={{alignSelf: 'center', marginTop: '40%', padding: 25}}>
-        <Text
-          style={{
-            fontFamily: Fonts.poppins_light,
-            fontSize: 20,
-            fontWeight: '300',
-            textAlign: 'center',
-            padding: 20,
-          }}>
-          No deals available at the moment
-        </Text>
-      </View>
+      <ScrollView>
+        <View style={{alignSelf: 'center', marginTop: '10%', padding: 25}}>
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_light,
+              fontSize: 20,
+              fontWeight: '300',
+              textAlign: 'center',
+              padding: 20,
+            }}>
+            No deals available at the moment
+          </Text>
+        </View>
+        {other_view}
+      </ScrollView>
     );
   } else {
     view = (

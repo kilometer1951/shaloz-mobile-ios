@@ -3,11 +3,9 @@ import {
   View,
   StyleSheet,
   Text,
-
   TouchableOpacity,
   Image,
   ScrollView,
- 
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -18,7 +16,7 @@ import FastImage from 'react-native-fast-image';
 const OtherProducts = (props) => {
   const dispatch = useDispatch();
 
-  const {dataN,shops} = props;
+  const {dataN, shops} = props;
 
   const renderItems = dataN.map((result, index, array) => {
     return (
@@ -27,7 +25,7 @@ const OtherProducts = (props) => {
         onPress={() =>
           props.navigation.navigate('SingleProduct', {product_id: result._id})
         }>
-        <View style={{marginRight: 10, width:180, height:160}}>
+        <View style={{marginRight: 10, width: 180, height: 160}}>
           {result.discount !== '' && (
             <View style={styles.discountContainer}>
               <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
@@ -49,23 +47,23 @@ const OtherProducts = (props) => {
     );
   });
 
-
-
-
   const renderShops = shops.map((result, index, array) => {
     return (
       <TouchableOpacity
         key={index}
         onPress={() =>
-            props.navigation.navigate('Shops', {
-                headerTile: 'Shop',
-                backTitle: 'Favorites',
-                seller_id:result._id
-              })
+          props.navigation.navigate('Shops', {
+            headerTile: 'Shop',
+            backTitle: 'Back',
+            seller_id: result._id,
+          })
         }>
-        <View style={{marginRight: 10, width:180, height:160}}>
-        <FastImage
-            source={{uri: result.shop_logo, priority: FastImage.priority.normal}}
+        <View style={{marginRight: 10, width: 180, height: 160}}>
+          <FastImage
+            source={{
+              uri: result.shop_logo,
+              priority: FastImage.priority.normal,
+            }}
             style={{
               width: '100%',
               height: '100%',
@@ -78,12 +76,12 @@ const OtherProducts = (props) => {
     );
   });
 
-
   return (
     <View style={styles.beautyContainer}>
-       <Text style={{fontSize: 17, fontFamily: Fonts.poppins_regular, padding:5}}>
-          Products you might be interested in
-        </Text>
+      <Text
+        style={{fontSize: 17, fontFamily: Fonts.poppins_regular, padding: 5}}>
+        Products you might be interested in
+      </Text>
       <ScrollView
         horizontal={true}
         style={{marginTop: 5}}
@@ -91,18 +89,21 @@ const OtherProducts = (props) => {
         {renderItems}
       </ScrollView>
 
-
-      <Text style={{fontSize: 17, fontFamily: Fonts.poppins_regular, padding:5, marginTop:50}}>
-          Shops you might be interested in
-        </Text>
+      <Text
+        style={{
+          fontSize: 17,
+          fontFamily: Fonts.poppins_regular,
+          padding: 5,
+          marginTop: 50,
+        }}>
+        Shops you might be interested in
+      </Text>
       <ScrollView
         horizontal={true}
         style={{marginTop: 5}}
         showsHorizontalScrollIndicator={false}>
         {renderShops}
       </ScrollView>
-
-      
     </View>
   );
 };

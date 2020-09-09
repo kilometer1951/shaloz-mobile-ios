@@ -3,11 +3,10 @@ import {
   View,
   StyleSheet,
   Text,
-  
   TouchableOpacity,
-  
   SafeAreaView,
-  TextInput,Alert
+  TextInput,
+  Alert,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
@@ -53,14 +52,18 @@ const ShippingPromoScreen = (props) => {
 
   const updateShippingPromo = () => {
     try {
-      if (price_threshold === '') {
-        Alert.alert(
-          'Error',
-          'Invalid input, price is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-          {cancelable: false},
-        );
-        return;
+      if (offers_free_shipping) {
+        if (price_threshold === '') {
+          Alert.alert(
+            'Error',
+            'Invalid input, price is required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            {cancelable: false},
+          );
+          return;
+        }
       }
+
       appActions.updateShippingPromo(
         user._id,
         offers_free_shipping,
@@ -129,7 +132,7 @@ const ShippingPromoScreen = (props) => {
           <TouchableOpacity
             onPress={() => {
               setUpdateButton(true);
-              setPrice_threshold("")
+              setPrice_threshold('');
               setOffers_free_shipping((prev) => {
                 let _prev = !prev;
                 return _prev;
@@ -185,13 +188,14 @@ const ShippingPromoScreen = (props) => {
                   padding: 10,
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={price_threshold}
                 keyboardType="decimal-pad"
                 onChangeText={(value) => {
                   setUpdateButton(true);
-                  setPrice_threshold(value)}}
+                  setPrice_threshold(value);
+                }}
                 autoFocus={true}
               />
             </View>

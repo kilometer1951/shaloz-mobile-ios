@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
-  Alert,RefreshControl
+  Alert,
+  RefreshControl,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {TabHeading, Tab, Tabs} from 'native-base';
@@ -21,6 +22,7 @@ import * as appActions from '../store/actions/appActions';
 import * as authActions from '../store/actions/authActions';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import FeedBackModal from '../Modal/FeedBackModal';
 
 const ProfileScreen = (props) => {
   const dispatch = useDispatch();
@@ -31,6 +33,8 @@ const ProfileScreen = (props) => {
   const [shopStatus, setShopStatus] = useState('');
   const shop_orders = useSelector((state) => state.appReducer.shop_orders);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const [openFeedBackModal, setOpenFeedbackModal] = useState(false);
 
   const [admin, setAdmin] = useState(false);
 
@@ -50,7 +54,6 @@ const ProfileScreen = (props) => {
     checkShopStatus();
   }, []);
 
-
   const handleRefreshHome = async () => {
     try {
       setIsRefreshing(true);
@@ -63,11 +66,9 @@ const ProfileScreen = (props) => {
     }
   };
 
-
   const createOnlineStore = async () => {
-    setIsNotAuthenticated(true)
-  }
-
+    setIsNotAuthenticated(true);
+  };
 
   return (
     <View style={styles.screen}>
@@ -83,15 +84,16 @@ const ProfileScreen = (props) => {
           </Text>
         </View>
       </SafeAreaView>
-      <ScrollView refreshControl={
-      <RefreshControl
-        onRefresh={handleRefreshHome}
-        refreshing={isRefreshing}
-        tintColor="#000"
-        titleColor="#000"
-        title="Pull to refresh"
-      />
-    }>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            onRefresh={handleRefreshHome}
+            refreshing={isRefreshing}
+            tintColor="#000"
+            titleColor="#000"
+            title="Pull to refresh"
+          />
+        }>
         <View style={{paddingLeft: 10, paddingTop: 10}}>
           {shopStatus === 'complete' ? (
             <TouchableOpacity
@@ -234,6 +236,41 @@ const ProfileScreen = (props) => {
 
           <TouchableOpacity
             onPress={() => {
+              setOpenFeedbackModal(true);
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomWidth: 0.5,
+                borderBottomColor: Colors.light_grey,
+                justifyContent: 'space-between',
+                paddingBottom: 10,
+                marginTop: 20,
+              }}>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontFamily: Fonts.poppins_regular,
+                  }}>
+                  Feedback
+                </Text>
+              </View>
+              <View>
+                <View style={{flexDirection: 'row'}}>
+                  <Icon
+                    name="ios-arrow-forward"
+                    size={20}
+                    style={{paddingRight: 10, marginTop: 3}}
+                    color={Colors.light_grey}
+                  />
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
               Linking.openURL(
                 'mailto:support@shaloz.com?cc=&subject=&body=body',
               );
@@ -253,7 +290,7 @@ const ProfileScreen = (props) => {
                     fontSize: 17,
                     fontFamily: Fonts.poppins_regular,
                   }}>
-                  Help & Support
+                  Support
                 </Text>
               </View>
               <View>
@@ -270,10 +307,9 @@ const ProfileScreen = (props) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate('WebViewScreen', {
-                url: 'https://www.shaloz.com/shipping_policy',
-                title: 'shipping_policies',
-              });
+              Linking.openURL(
+                'mailto:support@shaloz.com?cc=&subject=&body=body',
+              );
             }}>
             <View
               style={{
@@ -290,7 +326,7 @@ const ProfileScreen = (props) => {
                     fontSize: 17,
                     fontFamily: Fonts.poppins_regular,
                   }}>
-                  Shipping polices / Terms
+                  FAQ
                 </Text>
               </View>
               <View>
@@ -305,7 +341,7 @@ const ProfileScreen = (props) => {
               </View>
             </View>
           </TouchableOpacity>
-         
+
           <TouchableOpacity
             onPress={() => {
               Alert.alert(
@@ -323,8 +359,8 @@ const ProfileScreen = (props) => {
 
                     onPress: async () => {
                       dispatch(appActions.SelectedFooterTab('home'));
-                     
-                      dispatch(authActions.logout())
+
+                      dispatch(authActions.logout());
                       props.navigation.navigate('StartUpScreen');
                     },
                   },
@@ -371,6 +407,10 @@ const ProfileScreen = (props) => {
         setShopStatus={setShopStatus}
       />
       <Footer navigation={props.navigation} />
+      <FeedBackModal
+        setOpenFeedbackModal={setOpenFeedbackModal}
+        openFeedBackModal={openFeedBackModal}
+      />
     </View>
   );
 };
