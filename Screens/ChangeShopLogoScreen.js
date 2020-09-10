@@ -3,9 +3,7 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableOpacity,
- 
   SafeAreaView,
   Image,
 } from 'react-native';
@@ -20,13 +18,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NetworkError from '../components/NetworkError';
 import UpdatingLoader from '../components/UpdatingLoader';
 import ImagePicker from 'react-native-image-crop-picker';
-import {ActionSheet} from 'native-base'
+import {ActionSheet} from 'native-base';
 
 import * as authActions from '../store/actions/authActions';
-
-
-
-
 
 const ChangeShopLogoScreen = (props) => {
   const dispatch = useDispatch();
@@ -49,8 +43,8 @@ const ChangeShopLogoScreen = (props) => {
             type: response.mime,
             name: response.filename + '.JPEG',
           };
-        dispatch(authActions.changeShopLogo(data,response.path, user._id));
-         setShopLogo(source);
+          dispatch(authActions.changeShopLogo(data, response.path, user._id));
+          setShopLogo(source);
         }
       })
       .catch((e) => {
@@ -58,50 +52,49 @@ const ChangeShopLogoScreen = (props) => {
       });
   };
 
-const browseLibary = () => {
-        ImagePicker.openPicker({
-          multiple: false,
-          mediaType: 'photo',
-        })
-          .then(async (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.log('ImagePicker Error:');
-            } else {
-              const source = {uri: response.path};
-              let data = {
-                uri: response.path,
-                type: response.mime,
-                name: response.filename,
-              };
-             // setShopImageObject(data);
-             dispatch(authActions.changeShopLogo(data,response.path, user._id));
-              setShopLogo(source);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-}
-const openActionSheet = () =>
-ActionSheet.show(
-    {
-      options: ['Cancel', 'Take photo', 'Browse libary'],
-      cancelButtonIndex: 0,
-      tintColor: '#000',
-    },
-    (buttonIndex) => {
-      if (buttonIndex === 0) {
-        // cancel action
-      } else if (buttonIndex === 1) {
-        takePhoto();
-      } else if (buttonIndex === 2) {
-        browseLibary();
-      }
-    },
-  );
-
+  const browseLibary = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      mediaType: 'photo',
+    })
+      .then(async (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error:');
+        } else {
+          const source = {uri: response.path};
+          let data = {
+            uri: response.path,
+            type: response.mime,
+            name: response.filename,
+          };
+          // setShopImageObject(data);
+          dispatch(authActions.changeShopLogo(data, response.path, user._id));
+          setShopLogo(source);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  const openActionSheet = () =>
+    ActionSheet.show(
+      {
+        options: ['Cancel', 'Take photo', 'Browse libary'],
+        cancelButtonIndex: 0,
+        tintColor: '#000',
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          // cancel action
+        } else if (buttonIndex === 1) {
+          takePhoto();
+        } else if (buttonIndex === 2) {
+          browseLibary();
+        }
+      },
+    );
 
   return (
     <View style={styles.screen}>
@@ -129,7 +122,7 @@ ActionSheet.show(
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-              Shop Logo
+              Shop Image
             </Text>
           </View>
           <View style={{width: '20%'}}></View>

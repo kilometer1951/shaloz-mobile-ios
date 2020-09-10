@@ -613,31 +613,7 @@ const Orders = (props) => {
         marginTop: 5,
         paddingBottom: 20,
       }}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-          Date added
-        </Text>
-        <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
-          {Moment(item.date_user_checked_out).format('MMM Do, YYYY')}
-        </Text>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginBottom: 10,
-        }}>
-        <View>
-          <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 15}}>
-            Bought by
-          </Text>
-          <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 16}}>
-            {item.user.first_name + ' ' + item.user.last_name}
-          </Text>
-          <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 15}}>
-            OrderID - {item._id}
-          </Text>
-        </View>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
         <TouchableOpacity
           onPress={openAlertModal.bind(
             this,
@@ -651,6 +627,31 @@ const Orders = (props) => {
           )}>
           <Icon name="ios-more" size={30} />
         </TouchableOpacity>
+      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
+          Date added
+        </Text>
+        <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
+          {Moment(item.date_user_checked_out).format('MMM Do, YYYY')}
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginBottom: 10,
+        }}>
+        <View>
+          <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 15}}>
+            Bought by
+          </Text>
+          <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 16}}>
+            {item.user.first_name + ' ' + item.user.last_name}
+          </Text>
+          <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 15}}>
+            OrderID - {item._id}
+          </Text>
+        </View>
       </View>
       <Text style={{fontFamily: Fonts.poppins_regular, color: 'red'}}>
         Please do not ship items separately. All items must be shipped together.
@@ -877,7 +878,7 @@ const Orders = (props) => {
                     fontSize: 18,
                   }}>
                   Total = (Qty * Price) + Variant Price :- of each product +
-                  Shipping total
+                  Shipping total - any discounts + any points redeemed.
                 </Text>
               }
               backgroundColor={Colors.purple_darken}

@@ -3,13 +3,9 @@ import {
   View,
   StyleSheet,
   Text,
-  
   TouchableWithoutFeedback,
-  
   TouchableOpacity,
- 
   ScrollView,
-  
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -159,10 +155,17 @@ const ProductVariant = (props) => {
         onPress={deleteSelectedVariant.bind(this, result._id)}>
         <View style={styles.selectedVariant}>
           <View>
-            <Text style={{fontSize:18, fontFamily:Fonts.poppins_regular, color:"#fff"}}>{result.name}</Text>
+            <Text
+              style={{
+                fontSize: 18,
+                fontFamily: Fonts.poppins_regular,
+                color: '#fff',
+              }}>
+              {result.name}
+            </Text>
           </View>
           <View style={{marginLeft: 10}}>
-            <Icon name="ios-close" size={24} color="#fff"/>
+            <Icon name="ios-close" size={24} color="#fff" />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -226,18 +229,28 @@ const ProductVariant = (props) => {
           </View>
         </TouchableOpacity>
         <Text
-              style={{
-                fontFamily: Fonts.poppins_regular,
-                fontSize: 20,
-              }}>
-              Selected variant : {selectedVariant.length}
-            </Text>
-        <View style={{marginTop: 15}}>
+          style={{
+            fontFamily: Fonts.poppins_regular,
+            fontSize: 18,
+          }}>
+          Selected variant : {selectedVariant.length}
+        </Text>
+        {selectedVariant.length === 0 && (
+          <Text
+            style={{
+              fontFamily: Fonts.poppins_regular,
+              fontSize: 17,
+              color: Colors.pink,
+            }}>
+            You haven't selected any variants. Select one from the list below
+          </Text>
+        )}
+
+        <View style={{marginTop: 25}}>
           <ScrollView
             horizontal={true}
             keyboardShouldPersistTaps="always"
             showsHorizontalScrollIndicator={false}>
-            
             {_selectedVariant}
           </ScrollView>
         </View>

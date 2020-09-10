@@ -23,6 +23,7 @@ import * as authActions from '../store/actions/authActions';
 
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import FeedBackModal from '../Modal/FeedBackModal';
+import FaqModal from '../Modal/FaqModal';
 
 const ProfileScreen = (props) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const ProfileScreen = (props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [openFeedBackModal, setOpenFeedbackModal] = useState(false);
+  const [openFaqModal, setOpenFaqModal] = useState(false);
 
   const [admin, setAdmin] = useState(false);
 
@@ -307,9 +309,7 @@ const ProfileScreen = (props) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL(
-                'mailto:support@shaloz.com?cc=&subject=&body=body',
-              );
+              setOpenFaqModal(true);
             }}>
             <View
               style={{
@@ -411,6 +411,7 @@ const ProfileScreen = (props) => {
         setOpenFeedbackModal={setOpenFeedbackModal}
         openFeedBackModal={openFeedBackModal}
       />
+      <FaqModal openFaqModal={openFaqModal} setOpenFaqModal={setOpenFaqModal} />
     </View>
   );
 };

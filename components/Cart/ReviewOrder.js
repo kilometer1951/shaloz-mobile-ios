@@ -441,13 +441,13 @@ const ReviewOrder = (props) => {
               fontFamily: Fonts.poppins_regular,
             }}>
             {check_out_info.full_name +
-              ' ,' +
+              ', ' +
               check_out_info.address +
-              ' ,' +
+              ', ' +
               check_out_info._city +
-              ' ,' +
+              ', ' +
               check_out_info._state +
-              ' ,' +
+              ', ' +
               check_out_info._postal_code}
           </Text>
         </View>

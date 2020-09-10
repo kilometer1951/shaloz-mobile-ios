@@ -5,10 +5,8 @@ import {
   Text,
   SafeAreaView,
   TouchableWithoutFeedback,
-  
   TextInput,
   TouchableOpacity,
- 
   Modal,
   ScrollView,
 } from 'react-native';
@@ -183,7 +181,7 @@ const NewVariantModal = (props) => {
               Option name
             </Text>
             <TextInput
-            placeholderTextColor="#bdbdbd" 
+              placeholderTextColor="#bdbdbd"
               placeholder="Example - Size"
               style={{
                 borderWidth: 1,
@@ -193,7 +191,7 @@ const NewVariantModal = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
-                color:"#000"
+                color: '#000',
               }}
               value={name}
               onChangeText={(value) => setName(value)}
@@ -241,7 +239,7 @@ const NewVariantModal = (props) => {
           Option value
         </Text>
         <TextInput
-        placeholderTextColor="#bdbdbd" 
+          placeholderTextColor="#bdbdbd"
           placeholder="option value"
           style={{
             borderWidth: 1,
@@ -251,7 +249,7 @@ const NewVariantModal = (props) => {
             borderColor: Colors.light_grey,
             borderRadius: 5,
             width: '100%',
-            color:"#000"
+            color: '#000',
           }}
           value={content}
           onChangeText={(value) => setContent(value)}
@@ -275,7 +273,7 @@ const NewVariantModal = (props) => {
                   fontSize: 18,
                 }}>
                 This is an add-on to your products price(extra). If your product
-                price is $100.00 and your option price is $2.00, your customers
+                price is $100.00 and your option price is +$2.00, your customers
                 new total will be $102.00 if your customer selects this option.
               </Text>
             }
@@ -291,8 +289,8 @@ const NewVariantModal = (props) => {
           </Tooltip>
         </View>
         <TextInput
-        placeholderTextColor="#bdbdbd" 
-          placeholder="Example - $2.00"
+          placeholderTextColor="#bdbdbd"
+          placeholder="Example : $2.00"
           style={{
             borderWidth: 1,
             fontSize: 20,
@@ -301,7 +299,7 @@ const NewVariantModal = (props) => {
             borderColor: Colors.light_grey,
             borderRadius: 5,
             width: '100%',
-            color:"#000"
+            color: '#000',
           }}
           value={content_price}
           onChangeText={(value) => setContent_price(value)}
@@ -427,7 +425,7 @@ const NewVariantModal = (props) => {
               style={{
                 fontFamily: Fonts.poppins_regular,
                 fontSize: 18,
-                alignSelf:'flex-end'
+                alignSelf: 'flex-end',
               }}>
               Done
             </Text>

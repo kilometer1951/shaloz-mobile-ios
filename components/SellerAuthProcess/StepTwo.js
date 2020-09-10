@@ -97,39 +97,56 @@ const StepTwo = (props) => {
 
   const goToSection = async () => {
     try {
-      setIsLoading(true);
-      let newAdressArray = shopLocation.split(',');
-      if (newAdressArray.length == 4) {
-        if (newAdressArray[3].trim() !== '') {
-          let address = newAdressArray[0].trim();
-          let locationState = newAdressArray[2].slice(0, 3).trim();
-          let locationCity = newAdressArray[1].trim();
-          let postalCode = newAdressArray[2]
-            .split(`${locationState}`)[1]
-            .trim();
-          const response = await authActions.updateShopLocation(
-            locationState,
-            locationCity,
-            address,
-            postalCode,
-            user._id,
-            shopName,
-          );
-          if (!response.status) {
-            setIsLoading(false);
-            return;
-          }
-          setIsLoading(false);
-          setViewNumber('3');
-          setViewToRender('step3');
-        } else {
-          setIsLoading(false);
-          setDisplayError(true);
-        }
-      } else {
-        setIsLoading(false);
-        setDisplayError(true);
-      }
+      Alert.alert(
+        'Verify',
+        'Your store name cannot be changed later.',
+        [
+          {
+            text: 'cancel',
+            onPress: () => console.log('cancel'),
+            style: 'destructive',
+          },
+          {
+            text: 'Next',
+            onPress: async () => {
+              setIsLoading(true);
+              let newAdressArray = shopLocation.split(',');
+              if (newAdressArray.length == 4) {
+                if (newAdressArray[3].trim() !== '') {
+                  let address = newAdressArray[0].trim();
+                  let locationState = newAdressArray[2].slice(0, 3).trim();
+                  let locationCity = newAdressArray[1].trim();
+                  let postalCode = newAdressArray[2]
+                    .split(`${locationState}`)[1]
+                    .trim();
+                  const response = await authActions.updateShopLocation(
+                    locationState,
+                    locationCity,
+                    address,
+                    postalCode,
+                    user._id,
+                    shopName,
+                  );
+                  if (!response.status) {
+                    setIsLoading(false);
+                    return;
+                  }
+                  setIsLoading(false);
+                  setViewNumber('3');
+                  setViewToRender('step3');
+                } else {
+                  setIsLoading(false);
+                  setDisplayError(true);
+                }
+              } else {
+                setIsLoading(false);
+                setDisplayError(true);
+              }
+            },
+          },
+        ],
+        {cancelable: false},
+      );
     } catch (e) {
       setIsLoading(false);
       setNetworkError(true);

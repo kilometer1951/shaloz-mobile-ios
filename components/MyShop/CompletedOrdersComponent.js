@@ -16,6 +16,7 @@ import UpdatingLoader from '../UpdatingLoader';
 import CartPlaceHolder from '../CartPlaceHolder';
 import Moment from 'moment';
 import {Tooltip} from 'react-native-elements';
+import {ActionSheet} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -61,31 +62,25 @@ const CompletedOrdersComponent = (props) => {
   }, []);
 
   const openAlertModal = (cart_id) => {
-    Alert.alert(
-      'Help',
-      '',
-
-      [
-        {
-          text: 'Help',
-          onPress: () => {
-            Linking.openURL(
-              'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
-                cart_id +
-                '&body=My orderID is ' +
-                cart_id +
-                ' ......',
-            );
-          },
-        },
-
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'destructive',
-        },
-      ],
-      {cancelable: false},
+    ActionSheet.show(
+      {
+        options: ['Cancel', 'Help'],
+        cancelButtonIndex: 0,
+        tintColor: '#000',
+      },
+      async (buttonIndex) => {
+        if (buttonIndex === 0) {
+          // cancel action
+        } else if (buttonIndex === 1) {
+          Linking.openURL(
+            'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
+              cart_id +
+              '&body=My orderID is ' +
+              cart_id +
+              ' ......',
+          );
+        }
+      },
     );
   };
 
@@ -315,6 +310,21 @@ const CompletedOrdersComponent = (props) => {
         marginTop: 5,
         paddingBottom: 20,
       }}>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+        <TouchableOpacity
+          onPress={openAlertModal.bind(
+            this,
+            item,
+            item.user.email,
+            (
+              parseFloat(item.total) -
+              parseFloat(item.processing_fee) -
+              parseFloat(item.tax)
+            ).toFixed(2),
+          )}>
+          <Icon name="ios-more" size={30} />
+        </TouchableOpacity>
+      </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 16}}>
           Date shipped
@@ -340,9 +350,6 @@ const CompletedOrdersComponent = (props) => {
             OrderID - {item._id}
           </Text>
         </View>
-        <TouchableOpacity onPress={openAlertModal.bind(this, item._id)}>
-          <Icon name="ios-more" size={30} />
-        </TouchableOpacity>
       </View>
 
       {renderProducts(item.items, item._id)}
@@ -636,7 +643,7 @@ const CompletedOrdersComponent = (props) => {
                     fontSize: 18,
                   }}>
                   Total = (Qty * Price) + Variant Price :- of each product +
-                  Shipping total
+                  Shipping total - any discounts + any points redeemed.
                 </Text>
               }
               backgroundColor={Colors.purple_darken}
