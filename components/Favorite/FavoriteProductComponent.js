@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ProductPlaceholderLoader from '../ProductPlaceholderLoader';
@@ -22,7 +23,7 @@ import Colors from '../../contants/Colors';
 import UpdatingLoader from '../UpdatingLoader';
 import {ActionSheet} from 'native-base';
 import OtherProducts from '../ProductCategory/OtherProducts';
-import { Toast } from 'native-base';
+import {Toast} from 'native-base';
 import FastImage from 'react-native-fast-image';
 
 const FavoriteProductComponent = (props) => {
@@ -151,8 +152,8 @@ const FavoriteProductComponent = (props) => {
             Toast.show({
               text: 'Removed from favorites!',
               buttonText: 'Okay',
-              type: "danger"
-            })
+              type: 'danger',
+            });
           } catch (e) {
             setIsUpdating(false);
             setNetworkError(true);
@@ -289,12 +290,7 @@ const FavoriteProductComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -377,7 +373,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
+    marginTop: 4,
   },
 });
 

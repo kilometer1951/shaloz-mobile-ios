@@ -1,11 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 import Icons from 'react-native-vector-icons/Ionicons';
@@ -17,8 +11,8 @@ const PaymentError = (props) => {
   const {paymentError, setPaymentError} = props;
   useEffect(() => {
     setTimeout(() => {
-        setPaymentError(false);
-    }, 4000);
+      setPaymentError(false);
+    }, 6000);
   }, []);
 
   return (
@@ -54,7 +48,8 @@ const PaymentError = (props) => {
               color: '#fff',
               marginRight: 10,
             }}>
-            Snap payment declined!!
+            Snap payment declined!! This might be due to a duplicate order or
+            your card company declined the purchase.
           </Text>
           <Icons name="md-close" color="#fff" size={20} />
         </TouchableOpacity>

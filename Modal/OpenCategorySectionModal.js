@@ -7,7 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
-  ScrollView,Alert
+  ScrollView,
+  Alert,
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -48,8 +49,8 @@ const OpenCategorySectionModal = (props) => {
 
   const filterCategory = (name) => {
     //select
-    const hasSelected = selectedCategories.filter(value => value === name)
-    if(hasSelected.length === 0){
+    const hasSelected = selectedCategories.filter((value) => value === name);
+    if (hasSelected.length === 0) {
       setSelectedCategories((prev) => [...prev, name]);
       //delete from list
       const filtered = data.filter((value) => value !== name);
@@ -68,17 +69,12 @@ const OpenCategorySectionModal = (props) => {
             text: 'Done',
             style: 'text',
 
-            onPress: async () => {
-             
-            },
+            onPress: async () => {},
           },
         ],
         {cancelable: false},
       );
     }
-
-
-
   };
 
   const deleteSelected = (name) => {
@@ -150,7 +146,7 @@ const OpenCategorySectionModal = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-              What category of products does your shop sell
+              What category of products does your shop sell?
             </Text>
           </View>
           <View style={{width: '20%'}}>

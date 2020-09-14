@@ -5,11 +5,10 @@ import {
   Text,
   SafeAreaView,
   FlatList,
- 
   TouchableOpacity,
- 
   Modal,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,7 +28,11 @@ const OptionModal = (props) => {
     setOpenOptionModal,
     setSelectedVariantContent,
     selectedVariantContent,
-    qty,setQty,newQty,productData,setVariantsBorderColor
+    qty,
+    setQty,
+    newQty,
+    productData,
+    setVariantsBorderColor,
   } = props;
   const [networkError, setNetworkError] = useState(false);
   const [done, setDone] = useState(false);
@@ -44,11 +47,10 @@ const OptionModal = (props) => {
       ...deleteOld,
       {name: variant.name, content: content, price: price},
     ];
-    if(newArray.length === productData.variants.length){
+    if (newArray.length === productData.variants.length) {
       setVariantsBorderColor(false);
     }
-  
-    
+
     setSelectedVariantContent(newArray);
 
     setOpenOptionModal(false);
@@ -65,49 +67,54 @@ const OptionModal = (props) => {
     createQtyArray();
   }, []);
 
-  const addQty = (_qty,index) => {
-    setQty(_qty)
-    setCheckbox(index)
-    setOpenOptionModal(false)
+  const addQty = (_qty, index) => {
+    setQty(_qty);
+    setCheckbox(index);
+    setOpenOptionModal(false);
   };
 
-  const loopQty = () => {    
+  const loopQty = () => {
     return qtyArray.map((result, index) => {
-      
-    return  <View
-        key={index}
-        style={{
-          padding: 10,
-          borderBottomColor: Colors.light_grey,
-          borderBottomWidth: 0.5,
-        }}>
-        <TouchableOpacity onPress={addQty.bind(this, result.i, index)}>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}>
-            {checkBox === index && (
-              <Icon name="ios-checkmark" size={25} color="blue" />
-            )}
-            <Text
+      return (
+        <View
+          key={index}
+          style={{
+            padding: 10,
+            borderBottomColor: Colors.light_grey,
+            borderBottomWidth: 0.5,
+          }}>
+          <TouchableOpacity onPress={addQty.bind(this, result.i, index)}>
+            <View
               style={{
-                fontSize: 17,
-                marginLeft: 10,
-                fontFamily: Fonts.poppins_regular,
-                color: checkBox === index ? 'blue' : '#000',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
               }}>
-              {result.i}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>;
+              {checkBox === index && (
+                <Icon name="ios-checkmark" size={25} color="blue" />
+              )}
+              <Text
+                style={{
+                  fontSize: 17,
+                  marginLeft: 10,
+                  fontFamily: Fonts.poppins_regular,
+                  color: checkBox === index ? 'blue' : '#000',
+                }}>
+                {result.i}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
     });
   };
 
   let view;
   if (optionModalView === 'qty') {
-    view = <ScrollView style={{marginBottom:110}}>{loopQty()}</ScrollView>
+    view = (
+      <ScrollView style={{marginBottom: Platform.OS === 'ios' ? 100 : 0}}>
+        {loopQty()}
+      </ScrollView>
+    );
   } else {
     view = (
       <FlatList
@@ -156,7 +163,7 @@ const OptionModal = (props) => {
           </View>
         )}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom: 100}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 100 : 0}}
       />
     );
   }

@@ -3,13 +3,11 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   Image,
-  
   TouchableOpacity,
-  
-  ScrollView
+  ScrollView,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Colors from '../../contants/Colors';
@@ -17,7 +15,7 @@ import Fonts from '../../contants/Fonts';
 import * as appActions from '../../store/actions/appActions';
 import {useSelector, useDispatch} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
-import {ActionSheet} from "native-base"
+import {ActionSheet} from 'native-base';
 
 const ProductImage = (props) => {
   const {
@@ -39,9 +37,10 @@ const ProductImage = (props) => {
     setCategoryModalView,
     setSubCategory1_id,
 
-
-
-    setMainImage_data,setSubImage1_data,setSubImage2_data,setSubImage3_data
+    setMainImage_data,
+    setSubImage1_data,
+    setSubImage2_data,
+    setSubImage3_data,
   } = props;
 
   const takePhotoMain = () => {
@@ -82,9 +81,12 @@ const ProductImage = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
-           setMainImage_data(data);
+          setMainImage_data(data);
           setMainImage(source);
         }
       })
@@ -131,7 +133,10 @@ const ProductImage = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           setSubImage1_data(data);
           setSubImage1(source);
@@ -180,7 +185,10 @@ const ProductImage = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           setSubImage2_data(data);
           setSubImage2(source);
@@ -229,7 +237,10 @@ const ProductImage = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           setSubImage3_data(data);
           setSubImage3(source);
@@ -241,7 +252,7 @@ const ProductImage = (props) => {
   };
 
   const openActionSheetMain = () =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -259,7 +270,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubOne = () =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -277,7 +288,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubTwo = () =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -295,7 +306,7 @@ const ProductImage = (props) => {
     );
 
   const openActionSheetSubThree = () =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -329,7 +340,7 @@ const ProductImage = (props) => {
     <ScrollView
       keyboardShouldPersistTaps="always"
       keyboardDismissMode="on-drag">
-      <View style={{marginBottom:40}}>
+      <View style={{marginBottom: 40}}>
         <TouchableOpacity onPress={openActionSheetMain}>
           {Object.entries(main_image).length === 0 ? (
             <View style={styles.image}>
@@ -384,7 +395,16 @@ const ProductImage = (props) => {
                       fontFamily: Fonts.poppins_regular,
                       textAlign: 'center',
                     }}>
-                    Side image one
+                    Side image
+                  </Text>
+                  <Text
+                    style={{
+                      alignSelf: 'center',
+                      fontSize: 17,
+                      fontFamily: Fonts.poppins_regular,
+                      textAlign: 'center',
+                    }}>
+                    one
                   </Text>
                 </View>
               ) : (
@@ -419,7 +439,16 @@ const ProductImage = (props) => {
                       fontFamily: Fonts.poppins_regular,
                       textAlign: 'center',
                     }}>
-                    Side image two
+                    Side image
+                  </Text>
+                  <Text
+                    style={{
+                      alignSelf: 'center',
+                      fontSize: 17,
+                      fontFamily: Fonts.poppins_regular,
+                      textAlign: 'center',
+                    }}>
+                    two
                   </Text>
                 </View>
               ) : (
@@ -522,7 +551,7 @@ const ProductImage = (props) => {
                 <TouchableOpacity
                   onPress={() => {
                     setSubCategory1_id('');
-                    setSubCategory2("Select")
+                    setSubCategory2('Select');
                     setSubCategory1('Select');
                   }}>
                   <Text
@@ -568,7 +597,8 @@ const ProductImage = (props) => {
                 }}>
                 Sub category two
               </Text>
-              <TouchableWithoutFeedback onPress={openCategoryModal.bind(this, 'sub_category_view_two')}>
+              <TouchableWithoutFeedback
+                onPress={openCategoryModal.bind(this, 'sub_category_view_two')}>
                 <View style={styles.dropDownCat}>
                   <Text
                     style={{

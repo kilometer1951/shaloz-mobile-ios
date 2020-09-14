@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../contants/Fonts';
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 0.5,
     borderTopColor: '#eeeeee',
-    height: '9%',
+    height: '7%',
     backgroundColor: '#fff',
   },
   footerRow: {

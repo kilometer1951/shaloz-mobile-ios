@@ -269,7 +269,7 @@ const Product = (props) => {
       />
       <SingleCardProducts
         image={require('../../assets/toys.jpg')}
-        text="Every Toys have Spirit of Joy. Feel the Wonder of Toys"
+        text="We sell happiness. Every toy has a story. Feel the Wonder of Toys"
         heading="Toys & Gifts"
         navigation={props.navigation}
         setIsNotAuthenticated={props.setIsNotAuthenticated}

@@ -187,7 +187,7 @@ const StepTwo = (props) => {
               marginTop: 15,
               marginTop: 40,
             }}>
-            Saving and uploading please wait
+            Saving and verifying please wait ...
           </Text>
         </View>
       ) : (
@@ -242,7 +242,25 @@ const StepTwo = (props) => {
                 color: '#000',
               }}
               value={shopName}
-              onChangeText={(value) => setShopName(value)}
+              onChangeText={async (value) => {
+                setShopName(value);
+
+                if (value !== '') {
+                  try {
+                    setIsLoadingCheck(true);
+                    const response = await authActions.checkIfStoreExist(value);
+                    setIsLoadingCheck(false);
+                    if (response.status) {
+                      setStoreExist(false);
+                    } else {
+                      setStoreExist(true);
+                    }
+                  } catch (e) {
+                    setIsLoadingCheck(false);
+                    setNetworkError(true);
+                  }
+                }
+              }}
               autoFocus={true}
               onEndEditing={async () => {
                 if (shopName !== '') {
@@ -312,7 +330,7 @@ const StepTwo = (props) => {
                       if (response.status) {
                         setStoreExist(false);
                         Alert.alert(
-                          'Store with that name already exist. Your store name has to unique',
+                          'A store with that name already exist. Your store name must be unique',
                           '',
                           [
                             {

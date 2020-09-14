@@ -11,11 +11,12 @@ import {
   Alert,
   Linking,
   Share,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import UpdatingLoader from '../UpdatingLoader';
 import {ActionSheet} from 'native-base';
-import {Tooltip} from 'react-native-elements';
+import ToolTip from '../../Modal/ToolTip';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -54,6 +55,10 @@ const PurchaseAndReviewComponent = (props) => {
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [page, setPage] = useState(2);
   const [networkError, setNetworkError] = useState(false);
+
+  const [toolTipVisible, setToolTipVisible] = useState(false);
+
+  const [textToRender, setTextToRender] = useState('');
 
   const openReviewProductModal = async (product_id, product_name, shop_id) => {
     //dispatch selected cart
@@ -167,11 +172,12 @@ const PurchaseAndReviewComponent = (props) => {
     let total = 0.0;
     for (let i = 0; i < cart.items.length; i++) {
       let price =
-        parseFloat(cart.items[i].price) +
+        (parseFloat(cart.items[i].price) +
+          parseFloat(calculateVariant(cart.items[i].selected_variant_value))) *
+          parseInt(cart.items[i].qty) +
         parseFloat(
           cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
-        ) +
-        parseFloat(calculateVariant(cart.items[i].selected_variant_value));
+        );
 
       total += price;
     }
@@ -720,28 +726,21 @@ const PurchaseAndReviewComponent = (props) => {
               }}>
               Order total ({item.items.length} item(s)):
             </Text>
-            <Tooltip
-              popover={
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: Fonts.poppins_regular,
-                    fontSize: 18,
-                  }}>
-                  Total = (Qty * Price) + Variant Price :- of each product +
-                  Processing fee + Shipping total + Sales tax
-                </Text>
-              }
-              backgroundColor={Colors.purple_darken}
-              height={150}
-              width={400}>
+            <TouchableOpacity
+              style={styles.touchable}
+              onPress={() => {
+                setTextToRender(
+                  'Total = (Qty * Price + Variant Price) :- of each product + Shipping total - any discounts + any points redeemed.',
+                );
+                setToolTipVisible(true);
+              }}>
               <Icon
                 name="ios-help-circle"
                 size={20}
                 style={{marginTop: 4, marginLeft: 5, marginTop: 12}}
                 color={Colors.purple_darken}
               />
-            </Tooltip>
+            </TouchableOpacity>
           </View>
           <Text
             style={{
@@ -768,7 +767,7 @@ const PurchaseAndReviewComponent = (props) => {
             titleColor="#000"
           />
         }
-        style={{marginBottom: 10}}
+        style={{marginBottom: Platform.OS === 'ios' ? 10 : 0}}
         showsVerticalScrollIndicator={false}
         data={purchased_orders}
         renderItem={renderItem}
@@ -781,12 +780,7 @@ const PurchaseAndReviewComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -809,6 +803,15 @@ const PurchaseAndReviewComponent = (props) => {
         />
       )}
       {isLoading && <UpdatingLoader />}
+
+      {toolTipVisible && (
+        <ToolTip
+          toolTipVisible={toolTipVisible}
+          setToolTipVisible={setToolTipVisible}
+          textToRender={textToRender}
+          setTextToRender={setTextToRender}
+        />
+      )}
     </View>
   );
 };

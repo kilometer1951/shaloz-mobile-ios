@@ -46,7 +46,7 @@ const CreateSellerAccount = (props) => {
           [{text: 'Ok', onPress: () => setIsNotAuthenticated(false)}],
           {cancelable: false},
         );
-        return
+        return;
       }
       setViewToRender('createSellerAccount');
     } catch (e) {

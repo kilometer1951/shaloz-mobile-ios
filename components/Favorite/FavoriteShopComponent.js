@@ -8,6 +8,7 @@ import {
   Image,
   RefreshControl,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ProductPlaceholderLoader from '../ProductPlaceholderLoader';
@@ -216,12 +217,7 @@ const FavoriteShopComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}

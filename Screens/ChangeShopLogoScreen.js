@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
@@ -67,7 +68,10 @@ const ChangeShopLogoScreen = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           // setShopImageObject(data);
           dispatch(authActions.changeShopLogo(data, response.path, user._id));

@@ -3,32 +3,31 @@ import {
   View,
   StyleSheet,
   Text,
-
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
   Image,
   RefreshControl,
-
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import {MaterialIndicator} from 'react-native-indicators';
-import {ActionSheet} from "native-base"
+import {ActionSheet} from 'native-base';
 import * as appActions from '../../store/actions/appActions';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
-import { Toast } from 'native-base';
+import {Toast} from 'native-base';
 
 import UpdateMessage from '../UpdateMessage';
 import FastImage from 'react-native-fast-image';
 
 const RecentlyViewedComponent = (props) => {
   const dispatch = useDispatch();
-  const [openUpdateMessage, setOpenUpdateMessage] = useState(false)
-  const [updateMessage, setUpdateMessage] = useState("")
+  const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState('');
   const user = useSelector((state) => state.authReducer.user);
   const [networkError, setNetworkError] = useState(false);
 
@@ -41,19 +40,18 @@ const RecentlyViewedComponent = (props) => {
     endOfFile,
   } = props;
 
-
   String.prototype.trunc =
-  String.prototype.trunc ||
-  function (n) {
-    return this.length > n ? this.substr(0, n - 1) + '...' : this;
-  };
+    String.prototype.trunc ||
+    function (n) {
+      return this.length > n ? this.substr(0, n - 1) + '...' : this;
+    };
 
   const visitShop = (seller_id) => {
     props.navigation.navigate('Shops', {
       headerTile: 'Shop',
       backTitle: 'Back',
-      seller_id:seller_id
-    })
+      seller_id: seller_id,
+    });
   };
 
   const addToFav_product = (product_id) => {
@@ -61,7 +59,7 @@ const RecentlyViewedComponent = (props) => {
   };
 
   const openActionSheet = (product_id, seller_id) =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Visit shop', 'Add to favorite'],
         cancelButtonIndex: 0,
@@ -73,24 +71,23 @@ const RecentlyViewedComponent = (props) => {
         } else if (buttonIndex === 1) {
           visitShop(seller_id);
         } else if (buttonIndex === 2) {
-          try{
-            dispatch(appActions.addFavProduct(user._id,product_id));
+          try {
+            dispatch(appActions.addFavProduct(user._id, product_id));
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
-
-          } catch(e) {
+            });
+          } catch (e) {
             console.log(e);
-            setNetworkError(true)
+            setNetworkError(true);
           }
         }
       },
     );
 
   const openSingleScreen = (product_id) => {
-   // console.log(product_id);
-    props.navigation.push('SingleProduct', {product_id:product_id});
+    // console.log(product_id);
+    props.navigation.push('SingleProduct', {product_id: product_id});
   };
 
   const displayPrice = (product_price, discount) => {
@@ -109,7 +106,7 @@ const RecentlyViewedComponent = (props) => {
   };
 
   const renderItem = ({item}) => (
-    <View style={{ marginHorizontal: 7,width: '45%'}}>
+    <View style={{marginHorizontal: 7, width: '45%'}}>
       <TouchableWithoutFeedback
         onPress={openSingleScreen.bind(this, item.product._id)}>
         <View style={styles.productCard}>
@@ -123,7 +120,10 @@ const RecentlyViewedComponent = (props) => {
 
           <View>
             <FastImage
-              source={{uri: item.product.main_image, priority: FastImage.priority.high}}
+              source={{
+                uri: item.product.main_image,
+                priority: FastImage.priority.high,
+              }}
               style={{
                 width: '100%',
                 height: 150,
@@ -134,19 +134,18 @@ const RecentlyViewedComponent = (props) => {
             />
           </View>
           <View style={{padding: 10}}>
-          
             <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                flex: 1,
-                flexWrap: 'wrap',
-                fontFamily: Fonts.poppins_regular,
-                height: 45,
-                fontSize:15
-              }}>
-            {item.product.product_name.trunc(35)}
-            </Text>
-          </View>
+              <Text
+                style={{
+                  flex: 1,
+                  flexWrap: 'wrap',
+                  fontFamily: Fonts.poppins_regular,
+                  height: 45,
+                  fontSize: 15,
+                }}>
+                {item.product.product_name.trunc(35)}
+              </Text>
+            </View>
 
             <View
               style={{
@@ -155,7 +154,8 @@ const RecentlyViewedComponent = (props) => {
                 justifyContent: 'space-between',
               }}>
               <View style={{marginTop: 5, flexDirection: 'row'}}>
-              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize:18}}>
+                <Text
+                  style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
                   $
                   {displayPrice(
                     item.product.product_price,
@@ -168,8 +168,13 @@ const RecentlyViewedComponent = (props) => {
                   </Text>
                 )}
               </View>
-              <TouchableOpacity onPress={openActionSheet.bind(this, item.product._id, item.product.user)}>
-              <Icon name="ios-more" size={30} color={Colors.grey_darken}/>
+              <TouchableOpacity
+                onPress={openActionSheet.bind(
+                  this,
+                  item.product._id,
+                  item.product.user,
+                )}>
+                <Icon name="ios-more" size={30} color={Colors.grey_darken} />
               </TouchableOpacity>
             </View>
           </View>
@@ -194,7 +199,7 @@ const RecentlyViewedComponent = (props) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom:20}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 20 : 0}}
         numColumns={2}
         extraData={data}
         onEndReachedThreshold={0.5}
@@ -203,12 +208,7 @@ const RecentlyViewedComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -224,13 +224,12 @@ const RecentlyViewedComponent = (props) => {
           </View>
         }
       />
-         {networkError && (
+      {networkError && (
         <NetworkError
           networkError={networkError}
           setNetworkError={setNetworkError}
         />
       )}
-
     </View>
   );
 };
@@ -247,7 +246,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   productCard: {
-      width:"100%",
+    width: '100%',
     borderRadius: 5,
     shadowOpacity: 0.8,
     shadowOffset: {width: 0, height: 0.5},
@@ -277,8 +276,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
-
+    marginTop: 4,
   },
 });
 

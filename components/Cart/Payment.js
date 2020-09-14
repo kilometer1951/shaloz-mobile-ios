@@ -3,12 +3,9 @@ import {
   View,
   StyleSheet,
   Text,
-  
   TouchableOpacity,
- 
   ScrollView,
   TextInput,
- 
   Keyboard,
   Linking,
   Alert,
@@ -71,8 +68,9 @@ const ShippingDetails = (props) => {
   //const [cards, setCards] = useState([]);
 
   stripe.setOptions({
-    publishableKey: 'pk_test_KPNAjmM69ddMhdF9y7weHNAs00KPXJrkLQ',
-    merchantId: 'merchant.com.iBeautyConnectApplePay', // Optional
+    publishableKey:
+      'pk_test_51HRFVNHvI36pmtntaOEwj8uqyGOwCHnT0hlRl6K2R3miw17qp1WDIkKPwc47DNqaqJY1RWIgz4KTwnun0Skhahw500s9tDDxqE',
+    merchantId: 'MERCHANT_ID', // Optional
     androidPayMode: 'test', // Android only
   });
 
@@ -188,7 +186,7 @@ const ShippingDetails = (props) => {
 
       //add
       await dispatch(appActions.addCard(user._id, token.tokenId));
-     
+
       //fetch cards
       await dispatch(appActions.fetchUsersCards(user._id));
 
@@ -305,10 +303,11 @@ const ShippingDetails = (props) => {
   }
 
   return (
-      <KeyboardAwareScrollView
+    <KeyboardAwareScrollView
       scrollEnabled={true}
       enableAutomaticScroll={true}
-      extraHeight={300} keyboardShouldPersistTaps="always">
+      extraHeight={300}
+      keyboardShouldPersistTaps="always">
       <ScrollView
         style={{paddingHorizontal: 20}}
         keyboardShouldPersistTaps="always"
@@ -339,7 +338,7 @@ const ShippingDetails = (props) => {
               Country
             </Text>
             <TextInput
-            placeholderTextColor="#bdbdbd" 
+              placeholderTextColor="#bdbdbd"
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -347,7 +346,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
-                color:"#000"
+                color: '#000',
               }}
               value={country}
               onChangeText={(value) => setCountry(value)}
@@ -362,7 +361,7 @@ const ShippingDetails = (props) => {
               Zip code
             </Text>
             <TextInput
-            placeholderTextColor="#bdbdbd" 
+              placeholderTextColor="#bdbdbd"
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -370,7 +369,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
-                color:"#000"
+                color: '#000',
               }}
               value={zip_code}
               onChangeText={(value) => setZip_code(value)}
@@ -385,7 +384,7 @@ const ShippingDetails = (props) => {
               Name on card
             </Text>
             <TextInput
-            placeholderTextColor="#bdbdbd" 
+              placeholderTextColor="#bdbdbd"
               style={{
                 borderWidth: 1,
                 fontSize: 20,
@@ -393,7 +392,7 @@ const ShippingDetails = (props) => {
                 padding: 10,
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
-                color:"#000"
+                color: '#000',
               }}
               value={full_name}
               onChangeText={(value) => setFull_name(value)}
@@ -481,7 +480,7 @@ const ShippingDetails = (props) => {
                 color: Colors.grey_darken,
                 textDecorationLine: 'underline',
               }}>
-             support@shaloz.com
+              support@shaloz.com
             </Text>
           </TouchableOpacity>
         </View>
@@ -493,7 +492,7 @@ const ShippingDetails = (props) => {
         />
       )}
       {isLoading && <UpdatingLoader />}
-      </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

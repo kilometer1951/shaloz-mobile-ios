@@ -1,11 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  
-} from 'react-native';
+import {View, StyleSheet, Text, SafeAreaView, Platform} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {TabHeading, Tab, Tabs} from 'native-base';
 
@@ -33,12 +27,17 @@ const FavoriteScreen = (props) => {
               fontSize: 20,
               fontFamily: Fonts.poppins_semibold,
             }}>
-            Favorities
+            Favorites
           </Text>
         </View>
       </SafeAreaView>
       <View style={{flex: 1}}>
-        <Tabs tabBarUnderlineStyle={{backgroundColor: Colors.purple_darken, height:1}}>
+        <Tabs
+          tabBarUnderlineStyle={{
+            backgroundColor: Colors.purple_darken,
+            height: 1,
+          }}
+          locked={true}>
           <Tab
             heading={
               <TabHeading style={{backgroundColor: '#fff'}}>

@@ -70,8 +70,6 @@ const InfoModal = (props) => {
         </View>
       )}
 
-      {console.log(editItemData.product_can_be_customized)}
-
       {editItemData.product_can_be_customized && (
         <View
           style={{

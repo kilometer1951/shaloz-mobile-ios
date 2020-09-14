@@ -3,24 +3,21 @@ import {
   View,
   StyleSheet,
   Text,
-  
   TouchableWithoutFeedback,
   Image,
-  
   TouchableOpacity,
- 
   ScrollView,
-  Alert
+  Alert,
+  Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import {ActionSheet} from 'native-base'
+import {ActionSheet} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../contants/Fonts';
 import Colors from '../contants/Colors';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {MaterialIndicator} from 'react-native-indicators';
-
 
 //const {height} = Dimensions.get('window');
 
@@ -31,8 +28,8 @@ const VerificationPhotoBack = (props) => {
   const {
     setImageSelectedPhotoID_back,
     imageSelectedPhotoID_back,
-    setBackImageObject,backImageObject
-  
+    setBackImageObject,
+    backImageObject,
   } = props;
 
   const takePhoto = () => {
@@ -49,7 +46,7 @@ const VerificationPhotoBack = (props) => {
             type: response.mime,
             name: response.filename + '.JPEG',
           };
-          setBackImageObject(data)
+          setBackImageObject(data);
           setImageSelectedPhotoID_back(source);
         }
       })
@@ -73,9 +70,12 @@ const VerificationPhotoBack = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
-          setBackImageObject(data)
+          setBackImageObject(data);
           setImageSelectedPhotoID_back(source);
         }
       })
@@ -102,60 +102,51 @@ const VerificationPhotoBack = (props) => {
       },
     );
 
-  
-
   return (
     <ScrollView>
-    
-        <View>
+      <View>
+        <Text
+          style={{
+            fontFamily: Fonts.poppins_semibold,
+            fontSize: 20,
+          }}>
+          Government-Issued ID
+        </Text>
+        <Text style={{fontSize: 17, fontFamily: Fonts.poppins_regular}}>
+          We need a copy of any government-issued ID. This is for verification
+          purposes. Inorder to proccess your earnings, an image of the front is
+          required for government-issued IDs and driver’s licenses. Image should
+          be in color and have all information clearly legible. Files should be
+          in color, be rotated with the image right-side up, and have all
+          information clearly legible. Raise your phone above the image to take
+          a clear photo.
+        </Text>
+        <View style={{alignSelf: 'center'}}>
           <Text
             style={{
               fontFamily: Fonts.poppins_semibold,
               fontSize: 20,
+              alignSelf: 'center',
+              marginTop: 10,
             }}>
-            Government-Issued ID
+            Back
           </Text>
-          <Text style={{fontSize: 17, fontFamily: Fonts.poppins_regular}}>
-            We need a copy of any government-issued ID. This is for verification
-            purposes. Inorder to proccess your earnings, an image of the front
-            is required for government-issued IDs and driver’s licenses. Image
-            should be in color and have all information clearly legible. Files
-            should be in color, be rotated with the image right-side up, and
-            have all information clearly legible. Raise your phone above the image
-            to take a clear photo.
-          </Text>
-          <View style={{alignSelf: 'center'}}>
-            <Text
-              style={{
-                fontFamily: Fonts.poppins_semibold,
-                fontSize: 20,
-                alignSelf: 'center',
-                marginTop: 10,
-              }}>
-              Back
-            </Text>
-            <TouchableOpacity onPress={openActionSheet}>
-              {Object.entries(imageSelectedPhotoID_back).length === 0 ? (
-                <View style={styles.image}>
-                  <Icon
-                    name="md-add-circle"
-                    size={30}
-                    color={Colors.pink}
-                    style={{alignSelf: 'center', marginTop: '40%'}}
-                  />
-                </View>
-              ) : (
-                <Image
-                  source={imageSelectedPhotoID_back}
-                  style={styles.image}
+          <TouchableOpacity onPress={openActionSheet}>
+            {Object.entries(imageSelectedPhotoID_back).length === 0 ? (
+              <View style={styles.image}>
+                <Icon
+                  name="md-add-circle"
+                  size={30}
+                  color={Colors.pink}
+                  style={{alignSelf: 'center', marginTop: '40%'}}
                 />
-              )}
-            </TouchableOpacity>
-          </View>
-
-        
+              </View>
+            ) : (
+              <Image source={imageSelectedPhotoID_back} style={styles.image} />
+            )}
+          </TouchableOpacity>
         </View>
-     
+      </View>
     </ScrollView>
   );
 };

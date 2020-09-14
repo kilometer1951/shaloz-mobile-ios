@@ -180,14 +180,15 @@ const ReviewOrder = (props) => {
         variantsTotal += parseFloat(pricePerVariant);
       }
       let pricePerItem;
-      const product_price_total = parseFloat(item[i].product.product_price);
+      const product_price_total =
+        parseFloat(item[i].product.product_price) + parseFloat(variantsTotal);
 
       pricePerItem = product_price_total * parseInt(item[i].qty);
 
       count_sub_total += parseFloat(pricePerItem);
     }
 
-    return (variantsTotal + count_sub_total).toFixed(2);
+    return count_sub_total.toFixed(2);
   };
 
   const getTotalDiscountApplied = (result) => {
@@ -796,7 +797,7 @@ const ReviewOrder = (props) => {
         <View
           style={{
             backgroundColor: 'white',
-            height: '55%',
+            height: Platform.OS === 'ios' ? '55%' : '75%',
             padding: 10,
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -837,9 +838,8 @@ const ReviewOrder = (props) => {
                   fontSize: 20,
                   marginTop: 10,
                 }}>
-                1 point = 0.002 cents. Points can help reduce your total.
-                In-order to redeem points, you need to have a point balance of
-                1000 or higher.
+                1 point = 0.002 cents. Points can help reduce your total. To
+                redeem your points, your point total must be 1000 or greater.
               </Text>
             </View>
           </View>

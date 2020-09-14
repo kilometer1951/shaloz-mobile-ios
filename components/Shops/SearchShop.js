@@ -3,24 +3,23 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   TouchableOpacity,
   FlatList,
   Image,
-
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import UpdateMessage from '../UpdateMessage';
 import NetworkError from '../NetworkError';
-import {ActionSheet} from "native-base"
-import { Toast } from 'native-base';
+import {ActionSheet} from 'native-base';
+import {Toast} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
 import * as appActions from '../../store/actions/appActions';
+import {Platform} from 'react-native';
 
 const SearchShop = (props) => {
   const dispatch = useDispatch();
@@ -31,84 +30,80 @@ const SearchShop = (props) => {
   const [networkError, setNetworkError] = useState(false);
   const user = useSelector((state) => state.authReducer.user);
 
-const {products} = props
+  const {products} = props;
 
-const displayPrice = (product_price, discount) => {
-  if (discount === '') {
-    return product_price;
-  } else {
-    let price = parseInt(product_price);
-    let _discount = parseInt(discount);
+  const displayPrice = (product_price, discount) => {
+    if (discount === '') {
+      return product_price;
+    } else {
+      let price = parseInt(product_price);
+      let _discount = parseInt(discount);
 
-    let total_d = _discount / 100;
-    let total_p = price * total_d;
-    let total = price - total_p;
+      let total_d = _discount / 100;
+      let total_p = price * total_d;
+      let total = price - total_p;
 
-    return total;
-  }
-};
+      return total;
+    }
+  };
 
-String.prototype.trunc =
-String.prototype.trunc ||
-function (n) {
-  return this.length > n ? this.substr(0, n - 1) + '...' : this;
-};
+  String.prototype.trunc =
+    String.prototype.trunc ||
+    function (n) {
+      return this.length > n ? this.substr(0, n - 1) + '...' : this;
+    };
 
+  const openActionSheet = (product_id) =>
+    ActionSheet.show(
+      {
+        options: ['Cancel', 'Add to favorite'],
+        cancelButtonIndex: 0,
+        tintColor: '#000',
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) {
+          // cancel action
+        } else if (buttonIndex === 1) {
+          try {
+            dispatch(appActions.addFavProduct(user._id, product_id));
+            Toast.show({
+              text: 'Added to favorites!',
+              buttonText: 'Okay',
+            });
+          } catch (e) {
+            console.log(e);
+            setNetworkError(true);
+          }
+        }
+      },
+    );
 
-
-const openActionSheet = (product_id) =>
-ActionSheet.show(
-  {
-    options: ['Cancel', 'Add to favorite'],
-    cancelButtonIndex: 0,
-    tintColor: '#000',
-  },
-  (buttonIndex) => {
-    if (buttonIndex === 0) {
-      // cancel action
-    } else if (buttonIndex === 1) {
-      try {
-        dispatch(appActions.addFavProduct(user._id, product_id));
-        Toast.show({
-          text: 'Added to favorites!',
-          buttonText: 'Okay',
-        })
-
-      } catch (e) {
-        console.log(e);
-        setNetworkError(true);
-      }
-    } 
-  },
-);
-
-
-    const renderItem = ({item}) => (
-      <TouchableWithoutFeedback
-        onPress={() =>
-          props.navigation.push('SingleProduct', {product_id: item._id})
-        }>
-        <View style={styles.productCard}>
-          {item.discount !== '' && (
-            <View style={styles.discountContainer}>
-              <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
-                {item.discount}% OFF
-              </Text>
-            </View>
-          )}
-          <View>
-            <Image
-              source={{uri: item.main_image}}
-              style={{
-                width: '100%',
-                height: 150,
-                borderTopLeftRadius: 5,
-                borderTopRightRadius: 5,
-              }}
-              resizeMode="cover"
-            />
+  const renderItem = ({item}) => (
+    <TouchableWithoutFeedback
+      onPress={() =>
+        props.navigation.push('SingleProduct', {product_id: item._id})
+      }>
+      <View style={styles.productCard}>
+        {item.discount !== '' && (
+          <View style={styles.discountContainer}>
+            <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
+              {item.discount}% OFF
+            </Text>
           </View>
-          <View style={{padding: 10}}>
+        )}
+        <View>
+          <Image
+            source={{uri: item.main_image}}
+            style={{
+              width: '100%',
+              height: 150,
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+            }}
+            resizeMode="cover"
+          />
+        </View>
+        <View style={{padding: 10}}>
           <View style={{flexDirection: 'row'}}>
             <Text
               style={{
@@ -116,50 +111,48 @@ ActionSheet.show(
                 flexWrap: 'wrap',
                 fontFamily: Fonts.poppins_regular,
                 height: 49,
-                fontSize:15
+                fontSize: 15,
               }}>
               {item.product_name.trunc(35)}
             </Text>
           </View>
 
-            {isVisible && (
-              <View
-                style={{
-                  padding: 5,
-                  backgroundColor: '#eeeeee',
-                  marginTop: 5,
-                  borderRadius: 20,
-                  width: 120,
-                }}>
-                <Text style={{fontFamily: Fonts.poppins_regular}}>
-                  Free Shipping
-                </Text>
-              </View>
-            )}
-  
+          {isVisible && (
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
+                padding: 5,
+                backgroundColor: '#eeeeee',
+                marginTop: 5,
+                borderRadius: 20,
+                width: 120,
               }}>
-              <View style={{marginTop: 2, flexDirection: 'row'}}>
-              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
-                  ${displayPrice(item.product_price, item.discount)}
-                </Text>
-                {item.discount !== '' && (
-                  <Text style={styles.previousPrice}>${item.product_price}</Text>
-                )}
-              </View>
-              <TouchableOpacity
-                onPress={openActionSheet.bind(this,item._id)}>
-              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
-              </TouchableOpacity>
+              <Text style={{fontFamily: Fonts.poppins_regular}}>
+                Free Shipping
+              </Text>
             </View>
+          )}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <View style={{marginTop: 2, flexDirection: 'row'}}>
+              <Text style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
+                ${displayPrice(item.product_price, item.discount)}
+              </Text>
+              {item.discount !== '' && (
+                <Text style={styles.previousPrice}>${item.product_price}</Text>
+              )}
+            </View>
+            <TouchableOpacity onPress={openActionSheet.bind(this, item._id)}>
+              <Icon name="ios-more" size={30} color={Colors.grey_darken} />
+            </TouchableOpacity>
           </View>
         </View>
-      </TouchableWithoutFeedback>
-    );
-  
+      </View>
+    </TouchableWithoutFeedback>
+  );
 
   return (
     <View style={styles.screen}>
@@ -172,16 +165,15 @@ ActionSheet.show(
         numColumns={2}
         keyboardShouldPersistTaps="always"
         keyboardDismissMode="on-drag"
-        style={{marginBottom:20}}
+        style={{marginBottom: Platform.OS === 'ios' ? 20 : 0}}
       />
-    
-       {networkError && (
+
+      {networkError && (
         <NetworkError
           networkError={networkError}
           setNetworkError={setNetworkError}
         />
       )}
-
     </View>
   );
 };
@@ -227,7 +219,7 @@ const styles = StyleSheet.create({
     textDecorationStyle: 'solid',
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
-    fontSize:18
+    fontSize: 18,
   },
 });
 

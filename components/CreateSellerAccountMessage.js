@@ -29,180 +29,218 @@ import * as authActions from '../store/actions/authActions';
 
 import Svg, {Path, Rect} from 'react-native-svg';
 
-const {height} = Dimensions.get('window');
+//const {height} = Dimensions.get('window');
+
+// //<ScrollView
+// onContentSizeChange={onContentSizeChange}
+// scrollEnabled={scrollEnabled}>
+
+// const [screenHeight, setScreenHeight] = useState(0);
+//   const scrollEnabled = screenHeight > height;
+//   onContentSizeChange = (contentWidth, contentHeight) => {
+//     setScreenHeight(contentHeight);
+//   };
 
 const CreateSellerAccountMessage = (props) => {
-  const [screenHeight, setScreenHeight] = useState(0);
-  const scrollEnabled = screenHeight > height;
+  const [height, setHeight] = useState(0);
+  const [viewHeight, setViewHeight] = useState(0);
+
+  const scrollEnabled = viewHeight > height;
   onContentSizeChange = (contentWidth, contentHeight) => {
-    setScreenHeight(contentHeight);
+    setViewHeight(contentHeight);
   };
   return (
-    <ScrollView
-      onContentSizeChange={onContentSizeChange}
-      scrollEnabled={scrollEnabled}>
-      <Svg width="100%" height="660">
-        <Rect x="0" y="0" width="100%" height="100%" fill="#fbe9e7" />
+    <View
+      style={{
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      }}>
+      <View
+        style={{height: '80%'}}
+        onLayout={(event) => {
+          setHeight(event.nativeEvent.layout.height);
+        }}>
         <SafeAreaView>
-          <View style={{padding: 20}}>
-            <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 20}}>
-              Build your online store and start selling. Millions of shoppers
-              can’t wait to see what you have in store
-            </Text>
+          <ScrollView
+            onContentSizeChange={onContentSizeChange}
+            scrollEnabled={scrollEnabled}>
+            <View style={{padding: 10}}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 20,
+                }}>
+                Build your online store and start selling. Millions of shoppers
+                can’t wait to see what you have in store
+              </Text>
 
-            <View>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-hammer" size={25} />
+              <View>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon
+                        name="ios-hammer"
+                        size={25}
+                        style={{color: '#fff'}}
+                      />
+                    </View>
+                  </View>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 18,
+                      }}>
+                      Powerful tools. Our tools and services make it easy to
+                      manage, promote and grow your business.
+                    </Text>
                   </View>
                 </View>
-                <View>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 18,
-                    }}>
-                    Powerful tools. Our tools and services make it easy to
-                    manage, promote and grow your business.
-                  </Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-card" size={25} />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon name="ios-card" size={25} style={{color: '#fff'}} />
+                    </View>
+                  </View>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 20,
+                      }}>
+                      Simple, transparent, no additional monthly fees, Secure
+                      transactions, Automatic deposits and Seller protection.
+                    </Text>
                   </View>
                 </View>
-                <View style={{width: '90%'}}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 20,
-                    }}>
-                    Simple, transparent, no additional monthly fees, Secure
-                    transactions, Automatic deposits and Seller protection.
-                  </Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-cash" size={25} />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon name="ios-cash" size={25} style={{color: '#fff'}} />
+                    </View>
+                  </View>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 20,
+                      }}>
+                      5 % Transaction fee, 2.9% + $0.50 payment processing fee.
+                    </Text>
                   </View>
                 </View>
-                <View style={{width: '90%'}}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 20,
-                    }}>
-                    5 % Transaction fee, 2.9% + $0.50 payment processing fee.
-                  </Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-timer" size={25} />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon
+                        name="ios-timer"
+                        size={25}
+                        style={{color: '#fff'}}
+                      />
+                    </View>
+                  </View>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 20,
+                      }}>
+                      Enlist your products for an unlimited duration.
+                    </Text>
                   </View>
                 </View>
-                <View style={{width: '90%'}}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 20,
-                    }}>
-                    Enlist your products for an unlimited duration.
-                  </Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-timer" size={25} />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon
+                        name="ios-timer"
+                        size={25}
+                        style={{color: '#fff'}}
+                      />
+                    </View>
+                  </View>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 20,
+                      }}>
+                      Spend less time managing your shop and more time on the
+                      fun stuff.
+                    </Text>
                   </View>
                 </View>
-                <View style={{width: '90%'}}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 20,
-                    }}>
-                    Spend less time managing your shop and more time on the fun
-                    stuff.
-                  </Text>
-                </View>
-              </View>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
-                <View>
-                  <View style={styles.viewBorder}>
-                    <Icon name="ios-share-alt" size={25} />
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <View style={{width: '12%'}}>
+                    <View style={styles.viewBorder}>
+                      <Icon
+                        name="ios-share-alt"
+                        size={25}
+                        style={{color: '#fff'}}
+                      />
+                    </View>
                   </View>
-                </View>
-                <View style={{width: '90%'}}>
-                  <Text
-                    style={{
-                      fontFamily: Fonts.poppins_regular,
-                      fontSize: 17,
-                      marginLeft: 10,
-                      marginTop: 20,
-                    }}>
-                    Go social by sharing your store and products.
-                  </Text>
+                  <View style={{width: '88%'}}>
+                    <Text
+                      style={{
+                        fontFamily: Fonts.poppins_regular,
+                        fontSize: 17,
+                        marginLeft: 10,
+                        marginTop: 20,
+                      }}>
+                      Go social by sharing your store and products.
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          </ScrollView>
         </SafeAreaView>
-      </Svg>
-      <Svg height="90" width="100%">
-        <Path
-          d="M0.00,49.98 C149.99,150.00 271.49,-49.98 500.00,49.98 L500.00,0.00 L0.00,0.00 Z"
-          stroke="none"
-          fill="#fbe9e7"
-        />
-      </Svg>
-      <TouchableWithoutFeedback onPress={props.getStarted}>
-        <View style={[{...styles.button}, {marginTop: 10}]}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              color: '#fff',
-              alignSelf: 'center',
-              fontSize: 20,
-            }}>
-            Get started for free
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={props.closeModal}>
-        <View
-          style={[
-            {...styles.button},
-            {backgroundColor: '#fff', marginTop: 20},
-          ]}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              alignSelf: 'center',
-              fontSize: 20,
-            }}>
-            Not now
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
+      </View>
+
+      <View>
+        <TouchableWithoutFeedback onPress={props.getStarted}>
+          <View style={[{...styles.button}, {marginTop: 10}]}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                color: '#fff',
+                alignSelf: 'center',
+                fontSize: 20,
+              }}>
+              Get started for free
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={props.closeModal}>
+          <View
+            style={[
+              {...styles.button},
+              {backgroundColor: '#fff', marginTop: 20, marginBottom: 10},
+            ]}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_regular,
+                alignSelf: 'center',
+                fontSize: 20,
+              }}>
+              Not now
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    </View>
   );
 };
 
@@ -217,10 +255,9 @@ const styles = StyleSheet.create({
   },
   viewBorder: {
     marginTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.purple_darken,
     borderRadius: 50,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 13,
     paddingTop: 10,
     paddingBottom: 10,
   },

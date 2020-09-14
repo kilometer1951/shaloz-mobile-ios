@@ -5,10 +5,9 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  
   TouchableOpacity,
-  
   Modal,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -30,7 +29,10 @@ const CategoryModal = (props) => {
     main_category,
     main_category_id,
     setSubCategory1_id,
-    setSubCategory1,sub_category1,setSubCategory2,sub_category1_id
+    setSubCategory1,
+    sub_category1,
+    setSubCategory2,
+    sub_category1_id,
   } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
@@ -95,7 +97,7 @@ const CategoryModal = (props) => {
     } else if (categoryModalView === 'sub_category_view') {
       getSubCategoryOne();
     } else {
-      getSubCategoryTwo()
+      getSubCategoryTwo();
     }
   }, []);
 
@@ -158,7 +160,7 @@ const CategoryModal = (props) => {
           </View>
         )}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom: 100}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 100 : 0}}
       />
     );
   } else if (categoryModalView === 'sub_category_view') {
@@ -193,7 +195,7 @@ const CategoryModal = (props) => {
           </View>
         )}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom: 100}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 100 : 0}}
       />
     );
   } else {
@@ -228,7 +230,7 @@ const CategoryModal = (props) => {
           </View>
         )}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom: 100}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 100 : 0}}
       />
     );
   }
@@ -239,7 +241,7 @@ const CategoryModal = (props) => {
   } else if (categoryModalView === 'sub_category_view') {
     headerTile = main_category;
   } else {
-    headerTile = sub_category1
+    headerTile = sub_category1;
   }
 
   return (
@@ -271,7 +273,7 @@ const CategoryModal = (props) => {
                 alignSelf: 'center',
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
-                textAlign:'center'
+                textAlign: 'center',
               }}>
               {headerTile}
             </Text>

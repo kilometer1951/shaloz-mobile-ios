@@ -7,6 +7,9 @@ import {
   TouchableWithoutFeedback,
   Modal,
   Linking,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -41,6 +44,13 @@ const HomeScreen = (props) => {
   const [isNotAuthenticated, setIsNotAuthenticated] = useState(false);
   const [authViewToRender, setAuthViewToRender] = useState('getStarted');
   const [networkError, setNetworkError] = useState(false);
+  const [height, setHeight] = useState(0);
+  const [viewHeight, setViewHeight] = useState(0);
+
+  const scrollEnabled = viewHeight > height;
+  onContentSizeChange = (contentWidth, contentHeight) => {
+    setViewHeight(contentHeight);
+  };
 
   const onChangeText = (value) => {
     setSearchInput(value);
@@ -144,10 +154,64 @@ const HomeScreen = (props) => {
   let view;
   if (authViewToRender === 'getStarted') {
     view = (
-      <AuthViewOne
-        setAuthViewToRender={setAuthViewToRender}
-        authViewToRender={authViewToRender}
-      />
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}>
+        <View
+          style={{height: '80%'}}
+          onLayout={(event) => {
+            setHeight(event.nativeEvent.layout.height);
+          }}>
+          <ScrollView
+            onContentSizeChange={onContentSizeChange}
+            scrollEnabled={scrollEnabled}>
+            <AuthViewOne
+              setAuthViewToRender={setAuthViewToRender}
+              authViewToRender={authViewToRender}
+            />
+          </ScrollView>
+        </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              setAuthViewToRender('auth');
+            }}>
+            <View style={[{...styles.button}, {marginTop: 20}]}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_semibold,
+                  color: '#fff',
+                  alignSelf: 'center',
+                  fontSize: 20,
+                }}>
+                Sign up
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setAuthViewToRender('login');
+            }}>
+            <View
+              style={[
+                {...styles.button},
+                {backgroundColor: '#fff', marginTop: 20, marginBottom: 10},
+              ]}>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_semibold,
+                  alignSelf: 'center',
+                  fontSize: 20,
+                }}>
+                I already have an account
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   } else if (authViewToRender === 'auth') {
     view = (
@@ -222,11 +286,8 @@ const HomeScreen = (props) => {
         setIsNotAuthenticated={setIsNotAuthenticated}
       />
 
-      <Modal
-        animationType="slide"
-        visible={isNotAuthenticated}
-        style={{backgroundColor: '#fff'}}>
-        {view}
+      <Modal animationType="slide" visible={isNotAuthenticated}>
+        <View style={{flex: 1}}>{view}</View>
       </Modal>
 
       {networkError && (
@@ -247,6 +308,14 @@ const styles = StyleSheet.create({
   searchContainer: {
     height: 80,
     padding: 10,
+  },
+  button: {
+    backgroundColor: '#000',
+    width: '80%',
+    borderRadius: 50,
+    alignSelf: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
   },
 
   search: {

@@ -12,6 +12,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
@@ -221,9 +222,9 @@ const CheckoutModal = (props) => {
           resizeMode="cover"
           style={{
             width: '100%',
-            height: 300,
+            height: Platform.OS === 'ios' ? 300 : 300,
             alignSelf: 'center',
-            marginTop: '20%',
+            marginTop: Platform.OS === 'ios' ? '20%' : 0,
           }}
         />
         <View style={{padding: 10}}>

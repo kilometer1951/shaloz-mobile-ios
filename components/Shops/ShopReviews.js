@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
+  Platform,
 } from 'react-native';
 import Fonts from '../../contants/Fonts';
 import Colors from '../../contants/Colors';
@@ -277,12 +278,7 @@ const ShopReviews = (props) => {
             handleLoadMore();
           }}
           ListFooterComponent={
-            <View
-              style={{
-                alignItems: 'center',
-                position: 'absolute',
-                alignSelf: 'center',
-              }}>
+            <View>
               {isLoadingMoreData && (
                 <MaterialIndicator color={Colors.purple_darken} size={30} />
               )}

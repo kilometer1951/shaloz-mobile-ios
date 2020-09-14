@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
@@ -289,12 +290,7 @@ const ShopDeals = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -304,7 +300,7 @@ const ShopDeals = (props) => {
                   fontFamily: Fonts.poppins_regular,
                   color: Colors.grey_darken,
                 }}>
-                No more products to load
+                No more data to load
               </Text>
             )}
           </View>

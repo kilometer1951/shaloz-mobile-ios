@@ -7,7 +7,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert,SafeAreaView
+  Alert,
+  SafeAreaView,
+  Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import NetworkError from '../NetworkError';
@@ -31,7 +33,8 @@ const StepFive = (props) => {
     setImageSelectedPhotoID_back,
     imageSelectedPhotoID_back,
     setViewToRender,
-    setViewNumber,closeModal
+    setViewNumber,
+    closeModal,
   } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [backImageObject, setBackImageObject] = useState({});
@@ -75,7 +78,10 @@ const StepFive = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           setBackImageObject(data);
           setImageSelectedPhotoID_back(source);
@@ -161,7 +167,7 @@ const StepFive = (props) => {
               marginTop: 15,
               marginTop: 40,
             }}>
-            Saving and uploading please wait
+            Saving and verifying please wait ...
           </Text>
         </View>
       ) : (

@@ -236,8 +236,67 @@ const SearchScreen = (props) => {
     );
   });
 
-  return (
-    <View style={styles.screen}>
+  let view;
+
+  if (Platform.OS === 'android') {
+    view = (
+      <SafeAreaView>
+        <View style={styles.searchContainer}>
+          <View style={styles.search}>
+            <View style={{width: '5%', marginLeft: 10, marginTop: 14}}>
+              <TouchableWithoutFeedback onPress={backAction}>
+                <View>
+                  <Icon
+                    name="ios-arrow-back"
+                    size={20}
+                    style={{marginRight: 10}}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={{width: '87%'}}>
+              <TextInput
+                placeholderTextColor="#bdbdbd"
+                placeholder="Search for anything"
+                onChangeText={dynamicSearchAllProducts}
+                value={searchInput}
+                autoFocus={!browseByCategory ? true : false}
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  width: '100%',
+                  color: '#000',
+                  zIndex: 1,
+                }}
+                onFocus={() => setBrowseByCategory(false)}
+                returnKeyType="search"
+                onSubmitEditing={() => {
+                  //go to a new screen
+                  if (searchInput !== '') {
+                    props.navigation.navigate('SearchProduct', {
+                      searchInput: searchInput,
+                    });
+                  }
+                }}
+              />
+            </View>
+
+            {searchInput !== '' && (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setSearchInput('');
+                  fetchRandomCategoryShop();
+                }}>
+                <View style={{marginRight: 10, marginTop: 14}}>
+                  <Icon name="ios-close" size={20} />
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  } else {
+    view = (
       <SafeAreaView>
         <View style={styles.searchContainer}>
           <View style={styles.search}>
@@ -263,6 +322,7 @@ const SearchScreen = (props) => {
                   fontFamily: Fonts.poppins_regular,
                   width: '100%',
                   color: '#000',
+                  zIndex: 1,
                 }}
                 onFocus={() => setBrowseByCategory(false)}
                 returnKeyType="search"
@@ -291,6 +351,12 @@ const SearchScreen = (props) => {
           </View>
         </View>
       </SafeAreaView>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      {view}
       <ScrollView
         keyboardShouldPersistTaps="always"
         keyboardDismissMode="on-drag">
@@ -419,18 +485,17 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: 'row',
-    backgroundColor: 'red',
-    padding: 15,
+    padding: Platform.OS === 'android' ? 0 : 15,
     borderRadius: 50,
     shadowOffset: {width: 0, height: 0.5},
     elevation: 5,
     marginTop: 5,
-    backgroundColor: '#fff',
     marginRight: 1,
     marginBottom: 5,
     shadowColor: Colors.grey_darken,
     shadowOpacity: 0.8,
     shadowRadius: 1,
+    backgroundColor: '#fff',
   },
   dynamicSearch: {
     paddingTop: 10,

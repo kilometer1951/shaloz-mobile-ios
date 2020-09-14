@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Share,
   Alert,
+  Platform,
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -19,6 +20,7 @@ import NetworkError from '../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import Moment from 'moment';
 import UpdatingLoader from '../UpdatingLoader';
+import DialogInput from 'react-native-dialog-input';
 
 import * as appActions from '../../store/actions/appActions';
 import FastImage from 'react-native-fast-image';
@@ -39,6 +41,8 @@ const Products = (props) => {
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [page, setPage] = useState(2);
   const [fetching, setFetching] = useState(false);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [product_id, setProduct_id] = useState('');
 
   const newProduct = () => {
     props.navigation.navigate('NewProduct');
@@ -144,6 +148,51 @@ const Products = (props) => {
     );
   };
 
+  const androidHandleAddToStock = async (product_qty) => {
+    if (product_qty !== '') {
+      if (!Number.isNaN(parseInt(product_qty))) {
+        try {
+          setFetching(true);
+          await appActions.handleAddToStockWithQty(product_id, product_qty);
+          await fetchShopProducts();
+          await dispatch(appActions.getMyShopProducts(user._id, 1));
+          setFetching(false);
+        } catch (e) {
+          console.log(e);
+
+          setFetching(false);
+          setNetworkError(true);
+        }
+      } else {
+        Alert.alert(
+          'Quantity value is wrong! Only numbers are allowed',
+          ',',
+          [
+            {
+              text: 'Ok',
+              onPress: () => console.log('Cancel Pressed!'),
+            },
+          ],
+          {cancelable: false},
+        );
+        return;
+      }
+    } else {
+      Alert.alert(
+        'Quantity is required',
+        '',
+        [
+          {
+            text: 'Ok',
+            onPress: () => console.log('Cancel Pressed!'),
+          },
+        ],
+        {cancelable: false},
+      );
+      return;
+    }
+  };
+
   const handleAddToStock = async (product_id, product_qty) => {
     if (parseInt(product_qty) > 0) {
       //add back to stock
@@ -161,63 +210,73 @@ const Products = (props) => {
         setNetworkError(true);
       }
     } else {
-      //ask prompt please add a qty to add this item back to stock
-      Alert.prompt(
-        'Your product quantity is less than zero. Increase your product quantity to add back to stock ',
-        '',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'destructive',
-          },
-          {
-            text: 'Update',
-            onPress: async (product_qty) => {
-              if (product_qty !== '') {
-                if (!Number.isNaN(parseInt(product_qty))) {
-                  try {
-                    setFetching(true);
-                    await appActions.handleAddToStockWithQty(
-                      product_id,
-                      product_qty,
-                    );
-                    await fetchShopProducts();
-                    await dispatch(appActions.getMyShopProducts(user._id, 1));
-                    setFetching(false);
-                  } catch (e) {
-                    console.log(e);
+      if (Platform.OS === 'ios') {
+        //ask prompt please add a qty to add this item back to stock
+        Alert.prompt(
+          'Your product quantity is less than zero. Increase your product quantity.',
+          '',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'destructive',
+            },
+            {
+              text: 'Update',
+              onPress: async (product_qty) => {
+                if (product_qty !== '') {
+                  if (!Number.isNaN(parseInt(product_qty))) {
+                    try {
+                      setFetching(true);
+                      await appActions.handleAddToStockWithQty(
+                        product_id,
+                        product_qty,
+                      );
+                      await fetchShopProducts();
+                      await dispatch(appActions.getMyShopProducts(user._id, 1));
+                      setFetching(false);
+                    } catch (e) {
+                      console.log(e);
 
-                    setFetching(false);
-                    setNetworkError(true);
+                      setFetching(false);
+                      setNetworkError(true);
+                    }
+                  } else {
+                    Alert.alert(
+                      'Quantity value is wrong! Only numbers are allowed',
+                      ',',
+                      [
+                        {
+                          text: 'Ok',
+                          onPress: () => console.log('Cancel Pressed!'),
+                        },
+                      ],
+                      {cancelable: false},
+                    );
+                    return;
                   }
                 } else {
                   Alert.alert(
-                    'Quantity value is wrong you entered a string',
-                    ''[
+                    'Quantity is required',
+                    '',
+                    [
                       {
                         text: 'Ok',
                         onPress: () => console.log('Cancel Pressed!'),
-                      }
+                      },
                     ],
                     {cancelable: false},
                   );
                   return;
                 }
-              } else {
-                Alert.alert(
-                  'Quantity is required',
-                  ''[
-                    {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
-                  ],
-                  {cancelable: false},
-                );
-                return;
-              }
+              },
             },
-          },
-        ],
-      );
+          ],
+        );
+      } else {
+        setProduct_id(product_id);
+        setIsDialogVisible(true);
+      }
     }
   };
 
@@ -228,7 +287,7 @@ const Products = (props) => {
       [
         {text: 'No', onPress: () => console.log('Cancel Pressed!')},
         {
-          text: 'Yes',
+          text: 'Yes, ADD',
           onPress: () => {
             handleAddToStock(product_id, product_qty);
           },
@@ -437,7 +496,13 @@ const Products = (props) => {
   } else {
     view = (
       <View style={{flex: 1}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingHorizontal: 10,
+            marginTop: 5,
+          }}>
           <TouchableOpacity onPress={newProduct}>
             <View style={{flexDirection: 'row', marginTop: 5}}>
               <Icon name="ios-add" size={23} />
@@ -467,7 +532,11 @@ const Products = (props) => {
         </View>
 
         <FlatList
-          style={{marginTop: 10, marginBottom: 10}}
+          style={{
+            marginTop: 5,
+            marginBottom: Platform.OS === 'ios' ? 10 : 0,
+            padding: 10,
+          }}
           refreshControl={
             <RefreshControl
               onRefresh={handleRefresh}
@@ -488,12 +557,7 @@ const Products = (props) => {
             handleLoadMoreShopProducts();
           }}
           ListFooterComponent={
-            <View
-              style={{
-                alignItems: 'center',
-                position: 'absolute',
-                alignSelf: 'center',
-              }}>
+            <View>
               {isLoadingMoreData && (
                 <MaterialIndicator color={Colors.purple_darken} size={30} />
               )}
@@ -503,7 +567,7 @@ const Products = (props) => {
                     fontFamily: Fonts.poppins_regular,
                     color: Colors.grey_darken,
                   }}>
-                  No more products to load
+                  No more data to load
                 </Text>
               )}
             </View>
@@ -523,6 +587,23 @@ const Products = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+
+      <DialogInput
+        isDialogVisible={isDialogVisible}
+        title={'Increase product qty'}
+        message={
+          'Your product quantity is less than zero. Increase your product quantity.'
+        }
+        hintInput={'Qty'}
+        submitText={'Add to stock'}
+        textInputProps={{keyboardType: 'number-pad'}}
+        submitInput={(inputText) => {
+          androidHandleAddToStock(inputText);
+          setIsDialogVisible(false);
+        }}
+        closeDialog={() => {
+          setIsDialogVisible(false);
+        }}></DialogInput>
     </View>
   );
 };
@@ -531,7 +612,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10,
   },
   itemsCard: {
     borderRadius: 5,
@@ -545,6 +625,7 @@ const styles = StyleSheet.create({
     shadowColor: Colors.grey_darken,
     marginTop: 5,
     marginHorizontal: 2,
+    marginBottom: 20,
   },
   searchContainer: {
     height: 80,

@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   TextInput,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,6 +21,8 @@ import Colors from '../contants/Colors';
 import NetworkError from '../components/NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import Moment from 'moment';
+import DialogInput from 'react-native-dialog-input';
+import {withNavigation} from 'react-navigation';
 
 import * as appActions from '../store/actions/appActions';
 import FastImage from 'react-native-fast-image';
@@ -35,6 +38,8 @@ const MyShopSearchScreen = (props) => {
   const openEditProductScreen = (item) => {
     props.navigation.navigate('EditShopProduct', {product_data: item});
   };
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [product_id, setProduct_id] = useState('');
 
   const myShopSearchProducts = useSelector(
     (state) => state.appReducer.myShopSearchProducts,
@@ -52,6 +57,17 @@ const MyShopSearchScreen = (props) => {
       setNetworkError(true);
     }
   };
+
+  useEffect(() => {
+    const {navigation} = props;
+    let focusListener = navigation.addListener('didFocus', () => {
+      fetchShopProducts();
+    });
+
+    () => {
+      focusListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     fetchShopProducts();
@@ -123,6 +139,51 @@ const MyShopSearchScreen = (props) => {
     );
   };
 
+  const androidHandleAddToStock = async (product_qty) => {
+    if (product_qty !== '') {
+      if (!Number.isNaN(parseInt(product_qty))) {
+        try {
+          setFetching(true);
+          await appActions.handleAddToStockWithQty(product_id, product_qty);
+          await fetchShopProducts();
+          await dispatch(appActions.getMyShopProducts(user._id, 1));
+          setFetching(false);
+        } catch (e) {
+          console.log(e);
+
+          setFetching(false);
+          setNetworkError(true);
+        }
+      } else {
+        Alert.alert(
+          'Quantity value is wrong! Only numbers are allowed',
+          ',',
+          [
+            {
+              text: 'Ok',
+              onPress: () => console.log('Cancel Pressed!'),
+            },
+          ],
+          {cancelable: false},
+        );
+        return;
+      }
+    } else {
+      Alert.alert(
+        'Quantity is required',
+        '',
+        [
+          {
+            text: 'Ok',
+            onPress: () => console.log('Cancel Pressed!'),
+          },
+        ],
+        {cancelable: false},
+      );
+      return;
+    }
+  };
+
   const handleAddToStock = async (product_id, product_qty) => {
     if (parseInt(product_qty) > 0) {
       //add back to stock
@@ -131,6 +192,7 @@ const MyShopSearchScreen = (props) => {
         await appActions.handleAddToStockWithOutQty(product_id);
         await dispatch(appActions.getMyShopProducts(user._id, 1));
         await fetchShopProducts();
+
         setFetching(false);
       } catch (e) {
         console.log(e);
@@ -139,63 +201,73 @@ const MyShopSearchScreen = (props) => {
         setNetworkError(true);
       }
     } else {
-      //ask prompt please add a qty to add this item back to stock
-      Alert.prompt(
-        'Your product quantity is less than zero. Increase your product quantity to add back to stock ',
-        '',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'destructive',
-          },
-          {
-            text: 'OK',
-            onPress: async (product_qty) => {
-              if (product_qty !== '') {
-                if (!Number.isNaN(parseInt(product_qty))) {
-                  try {
-                    setFetching(true);
-                    await appActions.handleAddToStockWithQty(
-                      product_id,
-                      product_qty,
-                    );
-                    // fetchShopProducts();
-                    await dispatch(appActions.getMyShopProducts(user._id, 1));
-                    setFetching(false);
-                  } catch (e) {
-                    console.log(e);
+      if (Platform.OS === 'ios') {
+        //ask prompt please add a qty to add this item back to stock
+        Alert.prompt(
+          'Your product quantity is less than zero. Increase your product quantity.',
+          '',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'destructive',
+            },
+            {
+              text: 'Update',
+              onPress: async (product_qty) => {
+                if (product_qty !== '') {
+                  if (!Number.isNaN(parseInt(product_qty))) {
+                    try {
+                      setFetching(true);
+                      await appActions.handleAddToStockWithQty(
+                        product_id,
+                        product_qty,
+                      );
+                      await fetchShopProducts();
+                      await dispatch(appActions.getMyShopProducts(user._id, 1));
+                      setFetching(false);
+                    } catch (e) {
+                      console.log(e);
 
-                    setFetching(false);
-                    setNetworkError(true);
+                      setFetching(false);
+                      setNetworkError(true);
+                    }
+                  } else {
+                    Alert.alert(
+                      'Quantity value is wrong! Only numbers are allowed',
+                      ',',
+                      [
+                        {
+                          text: 'Ok',
+                          onPress: () => console.log('Cancel Pressed!'),
+                        },
+                      ],
+                      {cancelable: false},
+                    );
+                    return;
                   }
                 } else {
                   Alert.alert(
-                    'Quantity value is wrong you entered a string',
-                    ''[
+                    'Quantity is required',
+                    '',
+                    [
                       {
                         text: 'Ok',
                         onPress: () => console.log('Cancel Pressed!'),
-                      }
+                      },
                     ],
                     {cancelable: false},
                   );
                   return;
                 }
-              } else {
-                Alert.alert(
-                  'Quantity is required',
-                  ''[
-                    {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
-                  ],
-                  {cancelable: false},
-                );
-                return;
-              }
+              },
             },
-          },
-        ],
-      );
+          ],
+        );
+      } else {
+        setProduct_id(product_id);
+        setIsDialogVisible(true);
+      }
     }
   };
 
@@ -206,7 +278,7 @@ const MyShopSearchScreen = (props) => {
       [
         {text: 'No', onPress: () => console.log('Cancel Pressed!')},
         {
-          text: 'Yes',
+          text: 'Yes, add',
           onPress: () => {
             handleAddToStock(product_id, product_qty);
           },
@@ -395,9 +467,9 @@ const MyShopSearchScreen = (props) => {
     );
   } else {
     view = (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, padding: 5}}>
         <FlatList
-          style={{marginTop: 10}}
+          showsVerticalScrollIndicator={Platform.OS === 'ios' ? false : true}
           renderItem={renderItem}
           data={myShopSearchProducts}
           keyExtractor={(item) => item._id}
@@ -409,10 +481,12 @@ const MyShopSearchScreen = (props) => {
     );
   }
 
-  return (
-    <View style={styles.screen}>
+  let searchBar;
+
+  if (Platform.OS === 'ios') {
+    searchBar = (
       <SafeAreaView>
-        <View>
+        <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
           <View style={styles.search}>
             <View style={{width: '5%'}}>
               <TouchableWithoutFeedback
@@ -462,6 +536,66 @@ const MyShopSearchScreen = (props) => {
           </View>
         </View>
       </SafeAreaView>
+    );
+  } else {
+    searchBar = (
+      <SafeAreaView>
+        <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
+          <View style={styles.search}>
+            <View style={{width: '5%', marginLeft: 10, marginTop: 14}}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  dispatch(appActions.getMyShopProducts(user._id, 1));
+                  props.navigation.goBack();
+                }}>
+                <View>
+                  <Icon
+                    name="ios-arrow-back"
+                    size={20}
+                    style={{marginRight: 10}}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={{width: '87%'}}>
+              <TextInput
+                placeholderTextColor="#bdbdbd"
+                placeholder={'Search'}
+                onChangeText={(value) => setSearchInput(value)}
+                value={searchInput}
+                autoFocus={true}
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  width: '100%',
+                  color: '#000',
+                }}
+                returnKeyType={'search'}
+                onSubmitEditing={() => {
+                  startSearch();
+                }}
+              />
+            </View>
+
+            {searchInput !== '' && (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setSearchInput('');
+                  startSearch();
+                }}>
+                <View style={{marginRight: 10, marginTop: 14}}>
+                  <Icon name="ios-close" size={20} />
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      {searchBar}
 
       {isLoading ? <MaterialIndicator color={Colors.purple_darken} /> : view}
       {networkError && (
@@ -470,6 +604,22 @@ const MyShopSearchScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <DialogInput
+        isDialogVisible={isDialogVisible}
+        title={'Increase product qty'}
+        message={
+          'Your product quantity is less than zero. Increase your product quantity.'
+        }
+        hintInput={'Qty'}
+        submitText={'Add to stock'}
+        textInputProps={{keyboardType: 'number-pad'}}
+        submitInput={(inputText) => {
+          androidHandleAddToStock(inputText);
+          setIsDialogVisible(false);
+        }}
+        closeDialog={() => {
+          setIsDialogVisible(false);
+        }}></DialogInput>
     </View>
   );
 };
@@ -478,7 +628,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10,
   },
   itemsCard: {
     borderRadius: 5,
@@ -501,7 +650,7 @@ const styles = StyleSheet.create({
   search: {
     flexDirection: 'row',
     backgroundColor: 'red',
-    padding: 15,
+    padding: Platform.OS === 'ios' ? 15 : 0,
     borderRadius: 50,
     shadowOffset: {width: 0, height: 0.5},
     elevation: 5,
@@ -515,4 +664,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyShopSearchScreen;
+export default withNavigation(MyShopSearchScreen);

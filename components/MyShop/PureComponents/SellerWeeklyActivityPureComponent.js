@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {memo, useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,168 +10,38 @@ import {
   ScrollView,
   Alert,
   Linking,
-  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import UpdatingLoader from '../UpdatingLoader';
-import CartPlaceHolder from '../CartPlaceHolder';
+import UpdatingLoader from '../../UpdatingLoader';
+import CartPlaceHolder from '../../CartPlaceHolder';
 import Moment from 'moment';
-import {ActionSheet} from 'native-base';
-
+//import {Tooltip} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Fonts from '../../contants/Fonts';
-import Colors from '../../contants/Colors';
-import * as appActions from '../../store/actions/appActions';
-import NetworkError from '../NetworkError';
+import Fonts from '../../../contants/Fonts';
+import Colors from '../../../contants/Colors';
+import * as appActions from '../../../store/actions/appActions';
+import NetworkError from '../../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
-import UpdateMessage from '../UpdateMessage';
+import UpdateMessage from '../../UpdateMessage';
 import FastImage from 'react-native-fast-image';
-import ToolTip from '../../Modal/ToolTip';
 
-const CompletedOrdersComponent = (props) => {
-  const dispatch = useDispatch();
-  const completed_orders = useSelector(
-    (state) => state.appReducer.completed_orders,
-  );
-  const user = useSelector((state) => state.authReducer.user);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const endOfFile_completed_orders = useSelector(
-    (state) => state.appReducer.endOfFile_completed_orders,
-  );
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
-  const [page, setPage] = useState(2);
-  const [networkError, setNetworkError] = useState(false);
-  const [toolTipVisible, setToolTipVisible] = useState(false);
+import ToolTip from '../../../Modal/ToolTip';
 
-  const [textToRender, setTextToRender] = useState('');
-  const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
-  const [updateMessage, setUpdateMessage] = useState('');
-
-  useEffect(() => {
-    const fetchCompletedOrderData = async () => {
-      try {
-        setIsLoading(true);
-        await dispatch(appActions.fetchCompletedOrderData(user._id, 1));
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e);
-        setIsLoading(false);
-        setNetworkError(true);
-      }
-    };
-    fetchCompletedOrderData();
-  }, []);
-
-  const openAlertModal = (cart_id) => {
-    ActionSheet.show(
-      {
-        options: ['Cancel', 'Help'],
-        cancelButtonIndex: 0,
-        tintColor: '#000',
-      },
-      async (buttonIndex) => {
-        if (buttonIndex === 0) {
-          // cancel action
-        } else if (buttonIndex === 1) {
-          Linking.openURL(
-            'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
-              cart_id +
-              '&body=My orderID is ' +
-              cart_id +
-              ' ......',
-          );
-        }
-      },
-    );
-  };
-
-  const handleRefresh = async () => {
-    try {
-      setIsRefreshing(true);
-      await dispatch(appActions.fetchCompletedOrderData(user._id, 1));
-      setPage(2);
-      setIsRefreshing(false);
-    } catch (e) {
-      setIsRefreshing(false);
-      setNetworkError(true);
-    }
-  };
-
-  const handleLoadMore = async () => {
-    try {
-      if (!endOfFile_completed_orders) {
-        if (!isLoadingMoreData) {
-          setIsLoadingMoreData(true);
-          await dispatch(
-            appActions.handleLoadMoreCompletedOrderData(user._id, page),
-          );
-          setIsLoadingMoreData(false);
-          setPage((prev) => (prev = prev + 1));
-        }
-      }
-    } catch (e) {
-      setIsLoadingMoreData(false);
-      setNetworkError(true);
-    }
-  };
-
-  const getPricePerItem = (price, qty) => {
-    return (parseInt(qty) * parseFloat(price)).toFixed(2);
-  };
-
-  const calculateDiscount = (items) => {
-    let total_discount = 0.0;
-    for (let i = 0; i < items.length; i++) {
-      let discount =
-        items[i].discount !== '' ? parseFloat(items[i].discount) : 0.0;
-      total_discount += discount;
-    }
-
-    return total_discount.toFixed(2);
-  };
-
-  const calculateTotalDiscount = (cart) => {
-    let discount_from_items = parseFloat(calculateDiscount(cart.items));
-    let store_discount = cart.store_promotion_discount_is_applied
-      ? parseFloat(cart.store_promotion_discount)
-      : 0.0;
-
-    return (discount_from_items + store_discount).toFixed(2);
-  };
-
-  const calculateVariant = (selected_variant_value) => {
-    let total = 0.0;
-    for (let i = 0; i < selected_variant_value.length; i++) {
-      let price = parseFloat(selected_variant_value[i].price);
-      total += price;
-    }
-    return total;
-  };
-
-  const orderTotal = (cart) => {
-    let total = 0.0;
-    for (let i = 0; i < cart.items.length; i++) {
-      let price =
-        (parseFloat(cart.items[i].price) +
-          parseFloat(calculateVariant(cart.items[i].selected_variant_value))) *
-          parseInt(cart.items[i].qty) +
-        parseFloat(
-          cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
-        );
-      total += price;
-    }
-    return (parseFloat(total) + parseFloat(cart.shippment_price)).toFixed(2);
-  };
-
-  const clientPaid = (cart) => {
-    let total =
-      parseFloat(orderTotal(cart)) + parseFloat(cart.amount_in_cash_redeemed);
-    return (
-      parseFloat(total) - parseFloat(calculateTotalDiscount(cart))
-    ).toFixed(2);
-  };
+const SellerWeeklyActivityPureComponent = (props) => {
+  const {
+    item,
+    openAlertModal,
+    handleLoadMore,
+    calculateDiscount,
+    calculateTotalDiscount,
+    calculateVariant,
+    orderTotal,
+    clientPaid,
+    toolTipVisible,
+    setToolTipVisible,
+    textToRender,
+    setTextToRender,
+  } = props;
 
   const displayVariants = (selected_variant_value) => {
     return selected_variant_value.map((result, index, array) => {
@@ -296,7 +166,7 @@ const CompletedOrdersComponent = (props) => {
     });
   };
 
-  const renderItem = ({item}) => (
+  return (
     <View
       style={{
         marginBottom: 15,
@@ -652,6 +522,7 @@ const CompletedOrdersComponent = (props) => {
               />
             </TouchableOpacity>
           </View>
+
           <Text
             style={{
               fontFamily: Fonts.poppins_semibold,
@@ -664,104 +535,9 @@ const CompletedOrdersComponent = (props) => {
       </View>
     </View>
   );
-  let view;
-  if (completed_orders.length === 0) {
-    view = (
-      <View style={{alignSelf: 'center', marginTop: '40%', padding: 25}}>
-        <Text
-          style={{
-            fontFamily: Fonts.poppins_regular,
-            fontSize: 20,
-            textAlign: 'center',
-            padding: 20,
-          }}>
-          No data to show yet
-        </Text>
-      </View>
-    );
-  } else {
-    view = (
-      <View style={{flex: 1}}>
-        <FlatList
-          refreshControl={
-            <RefreshControl
-              onRefresh={handleRefresh}
-              refreshing={isRefreshing}
-              title="Pull to refresh"
-              tintColor="#000"
-              titleColor="#000"
-            />
-          }
-          removeClippedSubviews={true}
-          style={{marginBottom: Platform.OS === 'ios' ? 10 : 0}}
-          showsVerticalScrollIndicator={false}
-          data={completed_orders}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          keyboardShouldPersistTaps="always"
-          keyboardDismissMode="on-drag"
-          onEndReachedThreshold={0.5}
-          initialNumToRender={10}
-          onMomentumScrollBegin={() => {
-            handleLoadMore();
-          }}
-          ListFooterComponent={
-            <View>
-              {isLoadingMoreData && (
-                <MaterialIndicator color={Colors.purple_darken} size={30} />
-              )}
-              {endOfFile_completed_orders && completed_orders.length > 16 && (
-                <Text
-                  style={{
-                    fontFamily: Fonts.poppins_regular,
-                    color: Colors.grey_darken,
-                  }}>
-                  No more data to load
-                </Text>
-              )}
-            </View>
-          }
-        />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.screen}>
-      {isLoading ? <CartPlaceHolder /> : view}
-
-      {networkError && (
-        <NetworkError
-          networkError={networkError}
-          setNetworkError={setNetworkError}
-        />
-      )}
-      {isUpdating && <UpdatingLoader />}
-      {openUpdateMessage && (
-        <UpdateMessage
-          openUpdateMessage={openUpdateMessage}
-          setOpenUpdateMessage={setOpenUpdateMessage}
-          updateMessage={updateMessage}
-        />
-      )}
-      {toolTipVisible && (
-        <ToolTip
-          toolTipVisible={toolTipVisible}
-          setToolTipVisible={setToolTipVisible}
-          textToRender={textToRender}
-          setTextToRender={setTextToRender}
-        />
-      )}
-    </View>
-  );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-
   itemsCard: {
     borderRadius: 5,
     shadowOpacity: 0.8,
@@ -783,4 +559,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompletedOrdersComponent;
+export default memo(SellerWeeklyActivityPureComponent);

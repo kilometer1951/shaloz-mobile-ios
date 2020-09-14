@@ -12,6 +12,7 @@ import {
   RefreshControl,
   ScrollView,
   ActionSheetIOS,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
@@ -20,7 +21,7 @@ import * as appActions from '../../store/actions/appActions';
 import UpdateMessage from '../UpdateMessage';
 import NetworkError from '../NetworkError';
 import {ActionSheet} from 'native-base';
-import { Toast } from 'native-base';
+import {Toast} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -85,7 +86,7 @@ const ProductCategoryComponent = (props) => {
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
+            });
           } catch (e) {
             setNetworkError(true);
           }
@@ -184,7 +185,7 @@ const ProductCategoryComponent = (props) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom:20}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 20 : 0}}
         numColumns={2}
         onEndReachedThreshold={0.5}
         initialNumToRender={20}
@@ -192,12 +193,7 @@ const ProductCategoryComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -207,7 +203,7 @@ const ProductCategoryComponent = (props) => {
                   fontFamily: Fonts.poppins_regular,
                   color: Colors.grey_darken,
                 }}>
-                No more products to load
+                No more data to load
               </Text>
             )}
           </View>
@@ -220,8 +216,6 @@ const ProductCategoryComponent = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
-
-   
     </View>
   );
 };

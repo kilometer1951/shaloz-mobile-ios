@@ -86,7 +86,8 @@ const NewProductScreen = (props) => {
         if (product_name === '') {
           Alert.alert(
             'Error',
-            'Product name is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Product name is required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -94,7 +95,8 @@ const NewProductScreen = (props) => {
         if (product_price === '') {
           Alert.alert(
             'Error',
-            'Product price is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Product price is required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -128,7 +130,8 @@ const NewProductScreen = (props) => {
         if (product_weight === '') {
           Alert.alert(
             'Error',
-            'Product weight is required', [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Product weight is required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -136,7 +139,8 @@ const NewProductScreen = (props) => {
         if (product_weight_unit === '') {
           Alert.alert(
             'Error',
-            'Product weight unit is required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Product weight unit is required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -147,7 +151,8 @@ const NewProductScreen = (props) => {
         if (Object.entries(main_image).length === 0) {
           Alert.alert(
             'Error',
-            'Main image required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Main image required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -155,7 +160,8 @@ const NewProductScreen = (props) => {
         if (main_category === 'Select') {
           Alert.alert(
             'Error',
-            'Main category required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+            'Main category required',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;
@@ -199,7 +205,8 @@ const NewProductScreen = (props) => {
           if (discount === '') {
             Alert.alert(
               'Error',
-              'Discount required',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+              'Discount required',
+              [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
               {cancelable: false},
             );
             return;
@@ -215,7 +222,8 @@ const NewProductScreen = (props) => {
           if (discount_end_date === 'Select date') {
             Alert.alert(
               'Error',
-              'Select an end date',[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+              'Select an end date',
+              [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
               {cancelable: false},
             );
             return;
@@ -296,7 +304,11 @@ const NewProductScreen = (props) => {
       '',
       [
         {text: 'No', onPress: () => console.log('Cancel Pressed!')},
-        {text: 'Yes', onPress: () => props.navigation.goBack()},
+        {
+          text: 'Yes',
+          onPress: () => props.navigation.goBack(),
+          style: 'destructive',
+        },
       ],
       {cancelable: false},
     );

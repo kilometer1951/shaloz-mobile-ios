@@ -10,13 +10,14 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import UpdatingLoader from '../UpdatingLoader';
 import CartPlaceHolder from '../CartPlaceHolder';
 import {ActionSheet} from 'native-base';
 import Moment from 'moment';
-import {Tooltip} from 'react-native-elements';
+import DialogInput from 'react-native-dialog-input';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -26,6 +27,7 @@ import NetworkError from '../NetworkError';
 import {MaterialIndicator} from 'react-native-indicators';
 import UpdateMessage from '../UpdateMessage';
 import FastImage from 'react-native-fast-image';
+import ToolTip from '../../Modal/ToolTip';
 
 const Orders = (props) => {
   const dispatch = useDispatch();
@@ -40,9 +42,19 @@ const Orders = (props) => {
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false);
   const [page, setPage] = useState(2);
   const [networkError, setNetworkError] = useState(false);
+  const [toolTipVisible, setToolTipVisible] = useState(false);
 
+  const [textToRender, setTextToRender] = useState('');
   const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
   const [updateMessage, setUpdateMessage] = useState('');
+
+  const [cart, setCart] = useState({});
+  const [product_id, setProduct_id] = useState('');
+  const [cart_id, setCart_id] = useState('');
+  const [buyer_name, setBuyer_name] = useState('');
+  const [refundType, setRefundType] = useState('individual');
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isDialogVisible_2, setIsDialogVisible_2] = useState(false);
 
   //const [order_id, setOrderID] = useState('');
 
@@ -50,9 +62,9 @@ const Orders = (props) => {
     try {
       setIsLoading(true);
       await dispatch(appActions.fetchShopOrderData(user._id, 1));
+      setPage(2);
       setIsLoading(false);
     } catch (e) {
-      console.log(e);
       setIsLoading(false);
       setNetworkError(true);
     }
@@ -118,6 +130,20 @@ const Orders = (props) => {
     );
   };
 
+  const androidUpdateTrackingNumber = async (tracking_number) => {
+    if (tracking_number !== '') {
+      confirmTracking(cart_id, tracking_number);
+    } else {
+      Alert.alert(
+        'Tracking number is required',
+        '',
+        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+        {cancelable: false},
+      );
+      return;
+    }
+  };
+
   const updateTrackingNumber = async (cart_id, buyer_name) => {
     Alert.prompt('Add tracking number ', 'Order for ' + buyer_name, [
       {
@@ -144,69 +170,104 @@ const Orders = (props) => {
     ]);
   };
 
-  const processRefund = async (cart_id, amount_to_return) => {
-    try {
-      Alert.prompt(
-        'Can we know why you are issuing a refund on this items?',
+  const androidIssueRefundPerItem = async (refund_reason) => {
+    if (refund_reason !== '') {
+      setIsUpdating(true);
+      const response = await appActions.issueRefundPerItem(
+        product_id,
+        cart_id,
+        refund_reason,
+        'seller',
+      );
+      setIsUpdating(false);
+      fetchShopOrderData();
+      if (!response.status) {
+        setIsLoading(false);
+        Alert.alert(
+          'Error processing refund. If this error persist, please contact support',
+          '',
+          [
+            {
+              text: 'Ok',
+              onPress: () => console.log('Cancel Pressed!'),
+            },
+          ],
+          {cancelable: false},
+        );
+        return;
+      }
+      Alert.alert(
+        'Refund proceed successfully.',
+        '',
+        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+        {cancelable: false},
+      );
+    } else {
+      Alert.alert(
+        'A reason is required',
+        '',
+        [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+        {cancelable: false},
+      );
+      setIsUpdating(false);
+      return;
+    }
+  };
+
+  const androidIssueRefundAllItems = async (refund_reason) => {
+    if (refund_reason !== '') {
+      setIsUpdating(true);
+      let response = {status: false};
+      for (let i = 0; i < cart.items.length; i++) {
+        response = await appActions.issueRefundPerItem(
+          cart.items[i].product._id,
+          cart._id,
+          refund_reason,
+          'seller',
+        );
+      }
+      setIsUpdating(false);
+      fetchShopOrderData();
+      if (!response.status) {
+        setIsLoading(false);
+        Alert.alert(
+          'Error processing refund. If this error persist, please contact support',
+          '',
+          [
+            {
+              text: 'Ok',
+              onPress: () => console.log('Cancel Pressed!'),
+            },
+          ],
+          {cancelable: false},
+        );
+        return;
+      }
+      Alert.alert(
+        'Refund proceed successfully.',
         '',
         [
           {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'destructive',
-          },
-          {
-            text: 'Submit',
-            onPress: async (refund_reason) => {
-              if (refund_reason !== '') {
-                setIsUpdating(true);
-                const response = await appActions.processRefund(
-                  cart_id,
-                  amount_to_return,
-                  refund_reason,
-                );
-
-                setIsUpdating(false);
-                fetchShopOrderData();
-                if (!response.status) {
-                  setIsLoading(false);
-                  Alert.alert(
-                    'Error processing refund. If this error persist, please contact support',
-                    '',
-                    [
-                      {
-                        text: 'Ok',
-                        onPress: () => console.log('Cancel Pressed!'),
-                      },
-                    ],
-                    {cancelable: false},
-                  );
-                  return;
-                }
-
-                Alert.alert(
-                  'Refund proceed successfully.',
-                  '',
-                  [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
-                  {cancelable: false},
-                );
-              } else {
-                Alert.alert(
-                  'A reason is required',
-                  ''[
-                    {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
-                  ],
-                  {cancelable: false},
-                );
-                return;
-              }
-            },
+            text: 'Ok',
+            onPress: () => console.log('Cancel Pressed!'),
           },
         ],
+        {cancelable: false},
       );
-    } catch (e) {
-      setIsRefreshing(false);
-      setNetworkError(true);
+    } else {
+      Alert.alert(
+        'A reason is required',
+        '',
+        [
+          {
+            text: 'Ok',
+            onPress: () => console.log('Cancel Pressed!'),
+          },
+        ],
+        {cancelable: false},
+      );
+      setIsUpdating(false);
+      return;
     }
   };
 
@@ -259,9 +320,11 @@ const Orders = (props) => {
             } else {
               Alert.alert(
                 'A reason is required',
-                ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+                '',
+                [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
                 {cancelable: false},
               );
+              setIsUpdating(false);
               return;
             }
           },
@@ -291,36 +354,51 @@ const Orders = (props) => {
               ' ......',
           );
         } else if (buttonIndex === 2) {
-          Alert.prompt(
-            'Can we know why you are issuing a refund on this items?',
-            '',
-            [
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'destructive',
-              },
-              {
-                text: 'Submit',
-                onPress: async (refund_reason) => {
-                  if (refund_reason !== '') {
-                    setIsUpdating(true);
-                    let response = {status: false};
-                    for (let i = 0; i < cart.items.length; i++) {
-                      response = await appActions.issueRefundPerItem(
-                        cart.items[i].product._id,
-                        cart._id,
-                        refund_reason,
-                        'seller',
-                      );
-                    }
+          if (Platform.OS === 'ios') {
+            Alert.prompt(
+              'Can we know why you are issuing a refund on this items?',
+              '',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'destructive',
+                },
+                {
+                  text: 'Submit',
+                  onPress: async (refund_reason) => {
+                    if (refund_reason !== '') {
+                      setIsUpdating(true);
+                      let response = {status: false};
+                      for (let i = 0; i < cart.items.length; i++) {
+                        response = await appActions.issueRefundPerItem(
+                          cart.items[i].product._id,
+                          cart._id,
+                          refund_reason,
+                          'seller',
+                        );
+                      }
 
-                    setIsUpdating(false);
-                    fetchShopOrderData();
-                    if (!response.status) {
-                      setIsLoading(false);
+                      setIsUpdating(false);
+                      fetchShopOrderData();
+                      if (!response.status) {
+                        setIsLoading(false);
+                        Alert.alert(
+                          'Error processing refund. If this error persist, please contact support',
+                          '',
+                          [
+                            {
+                              text: 'Ok',
+                              onPress: () => console.log('Cancel Pressed!'),
+                            },
+                          ],
+                          {cancelable: false},
+                        );
+                        return;
+                      }
+
                       Alert.alert(
-                        'Error processing refund. If this error persist, please contact support',
+                        'Refund proceed successfully.',
                         '',
                         [
                           {
@@ -330,37 +408,30 @@ const Orders = (props) => {
                         ],
                         {cancelable: false},
                       );
+                    } else {
+                      Alert.alert(
+                        'A reason is required',
+                        '',
+                        [
+                          {
+                            text: 'Ok',
+                            onPress: () => console.log('Cancel Pressed!'),
+                          },
+                        ],
+                        {cancelable: false},
+                      );
+                      setIsUpdating(false);
                       return;
                     }
-
-                    Alert.alert(
-                      'Refund proceed successfully.',
-                      '',
-                      [
-                        {
-                          text: 'Ok',
-                          onPress: () => console.log('Cancel Pressed!'),
-                        },
-                      ],
-                      {cancelable: false},
-                    );
-                  } else {
-                    Alert.alert(
-                      'A reason is required',
-                      ''[
-                        {
-                          text: 'Ok',
-                          onPress: () => console.log('Cancel Pressed!'),
-                        }
-                      ],
-                      {cancelable: false},
-                    );
-                    return;
-                  }
+                  },
                 },
-              },
-            ],
-          );
+              ],
+            );
+          } else {
+            setRefundType('all');
+            setCart(cart);
+            setIsDialogVisible(true);
+          }
         }
       },
     );
@@ -433,11 +504,12 @@ const Orders = (props) => {
     let total = 0.0;
     for (let i = 0; i < cart.items.length; i++) {
       let price =
-        parseFloat(cart.items[i].price) +
+        (parseFloat(cart.items[i].price) +
+          parseFloat(calculateVariant(cart.items[i].selected_variant_value))) *
+          parseInt(cart.items[i].qty) +
         parseFloat(
           cart.items[i].discount !== '' ? cart.items[i].discount : 0.0,
-        ) +
-        parseFloat(calculateVariant(cart.items[i].selected_variant_value));
+        );
 
       total += price;
     }
@@ -576,12 +648,21 @@ const Orders = (props) => {
               }}>
               <TouchableOpacity
                 style={{width: '40%'}}
-                onPress={issueRefundPerItem.bind(
-                  this,
-                  result.product._id,
-                  cart_id,
-                  parseFloat(result.price).toFixed(2),
-                )}>
+                onPress={() => {
+                  if (Platform.OS === 'ios') {
+                    issueRefundPerItem(
+                      result.product._id,
+                      cart_id,
+                      parseFloat(result.price).toFixed(2),
+                    );
+                  } else {
+                    setRefundType('individual');
+                    setCart(items);
+                    setProduct_id(result.product._id);
+                    setCart_id(cart_id);
+                    setIsDialogVisible(true);
+                  }
+                }}>
                 <View style={{padding: 10}}>
                   <Text
                     style={{
@@ -869,28 +950,22 @@ const Orders = (props) => {
               }}>
               Client Paid ({item.items.length} item(s)):
             </Text>
-            <Tooltip
-              popover={
-                <Text
-                  style={{
-                    color: '#fff',
-                    fontFamily: Fonts.poppins_regular,
-                    fontSize: 18,
-                  }}>
-                  Total = (Qty * Price) + Variant Price :- of each product +
-                  Shipping total - any discounts + any points redeemed.
-                </Text>
-              }
-              backgroundColor={Colors.purple_darken}
-              height={150}
-              width={400}>
+
+            <TouchableOpacity
+              style={styles.touchable}
+              onPress={() => {
+                setTextToRender(
+                  'Total = (Qty * Price + Variant Price)  :- of each product + Shipping total - any discounts + any points redeemed.',
+                );
+                setToolTipVisible(true);
+              }}>
               <Icon
                 name="ios-help-circle"
                 size={20}
                 style={{marginTop: 4, marginLeft: 5, marginTop: 12}}
                 color={Colors.purple_darken}
               />
-            </Tooltip>
+            </TouchableOpacity>
           </View>
 
           <Text
@@ -903,11 +978,18 @@ const Orders = (props) => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={updateTrackingNumber.bind(
-            this,
-            item._id,
-            item.user.first_name + ' ' + item.user.last_name,
-          )}>
+          onPress={() => {
+            if (Platform.OS === 'ios') {
+              updateTrackingNumber(
+                item._id,
+                item.user.first_name + ' ' + item.user.last_name,
+              );
+            } else {
+              setBuyer_name(item.user.first_name + ' ' + item.user.last_name);
+              setCart_id(item._id);
+              setIsDialogVisible_2(true);
+            }
+          }}>
           <View
             style={{
               width: '100%',
@@ -960,7 +1042,7 @@ const Orders = (props) => {
               titleColor="#000"
             />
           }
-          style={{marginBottom: 10}}
+          style={{marginBottom: Platform.OS === 'ios' ? 10 : 0}}
           showsVerticalScrollIndicator={false}
           data={shop_orders}
           renderItem={renderItem}
@@ -973,12 +1055,7 @@ const Orders = (props) => {
             handleLoadMore();
           }}
           ListFooterComponent={
-            <View
-              style={{
-                alignItems: 'center',
-                position: 'absolute',
-                alignSelf: 'center',
-              }}>
+            <View>
               {isLoadingMoreData && (
                 <MaterialIndicator color={Colors.purple_darken} size={30} />
               )}
@@ -1016,6 +1093,51 @@ const Orders = (props) => {
           updateMessage={updateMessage}
         />
       )}
+
+      {toolTipVisible && (
+        <ToolTip
+          toolTipVisible={toolTipVisible}
+          setToolTipVisible={setToolTipVisible}
+          textToRender={textToRender}
+          setTextToRender={setTextToRender}
+        />
+      )}
+
+      <DialogInput
+        isDialogVisible={isDialogVisible}
+        title={'Refund Reason'}
+        message={'Can we know why you are issuing a refund on this items?'}
+        hintInput={'Reason'}
+        submitText={'Refund'}
+        submitInput={(inputText) => {
+          if (refundType === 'individual') {
+            //  console.log(cart, product_id, cart_id);
+            androidIssueRefundPerItem(inputText);
+            //console.log('IND');
+            // console.log(inputText);
+          } else {
+            androidIssueRefundAllItems(inputText);
+            // console.log('all');
+          }
+          setIsDialogVisible(false);
+        }}
+        closeDialog={() => {
+          setIsDialogVisible(false);
+        }}></DialogInput>
+
+      <DialogInput
+        isDialogVisible={isDialogVisible_2}
+        title={'Fulfil order for ' + buyer_name}
+        message={'Add a tracking number to fulfil this order'}
+        hintInput={'number'}
+        submitText={'Submit'}
+        submitInput={(inputText) => {
+          androidUpdateTrackingNumber(inputText);
+          setIsDialogVisible_2(false);
+        }}
+        closeDialog={() => {
+          setIsDialogVisible_2(false);
+        }}></DialogInput>
     </View>
   );
 };

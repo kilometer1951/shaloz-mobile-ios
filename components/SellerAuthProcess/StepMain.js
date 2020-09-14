@@ -4,9 +4,7 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  
   TouchableOpacity,
- 
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -145,12 +143,7 @@ const StepMain = (props) => {
     );
   }
 
-  return (
-    <View style={{ flex: 1, backgroundColor: '#fff'}}>
-     
-      {view}
-    </View>
-  );
+  return <View style={{flex: 1, backgroundColor: '#fff'}}>{view}</View>;
 };
 
 const styles = StyleSheet.create({});

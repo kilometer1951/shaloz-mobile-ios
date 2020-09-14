@@ -41,7 +41,8 @@ const StepSix = (props) => {
     setViewNumber,
     setIsNotAuthenticated,
     setShopStatus,
-    location,closeModal
+    location,
+    closeModal,
   } = props;
 
   const [renderDone, setRenderDone] = useState('bank');
@@ -55,7 +56,8 @@ const StepSix = (props) => {
   const [networkError, setNetworkError] = useState(false);
 
   stripe.setOptions({
-    publishableKey: 'pk_test_KPNAjmM69ddMhdF9y7weHNAs00KPXJrkLQ',
+    publishableKey:
+      'pk_test_51HRFVNHvI36pmtntaOEwj8uqyGOwCHnT0hlRl6K2R3miw17qp1WDIkKPwc47DNqaqJY1RWIgz4KTwnun0Skhahw500s9tDDxqE',
     merchantId: 'MERCHANT_ID', // Optional
     androidPayMode: 'test', // Android only
   });
@@ -113,8 +115,9 @@ const StepSix = (props) => {
         accountHolderName: user.first_name + ' ' + user.last_name,
         accountHolderType: 'individual', // "company" or "individual"
       };
-      const token = await stripe.createTokenWithBankAccount(params);
       setIsLoading(true);
+      const token = await stripe.createTokenWithBankAccount(params);
+
       const response = await authActions.addStripeAccountBankingInfo(
         user._id,
         dob,
@@ -238,7 +241,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={routingNumber}
                 onChangeText={(value) => setRoutingNumber(value)}
@@ -263,7 +266,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={accountNumber}
                 onChangeText={(value) => setAccountNumber(value)}
@@ -287,7 +290,7 @@ const StepSix = (props) => {
                   borderColor: Colors.light_grey,
                   borderRadius: 5,
                   width: '100%',
-                  color:"#000"
+                  color: '#000',
                 }}
                 value={confirmAccountNumber}
                 onChangeText={(value) => setConfirmAccountNumber(value)}
@@ -326,7 +329,7 @@ const StepSix = (props) => {
                   marginTop: 5,
                   marginLeft: 10,
                 }}>
-                Your payout information is saved securly. We will never charge
+                Your payout information is saved securely. We will never charge
                 your account.
               </Text>
             </View>
@@ -355,7 +358,7 @@ const StepSix = (props) => {
               marginTop: 15,
               marginTop: 40,
             }}>
-            Saving and uploading please wait
+            Saving and verifying please wait ...
           </Text>
         </View>
       ) : (

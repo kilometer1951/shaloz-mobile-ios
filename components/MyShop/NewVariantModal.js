@@ -274,7 +274,7 @@ const NewVariantModal = (props) => {
                 }}>
                 This is an add-on to your products price(extra). If your product
                 price is $100.00 and your option price is +$2.00, your customers
-                new total will be $102.00 if your customer selects this option.
+                new total will be $102.00.
               </Text>
             }
             backgroundColor={Colors.purple_darken}

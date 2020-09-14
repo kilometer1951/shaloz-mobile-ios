@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   TextInput,
+  Platform,
 } from 'react-native';
 import {TabHeading, Tab, Tabs} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -84,8 +85,10 @@ const SearchShopScreen = (props) => {
     }
   };
 
-  return (
-    <View style={styles.screen}>
+  let searchBar;
+
+  if (Platform.OS === 'ios') {
+    searchBar = (
       <SafeAreaView>
         <View style={styles.searchContainer}>
           <View style={styles.search}>
@@ -103,9 +106,13 @@ const SearchShopScreen = (props) => {
             </View>
             <View style={{width: '90%'}}>
               <TextInput
-              placeholderTextColor="#bdbdbd" 
+                placeholderTextColor="#bdbdbd"
                 placeholder={'Search for any product in this shop'}
-                style={{fontFamily: Fonts.poppins_regular, width: '100%',color:"#000"}}
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  width: '100%',
+                  color: '#000',
+                }}
                 onChangeText={dynamicSearchSellerProducts}
                 value={searchInput}
                 autoFocus={!browseByCategory ? true : false}
@@ -125,16 +132,85 @@ const SearchShopScreen = (props) => {
               </TouchableWithoutFeedback>
             )}
           </View>
-         <View style={styles.filterContainer}>
-         <TouchableWithoutFeedback onPress={() => props.navigation.push("ShopsFilterScreen",{seller_id:seller_id})}>
-            <View>
-              <Icon name="md-funnel" size={20} style={{marginRight:2}} />
-            </View>
-          </TouchableWithoutFeedback>
-         </View>
+          <View style={styles.filterContainer}>
+            <TouchableWithoutFeedback
+              onPress={() =>
+                props.navigation.push('ShopsFilterScreen', {
+                  seller_id: seller_id,
+                })
+              }>
+              <View>
+                <Icon name="md-funnel" size={20} style={{marginRight: 2}} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
         </View>
       </SafeAreaView>
+    );
+  } else {
+    searchBar = (
+      <SafeAreaView>
+        <View style={styles.searchContainer}>
+          <View style={styles.search}>
+            <View style={{width: '5%', marginLeft: 10, marginTop: 14}}>
+              <TouchableWithoutFeedback
+                onPress={() => props.navigation.goBack()}>
+                <View>
+                  <Icon
+                    name="ios-arrow-back"
+                    size={20}
+                    style={{marginRight: 10}}
+                  />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={{width: '87%'}}>
+              <TextInput
+                placeholderTextColor="#bdbdbd"
+                placeholder={'Search for any product in this shop'}
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  width: '100%',
+                  color: '#000',
+                }}
+                onChangeText={dynamicSearchSellerProducts}
+                value={searchInput}
+                autoFocus={!browseByCategory ? true : false}
+                style={{fontFamily: Fonts.poppins_regular, width: '100%'}}
+              />
+            </View>
 
+            {searchInput !== '' && (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setSearchInput('');
+                  fetchRandomSellerShopProducts();
+                }}>
+                <View style={{marginRight: 10, marginTop: 14}}>
+                  <Icon name="ios-close" size={20} />
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          </View>
+          <View style={styles.filterContainer}>
+            <TouchableWithoutFeedback
+              onPress={() =>
+                props.navigation.push('ShopsFilterScreen', {
+                  seller_id: seller_id,
+                })
+              }>
+              <View>
+                <Icon name="md-funnel" size={20} style={{marginRight: 2}} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+  return (
+    <View style={styles.screen}>
+      {searchBar}
       {isSearching && (
         <ActivityIndicator
           size="large"
@@ -170,11 +246,13 @@ const styles = StyleSheet.create({
   searchContainer: {
     padding: 10,
     flexDirection: 'row',
+    paddingLeft: Platform.OS === 'ios' ? 0 : 10,
+    paddingRight: Platform.OS === 'ios' ? 0 : 10,
   },
 
   search: {
     flexDirection: 'row',
-    padding: 15,
+    padding: Platform.OS === 'ios' ? 15 : 0,
     borderRadius: 50,
     shadowOffset: {width: 0, height: 0.5},
     elevation: 5,
@@ -207,13 +285,13 @@ const styles = StyleSheet.create({
     width: '60%',
     paddingTop: 15,
   },
-  filterContainer:{
+  filterContainer: {
     backgroundColor: '#fff',
-    width:"10%",
-    marginLeft:10,
-    alignItems:"center",
-    justifyContent:"center"
-  }
+    width: '10%',
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default SearchShopScreen;

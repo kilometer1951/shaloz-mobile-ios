@@ -5,7 +5,8 @@ import {
   Text,
   TouchableWithoutFeedback,
   TextInput,
-  SafeAreaView,TouchableOpacity
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import Error from '../Error';
 
@@ -23,7 +24,7 @@ import * as authActions from '../../store/actions/authActions';
 
 const StepThree = (props) => {
   const dispatch = useDispatch();
-  const {setSsn, ssn, setViewToRender, setViewNumber,closeModal} = props;
+  const {setSsn, ssn, setViewToRender, setViewNumber, closeModal} = props;
   const [errorSSN, setErrorSSN] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const user = useSelector((state) => state.authReducer.user);
@@ -71,7 +72,7 @@ const StepThree = (props) => {
               marginTop: 15,
               marginTop: 40,
             }}>
-            Saving and uploading please wait
+            Saving and verifying please wait ...
           </Text>
         </View>
       ) : (
@@ -116,7 +117,7 @@ const StepThree = (props) => {
                 borderColor: Colors.light_grey,
                 borderRadius: 5,
                 width: '100%',
-                color:"#000"
+                color: '#000',
               }}
               value={ssn}
               onChangeText={(value) => setSsn(value)}

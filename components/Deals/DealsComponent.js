@@ -3,18 +3,17 @@ import {
   View,
   StyleSheet,
   Text,
-  
   FlatList,
   RefreshControl,
-
+  Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
 import {MaterialIndicator} from 'react-native-indicators';
 import NetworkError from '../NetworkError';
 import * as appActions from '../../store/actions/appActions';
-import {ActionSheet} from "native-base"
-import { Toast } from 'native-base';
+import {ActionSheet} from 'native-base';
+import {Toast} from 'native-base';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -26,8 +25,8 @@ import ProductDesignComponent from '../ProductDesignComponent';
 const DealsComponent = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
-  const [openUpdateMessage, setOpenUpdateMessage] = useState(false)
-  const [updateMessage, setUpdateMessage] = useState("")
+  const [openUpdateMessage, setOpenUpdateMessage] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState('');
   const [networkError, setNetworkError] = useState(false);
 
   const {
@@ -43,14 +42,12 @@ const DealsComponent = (props) => {
     props.navigation.navigate('Shops', {
       headerTile: 'Shop',
       backTitle: 'Deals',
-      seller_id:seller_id
-    })
-  }
+      seller_id: seller_id,
+    });
+  };
 
-  
-
-  const openActionSheet = (product_id,seller_id) =>
-  ActionSheet.show(
+  const openActionSheet = (product_id, seller_id) =>
+    ActionSheet.show(
       {
         options: ['Cancel', 'Visit shop', 'Add to favorite'],
         cancelButtonIndex: 0,
@@ -60,29 +57,25 @@ const DealsComponent = (props) => {
         if (buttonIndex === 0) {
           // cancel action
         } else if (buttonIndex === 1) {
-          visitShop(seller_id)
-         //console.log(seller);
-         
+          visitShop(seller_id);
+          //console.log(seller);
         } else if (buttonIndex === 2) {
-          try{
-            dispatch(appActions.addFavProduct(user._id,product_id));
+          try {
+            dispatch(appActions.addFavProduct(user._id, product_id));
             Toast.show({
               text: 'Added to favorites!',
               buttonText: 'Okay',
-            })
-
-
-          } catch(e) {
+            });
+          } catch (e) {
             console.log(e);
-            setNetworkError(true)
+            setNetworkError(true);
           }
         }
       },
     );
 
   const openSingleScreen = (product_id) => {
-    props.navigation.navigate('SingleProduct', {product_id:product_id});
-
+    props.navigation.navigate('SingleProduct', {product_id: product_id});
   };
 
   const renderItem = ({item}) => (
@@ -92,9 +85,8 @@ const DealsComponent = (props) => {
         discount={item.discount}
         main_image={item.main_image}
         product_name={item.product_name}
-        openActionSheet={openActionSheet.bind(this,item._id, item.user)}
+        openActionSheet={openActionSheet.bind(this, item._id, item.user)}
         product_price={item.product_price}
-
       />
     </View>
   );
@@ -115,7 +107,7 @@ const DealsComponent = (props) => {
         data={deals}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
-        style={{marginTop: 2, marginBottom:20}}
+        style={{marginTop: 2, marginBottom: Platform.OS === 'ios' ? 20 : 0}}
         numColumns={2}
         extraData={deals}
         onEndReachedThreshold={0.5}
@@ -124,12 +116,7 @@ const DealsComponent = (props) => {
           handleLoadMoreDeals();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}
@@ -139,7 +126,7 @@ const DealsComponent = (props) => {
                   fontFamily: Fonts.poppins_regular,
                   color: Colors.grey_darken,
                 }}>
-                No more deals to load
+                No more data to load
               </Text>
             )}
           </View>
@@ -151,8 +138,6 @@ const DealsComponent = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
-
-
     </View>
   );
 };

@@ -261,14 +261,15 @@ const CartComponent = (props) => {
         variantsTotal += parseFloat(pricePerVariant);
       }
       let pricePerItem;
-      const product_price_total = parseFloat(item[i].product.product_price);
+      const product_price_total =
+        parseFloat(item[i].product.product_price) + parseFloat(variantsTotal);
 
       pricePerItem = product_price_total * parseInt(item[i].qty);
 
       count_sub_total += parseFloat(pricePerItem);
     }
 
-    return (variantsTotal + count_sub_total).toFixed(2);
+    return count_sub_total.toFixed(2);
   };
 
   const calculate_discount_total = (item) => {
@@ -942,12 +943,7 @@ const CartComponent = (props) => {
           handleLoadMore();
         }}
         ListFooterComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              position: 'absolute',
-              alignSelf: 'center',
-            }}>
+          <View>
             {isLoadingMoreData && (
               <MaterialIndicator color={Colors.purple_darken} size={30} />
             )}

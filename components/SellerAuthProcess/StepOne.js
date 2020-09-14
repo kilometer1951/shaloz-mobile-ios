@@ -3,15 +3,14 @@ import {
   View,
   StyleSheet,
   Text,
-
   TouchableWithoutFeedback,
   Image,
-
-  TouchableOpacity,SafeAreaView
-  
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import {ActionSheet} from 'native-base'
+import {ActionSheet} from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from '../../contants/Fonts';
@@ -32,7 +31,8 @@ const StepOne = (props) => {
     setImageSelected,
     imageSelected,
     setViewToRender,
-    setViewNumber,closeModal
+    setViewNumber,
+    closeModal,
   } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [shopImageObject, setShopImageObject] = useState({});
@@ -77,7 +77,10 @@ const StepOne = (props) => {
           let data = {
             uri: response.path,
             type: response.mime,
-            name: response.filename,
+            name:
+              Platform.OS === 'ios'
+                ? response.filename
+                : response.filename + '.JPEG',
           };
           setShopImageObject(data);
           //   dispatch(authActions.referenceLicensePhotoData(data));
@@ -90,7 +93,7 @@ const StepOne = (props) => {
   };
 
   const openActionSheet = () =>
-  ActionSheet.show(
+    ActionSheet.show(
       {
         options: ['Cancel', 'Take photo', 'Browse libary'],
         cancelButtonIndex: 0,
@@ -122,7 +125,6 @@ const StepOne = (props) => {
 
   return (
     <View>
-      
       {isLoading ? (
         <View style={{alignItems: 'center', marginTop: '40%'}}>
           <MaterialIndicator
@@ -138,70 +140,74 @@ const StepOne = (props) => {
               marginTop: 15,
               marginTop: 40,
             }}>
-            Saving and uploading please wait
+            Saving and verifying please wait ...
           </Text>
         </View>
       ) : (
         <View>
-           <SafeAreaView>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', padding:10}}>
-          <TouchableOpacity onPress={() => closeModal()}>
-            <View>
-              <Icon name="ios-close" size={35} />
-            </View>
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_regular,
-              fontSize: 18,
-              marginTop: 5,
-            }}>
-            {props.viewNumber}/6
-          </Text>
-        </View>
-      </SafeAreaView>
-      <View style={{alignItems: 'center'}}>
-          <Text
-            style={{
-              fontFamily: Fonts.poppins_semibold,
-              fontSize: 20,
-              marginTop: 8,
-              textAlign: 'center',
-            }}>
-            Profile picture OR Company logo
-          </Text>
-          <TouchableOpacity onPress={openActionSheet}>
-            {Object.entries(imageSelected).length === 0 ? (
-              <View style={styles.image}>
-                <Icon
-                  name="md-add-circle"
-                  size={30}
-                  color={Colors.pink}
-                  style={{alignSelf: 'center', marginTop: '40%'}}
-                />
-              </View>
-            ) : (
-              <Image source={imageSelected} style={styles.image} />
-            )}
-          </TouchableOpacity>
-
-          {Object.entries(imageSelected).length !== 0 && (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                ReactNativeHapticFeedback.trigger('impactLight', {
-                  enableVibrateFallback: true,
-                  ignoreAndroidSystemSettings: false,
-                });
-                goToSection();
+          <SafeAreaView>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                padding: 10,
               }}>
-              <View style={styles.button}>
-                <Icon name="md-arrow-round-forward" size={40} color="white" />
-              </View>
-            </TouchableWithoutFeedback>
-          )}
-        </View>
+              <TouchableOpacity onPress={() => closeModal()}>
+                <View>
+                  <Icon name="ios-close" size={35} />
+                </View>
+              </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: Fonts.poppins_regular,
+                  fontSize: 18,
+                  marginTop: 5,
+                }}>
+                {props.viewNumber}/6
+              </Text>
+            </View>
+          </SafeAreaView>
+          <View style={{alignItems: 'center'}}>
+            <Text
+              style={{
+                fontFamily: Fonts.poppins_semibold,
+                fontSize: 20,
+                marginTop: 8,
+                textAlign: 'center',
+              }}>
+              Profile picture OR Company logo
+            </Text>
+            <TouchableOpacity onPress={openActionSheet}>
+              {Object.entries(imageSelected).length === 0 ? (
+                <View style={styles.image}>
+                  <Icon
+                    name="md-add-circle"
+                    size={30}
+                    color={Colors.pink}
+                    style={{alignSelf: 'center', marginTop: '40%'}}
+                  />
+                </View>
+              ) : (
+                <Image source={imageSelected} style={styles.image} />
+              )}
+            </TouchableOpacity>
+
+            {Object.entries(imageSelected).length !== 0 && (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  ReactNativeHapticFeedback.trigger('impactLight', {
+                    enableVibrateFallback: true,
+                    ignoreAndroidSystemSettings: false,
+                  });
+                  goToSection();
+                }}>
+                <View style={styles.button}>
+                  <Icon name="md-arrow-round-forward" size={40} color="white" />
+                </View>
+              </TouchableWithoutFeedback>
+            )}
           </View>
-       
+        </View>
       )}
       {networkError && (
         <NetworkError

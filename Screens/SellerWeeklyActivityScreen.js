@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
- 
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -30,7 +29,6 @@ const SellerWeeklyActivityScreen = (props) => {
 
   const backTitle = props.navigation.getParam('backTitle');
   const headerTile = props.navigation.getParam('headerTile');
-
 
   return (
     <View style={styles.screen}>
@@ -58,18 +56,15 @@ const SellerWeeklyActivityScreen = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-             Weekly activity
+              Weekly activity
             </Text>
           </View>
-          <View style={{width: '20%'}}>
-           
-          </View>
+          <View style={{width: '20%'}}></View>
         </View>
       </SafeAreaView>
-   
-     <SellerWeeklyActivityComponent />
-   
-    
+
+      <SellerWeeklyActivityComponent />
+
       {networkError && (
         <NetworkError
           networkError={networkError}
@@ -95,7 +90,6 @@ const styles = StyleSheet.create({
   headerRow: {
     width: '60%',
   },
-  
 });
 
 export default SellerWeeklyActivityScreen;

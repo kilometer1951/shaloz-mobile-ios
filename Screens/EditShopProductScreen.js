@@ -140,7 +140,7 @@ const NewProductScreen = (props) => {
           setSubCategory1_id(response.sub_data._id);
         }
       } catch (e) {
-        console.log(e);
+        //console.log(e);
         setFetching(false);
         setNetworkError(true);
       }
@@ -201,6 +201,16 @@ const NewProductScreen = (props) => {
         Alert.alert(
           'Error',
           'Product quantity is required',
+          [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
+          {cancelable: false},
+        );
+        return;
+      }
+
+      if (parseInt(product_qty) <= 0) {
+        Alert.alert(
+          'Error',
+          'Product quantity cannot be zero.',
           [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
           {cancelable: false},
         );
