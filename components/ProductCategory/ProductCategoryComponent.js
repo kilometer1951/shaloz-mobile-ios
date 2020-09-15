@@ -47,7 +47,7 @@ const ProductCategoryComponent = (props) => {
 
   const displayPrice = (product_price, discount) => {
     if (discount === '') {
-      return product_price;
+      return product_price.toFixed(2);
     } else {
       let price = parseInt(product_price);
       let _discount = parseInt(discount);
@@ -156,7 +156,9 @@ const ProductCategoryComponent = (props) => {
                 ${displayPrice(item.product_price, item.discount)}
               </Text>
               {item.discount !== '' && (
-                <Text style={styles.previousPrice}>${item.product_price}</Text>
+                <Text style={styles.previousPrice}>
+                  ${item.product_price.toFixed(2)}
+                </Text>
               )}
             </View>
             <TouchableOpacity

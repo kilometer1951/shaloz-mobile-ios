@@ -392,7 +392,7 @@ const Products = (props) => {
               fontSize: 18,
               alignSelf: 'flex-end',
             }}>
-            ${item.product_price}
+            ${item.product_price.toFixed(2)}
           </Text>
         </View>
       </View>

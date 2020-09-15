@@ -92,7 +92,7 @@ const RecentlyViewedComponent = (props) => {
 
   const displayPrice = (product_price, discount) => {
     if (discount === '') {
-      return product_price;
+      return product_price.toFixed(2);
     } else {
       let price = parseInt(product_price);
       let _discount = parseInt(discount);
@@ -164,7 +164,7 @@ const RecentlyViewedComponent = (props) => {
                 </Text>
                 {item.product.discount !== '' && (
                   <Text style={styles.previousPrice}>
-                    ${item.product.product_price}
+                    ${item.product.product_price.toFixed(2)}
                   </Text>
                 )}
               </View>

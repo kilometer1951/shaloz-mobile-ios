@@ -33,7 +33,9 @@ const NewProductScreen = (props) => {
   const product_data = props.navigation.getParam('product_data');
 
   const [product_name, setProdcutName] = useState(product_data.product_name);
-  const [product_price, setProductPrice] = useState(product_data.product_price);
+  const [product_price, setProductPrice] = useState(
+    product_data.product_price.toFixed(2),
+  );
   const [product_details, setProductDetails] = useState(
     product_data.product_details,
   );
@@ -116,6 +118,8 @@ const NewProductScreen = (props) => {
     product_data.product_weight_unit,
   );
 
+  const controller = new AbortController();
+
   useEffect(() => {
     //get maincategory id
     const getMainCategoryId = async () => {
@@ -154,6 +158,10 @@ const NewProductScreen = (props) => {
         ]);
       });
     }
+
+    () => {
+      controller.abort();
+    };
     getMainCategoryId();
   }, []);
 
@@ -270,9 +278,8 @@ const NewProductScreen = (props) => {
         if (discount_end_date === 'Select date') {
           Alert.alert(
             'Error',
-            'Select an end date'[
-              {text: 'Ok', onPress: () => console.log('Cancel Pressed!')}
-            ],
+            'Select an end date',
+            [{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
           return;

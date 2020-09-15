@@ -158,9 +158,9 @@ const TrackPackageComponent = (props) => {
         } else if (buttonIndex === 2) {
           Linking.openURL(
             'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
-              cart_id +
+              cart_id.toString() +
               '&body=My orderID is ' +
-              cart_id +
+              cart_id.toString() +
               ' ......',
           );
         }

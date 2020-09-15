@@ -41,7 +41,7 @@ const ProductComponent = (props) => {
 
   const displayPrice = (product_price, discount) => {
     if (discount === '') {
-      return product_price;
+      return parseFloat(product_price).toFixed(2);
     } else {
       let price = parseInt(product_price);
       let _discount = parseInt(discount);
@@ -165,7 +165,9 @@ const ProductComponent = (props) => {
                 ${displayPrice(item.product_price, item.discount)}
               </Text>
               {item.discount !== '' && (
-                <Text style={styles.previousPrice}>${item.product_price}</Text>
+                <Text style={styles.previousPrice}>
+                  ${parseFloat(item.product_price).toFixed(2)}
+                </Text>
               )}
             </View>
             <TouchableOpacity

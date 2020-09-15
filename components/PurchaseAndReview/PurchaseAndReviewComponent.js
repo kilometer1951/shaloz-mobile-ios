@@ -97,7 +97,7 @@ const PurchaseAndReviewComponent = (props) => {
             'mailto:support@shaloz.com?cc=&subject=Issue with OrderID' +
               cart_id +
               '&body=My orderID is ' +
-              cart_id +
+              cart_id.toString() +
               ' ......',
           );
         }

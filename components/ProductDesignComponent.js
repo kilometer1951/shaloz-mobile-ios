@@ -47,7 +47,7 @@ const ProductDesignComponent = (props) => {
 
   const displayPrice = (product_price, discount) => {
     if (discount === '') {
-      return product_price;
+      return parseFloat(product_price).toFixed(2);
     } else {
       let price = parseInt(product_price);
       let _discount = parseInt(discount);
@@ -80,9 +80,14 @@ const ProductDesignComponent = (props) => {
           </View>
         )}
 
-        <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
+        <View
+          style={{
+            backgroundColor: '#e1e4e8',
+            borderTopLeftRadius: 5,
+            borderTopRightRadius: 5,
+          }}>
           <FastImage
-            source={{uri: main_image, priority:FastImage.priority.high}}
+            source={{uri: main_image, priority: FastImage.priority.high}}
             style={{
               width: '100%',
               height: 150,
@@ -116,7 +121,9 @@ const ProductDesignComponent = (props) => {
                 ${displayPrice(product_price, discount)}
               </Text>
               {discount !== '' && (
-                <Text style={styles.previousPrice}>${product_price}</Text>
+                <Text style={styles.previousPrice}>
+                  ${parseFloat(product_price).toFixed(2)}
+                </Text>
               )}
             </View>
             <TouchableOpacity
@@ -169,7 +176,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Fonts.poppins_regular,
     fontSize: 12,
-    marginTop:4
+    marginTop: 4,
   },
 });
 

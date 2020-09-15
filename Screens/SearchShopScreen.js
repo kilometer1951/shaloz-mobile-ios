@@ -246,8 +246,8 @@ const styles = StyleSheet.create({
   searchContainer: {
     padding: 10,
     flexDirection: 'row',
-    paddingLeft: Platform.OS === 'ios' ? 0 : 10,
-    paddingRight: Platform.OS === 'ios' ? 0 : 10,
+    paddingLeft: Platform.OS === 'ios' ? 10 : 0,
+    paddingRight: Platform.OS === 'ios' ? 10 : 0,
   },
 
   search: {

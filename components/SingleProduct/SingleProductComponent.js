@@ -89,6 +89,21 @@ const SingleProductComponent = (props) => {
       return this.length > n ? this.substr(0, n - 1) + ' . . .' : this;
     };
 
+  const displayPriceMoreItemFromShop = (product_price, discount) => {
+    if (discount === '') {
+      return parseFloat(product_price).toFixed(2);
+    } else {
+      let price = parseInt(product_price);
+      let _discount = parseInt(discount);
+
+      let total_d = _discount / 100;
+      let total_p = price * total_d;
+      let total = price - total_p;
+
+      return total.toFixed(2);
+    }
+  };
+
   const handleImagePreivew = (path) => {
     const img = [
       {
@@ -303,14 +318,27 @@ const SingleProductComponent = (props) => {
               <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 15}}>
                 {result.product_name.trunc(18)}
               </Text>
-              <Text
+
+              <View
                 style={{
-                  fontFamily: Fonts.poppins_semibold,
+                  marginTop: 2,
+                  flexDirection: 'row',
                   alignSelf: 'flex-end',
-                  fontSize: 18,
                 }}>
-                ${result.product_price}
-              </Text>
+                <Text
+                  style={{fontFamily: Fonts.poppins_semibold, fontSize: 18}}>
+                  $
+                  {displayPriceMoreItemFromShop(
+                    result.product_price,
+                    result.discount,
+                  )}
+                </Text>
+                {result.discount !== '' && (
+                  <Text style={styles.previousPrice}>
+                    ${parseFloat(result.product_price).toFixed(2)}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -556,7 +584,7 @@ const SingleProductComponent = (props) => {
           </Text>
           {productData.discount !== '' && (
             <Text style={styles.previousPrice}>
-              ${productData.product_price}
+              ${parseFloat(productData.product_price).toFixed(2)}
             </Text>
           )}
         </View>

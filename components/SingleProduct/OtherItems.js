@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
- 
   TouchableWithoutFeedback,
   Image,
   ScrollView,
@@ -15,7 +14,7 @@ import Colors from '../../contants/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const OtherItems = (props) => {
-  const {dataN,pressAction} = props
+  const {dataN, pressAction} = props;
 
   String.prototype.trunc =
     String.prototype.trunc ||
@@ -23,23 +22,27 @@ const OtherItems = (props) => {
       return this.length > n ? this.substr(0, n - 1) + ' . . .' : this;
     };
 
-    
- 
-
   const renderItem_other_items = dataN.map((result, index, array) => {
     return (
-      <TouchableOpacity key={index} onPress={pressAction.bind(this,result._id)}>
+      <TouchableOpacity
+        key={index}
+        onPress={pressAction.bind(this, result._id)}>
         <View style={styles.otherItemsCard}>
-        {result.discount !== '' && (
-          <View style={styles.discountContainer}>
-            <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
-              {result.discount}% OFF
-            </Text>
-          </View>
-        )}
-          <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
+          {result.discount !== '' && (
+            <View style={styles.discountContainer}>
+              <Text style={{fontFamily: Fonts.poppins_regular, padding: 1}}>
+                {result.discount}% OFF
+              </Text>
+            </View>
+          )}
+          <View
+            style={{
+              backgroundColor: '#e1e4e8',
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+            }}>
             <Image
-              source={{uri:result.main_image}}
+              source={{uri: result.main_image}}
               style={{
                 width: '100%',
                 height: 150,
@@ -51,17 +54,17 @@ const OtherItems = (props) => {
           </View>
           <View style={{padding: 7}}>
             <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 17}}>
-             {result.product_name.trunc(15)}
+              {result.product_name.trunc(15)}
             </Text>
             <View style={{flexDirection: 'row'}}>
               <View style={{width: '60%'}}>
                 <Text style={{fontFamily: Fonts.poppins_light, fontSize: 17}}>
-                {result.main_category.trunc(8)}
+                  {result.main_category.trunc(8)}
                 </Text>
               </View>
               <View style={{alignItems: 'flex-end', width: '40%'}}>
                 <Text style={{fontFamily: Fonts.poppins_regular, fontSize: 17}}>
-                  ${result.product_price}
+                  ${parseFloat(result.product_price).toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -88,7 +91,13 @@ const OtherItems = (props) => {
         showsHorizontalScrollIndicator={false}>
         <View style={{flexDirection: 'row'}}>
           {renderItem_other_items}
-          <TouchableWithoutFeedback onPress={() => props.navigation.navigate("Product",{backTitle:"Back",headerTile:"Product"})}>
+          <TouchableWithoutFeedback
+            onPress={() =>
+              props.navigation.navigate('Product', {
+                backTitle: 'Back',
+                headerTile: 'Product',
+              })
+            }>
             <View
               style={{
                 flexDirection: 'row',
@@ -148,8 +157,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     padding: 2,
     borderRadius: 5,
-    opacity:.7
-
+    opacity: 0.7,
   },
 });
 

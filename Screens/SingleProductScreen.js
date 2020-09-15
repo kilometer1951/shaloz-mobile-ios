@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-
   Animated,
   Alert,
   Share,
@@ -66,7 +65,7 @@ const SingleProductScreen = (props) => {
 
   const displayPrice = (product_price, discount) => {
     if (discount === '') {
-      setPrice(product_price);
+      setPrice(parseFloat(product_price).toFixed(2));
     } else {
       let price = parseInt(product_price);
       let _discount = parseInt(discount);
@@ -161,7 +160,7 @@ const SingleProductScreen = (props) => {
             ''[{text: 'Ok', onPress: () => console.log('Cancel Pressed!')}],
             {cancelable: false},
           );
-          
+
           setVariantsBorderColor(true);
           return;
         }
@@ -188,30 +187,25 @@ const SingleProductScreen = (props) => {
           product_personalization_note: customization_note,
         };
 
-       
-     
-
-
         setIsAddedToCard(true);
-         setAddingToCart(true)
-       await dispatch(appActions.addToCart(data));
-      await dispatch(appActions.fetchCartData(user._id, 1));
-          setAddingToCart(false)
-      
+        setAddingToCart(true);
+        await dispatch(appActions.addToCart(data));
+        await dispatch(appActions.fetchCartData(user._id, 1));
+        setAddingToCart(false);
       } else {
         Animated.timing(animatedPress, {
           toValue: 0.8,
           duration: 500,
           useNativeDriver: true,
         }).start();
-        dispatch(appActions.SelectedFooterTab("cart"));
+        dispatch(appActions.SelectedFooterTab('cart'));
         dispatch(appActions.fetchCartData(user._id, 1));
-        
+
         props.navigation.navigate('Cart');
       }
     } catch (e) {
       console.log(e);
-      
+
       setIsLoading(false);
       setNetworkError(true);
     }
