@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -18,7 +17,8 @@ import Orders from '../components/MyShop/Orders';
 import NetworkError from '../components/NetworkError';
 
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const MyShopOrders = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,6 @@ const MyShopOrders = (props) => {
 
   const backTitle = props.navigation.getParam('backTitle');
   const headerTile = props.navigation.getParam('headerTile');
-
 
   return (
     <View style={styles.screen}>
@@ -58,24 +57,27 @@ const MyShopOrders = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-             Orders
+              Orders
             </Text>
           </View>
-          <View style={{width: '20%'}}>
-           
-          </View>
+          <View style={{width: '20%'}}></View>
         </View>
       </SafeAreaView>
-   
-     <Orders />
-   
-    
+
+      <Orders />
+
       {networkError && (
         <NetworkError
           networkError={networkError}
           setNetworkError={setNetworkError}
         />
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };
@@ -95,7 +97,6 @@ const styles = StyleSheet.create({
   headerRow: {
     width: '60%',
   },
-  
 });
 
 export default MyShopOrders;

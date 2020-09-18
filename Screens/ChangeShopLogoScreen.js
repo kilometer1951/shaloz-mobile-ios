@@ -22,7 +22,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {ActionSheet} from 'native-base';
 
 import * as authActions from '../store/actions/authActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const ChangeShopLogoScreen = (props) => {
   const dispatch = useDispatch();
   const [networkError, setNetworkError] = useState(false);
@@ -164,6 +165,11 @@ const ChangeShopLogoScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

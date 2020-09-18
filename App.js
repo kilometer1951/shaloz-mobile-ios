@@ -30,8 +30,10 @@ import appReducers from './store/reducers/appReducers';
 import {URL} from './socketURL';
 import Colors from './contants/Colors';
 import Fonts from './contants/Fonts';
+
 import AsyncStorage from '@react-native-community/async-storage';
-import MessageModal from './Modal/MessageModal'
+import MessageModal from './Modal/MessageModal';
+import {NetworkProvider} from 'react-native-offline';
 
 const rootReducer = combineReducers({
   authReducer: authReducers,
@@ -47,12 +49,13 @@ YellowBox.ignoreWarnings([
 import AppNavigator from './navigation/AppNavigator';
 
 const App: () => React$Node = () => {
-
   return (
     <Provider store={store}>
-      <Root>
-        <AppNavigator />
-      </Root>
+      <NetworkProvider>
+        <Root>
+          <AppNavigator />
+        </Root>
+      </NetworkProvider>
     </Provider>
   );
 };

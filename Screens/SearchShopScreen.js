@@ -17,7 +17,8 @@ import SearchShop from '../components/Shops/SearchShop';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import NetworkError from '../components/NetworkError';
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const SearchShopScreen = (props) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState('');
@@ -234,6 +235,11 @@ const SearchShopScreen = (props) => {
           <ProductPlaceholderLoader />
         </View>
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

@@ -20,7 +20,8 @@ import Footer from '../components/Footer';
 import CreateSellerAccount from '../Modal/CreateSellerAccount';
 import * as appActions from '../store/actions/appActions';
 import * as authActions from '../store/actions/authActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import FeedBackModal from '../Modal/FeedBackModal';
 import FaqModal from '../Modal/FaqModal';
@@ -412,6 +413,12 @@ const ProfileScreen = (props) => {
         openFeedBackModal={openFeedBackModal}
       />
       <FaqModal openFaqModal={openFaqModal} setOpenFaqModal={setOpenFaqModal} />
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

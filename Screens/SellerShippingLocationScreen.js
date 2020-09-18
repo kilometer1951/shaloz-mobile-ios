@@ -20,7 +20,8 @@ import Colors from '../contants/Colors';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {MaterialIndicator} from 'react-native-indicators';
 import NetworkError from '../components/NetworkError';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import * as authActions from '../store/actions/authActions';
 
 const SellerShippingLocationScreen = (props) => {
@@ -304,6 +305,11 @@ const SellerShippingLocationScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

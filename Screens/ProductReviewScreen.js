@@ -16,7 +16,8 @@ import {MaterialIndicator} from 'react-native-indicators';
 import * as appActions from '../store/actions/appActions';
 import NetworkError from '../components/NetworkError';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const ProductReviewScreen = (props) => {
   const [page, setPage] = useState(2);
   const [endOfFile, setEndOfFile] = useState(false);
@@ -229,6 +230,12 @@ const ProductReviewScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

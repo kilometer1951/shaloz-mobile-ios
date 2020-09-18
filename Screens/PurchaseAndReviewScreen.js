@@ -18,7 +18,8 @@ import ReviewModal from '../components/PurchaseAndReview/ReviewModal';
 import OtherProducts from '../components/ProductCategory/OtherProducts';
 
 import NetworkError from '../components/NetworkError';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import * as appActions from '../store/actions/appActions';
 import CartPlaceHolder from '../components/CartPlaceHolder';
 
@@ -154,6 +155,12 @@ const PurchaseAndReviewScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

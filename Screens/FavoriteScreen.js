@@ -12,7 +12,8 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import FavoriteProductComponent from '../components/Favorite/FavoriteProductComponent';
 import FavoriteShopComponent from '../components/Favorite/FavoriteShopComponent';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const FavoriteScreen = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +71,12 @@ const FavoriteScreen = (props) => {
           </Tab>
         </Tabs>
       </View>
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
       <Footer navigation={props.navigation} />
     </View>
   );

@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  
   ScrollView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
@@ -17,7 +16,8 @@ import Colors from '../contants/Colors';
 import TrackPackageComponent from '../components/TrackPackage/TrackPackageComponent';
 import TrackPackageModal from '../components/TrackPackage/TrackPackageModal';
 import OtherProducts from '../components/ProductCategory/OtherProducts';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import NetworkError from '../components/NetworkError';
 
 import * as appActions from '../store/actions/appActions';
@@ -146,6 +146,11 @@ const TrackPackageScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

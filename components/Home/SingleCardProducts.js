@@ -10,7 +10,7 @@ import FastImage from 'react-native-fast-image';
 const SingleCardProducts = (props) => {
   return (
     <View style={styles.dealProductCard}>
-      <View style={{backgroundColor:"#e1e4e8", borderRadius:5}}>
+      <View style={{backgroundColor: '#e1e4e8', borderRadius: 5}}>
         <TouchableOpacity
           onPress={async () => {
             const userData = await AsyncStorage.getItem('@userData');
@@ -27,7 +27,7 @@ const SingleCardProducts = (props) => {
               sub_cat_two: '',
             });
           }}>
-          <Image
+          <FastImage
             source={props.image}
             style={{
               width: '100%',
@@ -35,7 +35,7 @@ const SingleCardProducts = (props) => {
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </TouchableOpacity>
       </View>

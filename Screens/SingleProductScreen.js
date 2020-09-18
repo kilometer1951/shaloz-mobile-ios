@@ -21,7 +21,8 @@ import SingleProductScreenPlaceholder from '../components/SingleProductScreenPla
 import NetworkError from '../components/NetworkError';
 import * as appActions from '../store/actions/appActions';
 const {height: viewportHeight} = Dimensions.get('window');
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const SingleProductScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -419,6 +420,11 @@ const SingleProductScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

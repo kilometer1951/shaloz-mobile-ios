@@ -18,7 +18,8 @@ import FastImage from 'react-native-fast-image';
 import ProductComponent from '../components/SearchProduct/ProductComponent';
 import ShopComponent from '../components/SearchProduct/ShopComponent';
 import {TabHeading, Tab, Tabs} from 'native-base';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const SearchProductScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -164,6 +165,12 @@ const SearchProductScreen = (props) => {
           <ProductPlaceholderLoader />
         </View>
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

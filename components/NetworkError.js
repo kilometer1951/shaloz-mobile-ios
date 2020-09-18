@@ -1,11 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 import Icons from 'react-native-vector-icons/Ionicons';

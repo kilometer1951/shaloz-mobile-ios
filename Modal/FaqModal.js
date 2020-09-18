@@ -26,81 +26,84 @@ const FaqModal = (props) => {
   const {openFaqModal, setOpenFaqModal} = props;
   const dataArray = [
     {
-      title: 'Does Shaloz do a verification check on all stores',
+      title: 'Does Shaloz do a verification check on all stores?',
       content:
         'Yes. Shaloz first priority is security. We verify all stores on the platform.',
     },
     {
-      title: 'Does Shaloz review products',
+      title: 'Does Shaloz review products?',
       content:
         'Yes. We review all products on the platform. When you upload a product, you will see a message on the product saying under-review. When we are done reviewing the product, the message under-review will go away meaning your product has been posted for sale.',
     },
     {
-      title: 'How do buyers earn points',
+      title: 'How long does product review take?',
+      content:
+        'It usually takes between thirty to fifty seconds from the time of uploading.',
+    },
+    {
+      title: 'How do buyers earn points?',
       content:
         'Our loyalty point system is one of the best out there. As you buy, you earn points on every dollar. Every dollar you spend through the Shaloz platform is equivalent to one point.  One point is equivalent to 0.002 cents.',
     },
     {
-      title: 'Who pays for Shaloz loyalty program',
+      title: 'Who pays for Shaloz loyalty program?',
       content:
         'Shaloz pays for the loyalty program. Sellers are not affected by our loyalty program.',
     },
 
     {
-      title: 'Does Shaloz issue refunds',
+      title: 'Does Shaloz issue refunds?',
       content:
-        'Shaloz happily accepts refunds on all items sold through the platform',
+        'Shaloz happily accepts refunds on all items sold through the platform.',
     },
     {
-      title: 'Are all payments secure through the Shaloz app',
+      title: 'Are all payments secure through the Shaloz app?',
       content:
-        'Shaloz does not share your payment with sellers. We use best in-class technology to secure your transactions',
+        'Shaloz does not share your payment details with sellers. We use best in-class technology to secure your transactions.',
     },
     {
-      title: 'Does Shaloz offer customer support',
+      title: 'Does Shaloz offer customer support?',
       content:
-        'Our customer support is open 24/7 for any questions or product related issues you might have. You can reach us at support@shaloz.com.',
+        'Yes Shaloz does. Our customer support is open 24/7 for any questions or product related issues you might have. You can reach us at support@shaloz.com.',
     },
     {
-      title: 'Can i track my products',
+      title: 'Can I track my products after shipment?',
       content:
         "Yes you can track all products bought through the Shaloz platform. To track your package, click on the person icon at the bottom of the screen > then click on purchase and review. All packages can be tracked as long as they haven't arrived.",
     },
     {
-      title: 'How can i sell on Shaloz',
+      title: 'How can I sell on Shaloz?',
       content:
-        'Anyone can sell on Shaloz. It takes one minute to setup your store and start selling.',
+        'Anyone can sell on Shaloz. It takes one minute to setup your store and start selling. Click on the "Create your online store button" to get started.',
     },
     {
-      title: 'Is there any subscription fee for selling',
-      content: 'We charge no subscription fee.',
+      title: 'Is there any subscription fee for selling?',
+      content:
+        'We charge no subscription fee. However, Shaloz charges a 5% transaction fee on every successful purchase.',
     },
     {
-      title: 'Does Shaloz charge any fee to enlist products',
+      title: 'Does Shaloz charge any fee to enlist products?',
       content: 'We charge no fee to enlist your products.',
     },
+
     {
-      title: 'Does Shaloz track store product quantity',
-      content: 'Shaloz tracks all product quantity within the app.',
+      title: 'Can sellers issue refunds?',
+      content: 'Yes, All sellers can issue refunds.',
     },
     {
-      title: 'Can sellers issue refunds',
-      content: 'All sellers can issue refunds.',
-    },
-    {
-      title: 'How do you get paid after fulfilling a package',
+      title: 'How do you get paid after fulfilling a package?',
       content:
         'After fulfilling a package, we review the transaction and send all payment to your account within two days of the package arriving.',
     },
     {
-      title: 'How long does deposit take to post to my account.',
+      title: 'How long does deposit take to post to my account?',
       content:
-        'It takes two business days to post all earnings to your bank account. Your first deposit takes seven days, the rest take two business days.',
+        'It takes two business days to post all earnings to your bank account. Your first deposit takes seven days, the rest take two business days. Deposits may take three to seven business days on holidays.',
     },
     {
-      title: 'How does Shaloz promote your product',
+      title: 'How does Shaloz promote your product?',
       content:
-        'Yes. Shaloz offers free promotion on all products within the app. We promote your product within and out of the app through our promotion program.',
+        'Shaloz offers free promotion on all products within the app. We promote your product within and out of the app through our promotion program.',
     },
   ];
 

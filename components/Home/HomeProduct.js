@@ -213,7 +213,7 @@ const Product = (props) => {
         setIsNotAuthenticated={props.setIsNotAuthenticated}
       />
       <ProductList
-        heading="Mobile Phones & Accessories"
+        heading="Tablets & Phones"
         navigation={props.navigation}
         dataN={fetched_home_data.cell_phone_acc}
         setIsNotAuthenticated={props.setIsNotAuthenticated}

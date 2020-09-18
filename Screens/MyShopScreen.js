@@ -32,7 +32,8 @@ import CompletedOrderSection from '../components/MyShop/CompletedOrderSection';
 import NetworkError from '../components/NetworkError';
 import VerificationModal from '../components/VerificationModal';
 import OpenCategorySectionModal from '../Modal/OpenCategorySectionModal';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import * as appActions from '../store/actions/appActions';
 
 const MyShopScreen = (props) => {
@@ -332,6 +333,12 @@ const MyShopScreen = (props) => {
           setOpenCategoryModal={setOpenCategoryModal}
         />
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

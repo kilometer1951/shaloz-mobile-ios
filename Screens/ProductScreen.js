@@ -15,7 +15,8 @@ import ProductComponent from '../components/ProductComponent';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import NetworkError from '../components/NetworkError';
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const ProductScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -182,6 +183,12 @@ const ProductScreen = (props) => {
           <ProductPlaceholderLoader />
         </View>
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

@@ -28,7 +28,8 @@ import {
   Fade,
 } from 'rn-placeholder';
 import FastImage from 'react-native-fast-image';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const SearchScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -469,6 +470,11 @@ const SearchScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

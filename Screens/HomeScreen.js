@@ -33,6 +33,9 @@ import AuthViewThree from '../components/AuthContainer/AuthViewThree';
 import LoginAuth from '../components/AuthContainer/LoginAuth';
 import NetworkError from '../components/NetworkError';
 import io from 'socket.io-client';
+// import NetInfo from '@react-native-community/netinfo';
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 
 //const {height} = Dimensions.get('window');
 
@@ -77,6 +80,13 @@ const HomeScreen = (props) => {
       Linking.removeEventListener('url', _handleOpenURL);
     };
   }, []);
+  // // Subscribe
+  // const unsubscribe = NetInfo.addEventListener((state) => {
+  //   console.log('Is connected?', state.isConnected);
+  // });
+
+  // // Unsubscribe
+  // unsubscribe();
 
   function _handleOpenURL(event) {
     const route = event.url.replace(/.*?:\/\//g, '');
@@ -296,6 +306,12 @@ const HomeScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

@@ -23,7 +23,8 @@ import {ActionSheet} from 'native-base';
 import {MaterialIndicator} from 'react-native-indicators';
 
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const ShippingPromoScreen = (props) => {
   const dispatch = useDispatch();
   const [networkError, setNetworkError] = useState(false);
@@ -209,6 +210,11 @@ const ShippingPromoScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

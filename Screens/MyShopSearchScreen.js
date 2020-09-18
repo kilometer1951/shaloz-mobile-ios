@@ -23,7 +23,8 @@ import {MaterialIndicator} from 'react-native-indicators';
 import Moment from 'moment';
 import DialogInput from 'react-native-dialog-input';
 import {withNavigation} from 'react-navigation';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import * as appActions from '../store/actions/appActions';
 import FastImage from 'react-native-fast-image';
 
@@ -620,6 +621,12 @@ const MyShopSearchScreen = (props) => {
         closeDialog={() => {
           setIsDialogVisible(false);
         }}></DialogInput>
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

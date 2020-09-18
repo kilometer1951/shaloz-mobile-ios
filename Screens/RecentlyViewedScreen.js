@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,7 +15,8 @@ import RecentlyViewedComponent from '../components/RecentlyViewed/RecentlyViewed
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import NetworkError from '../components/NetworkError';
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const RecentlyViewedScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -42,7 +42,7 @@ const RecentlyViewedScreen = (props) => {
           setNetworkError(true);
           return;
         }
-        
+
         setData(response.data);
       } catch (e) {
         setIsLoading(false);
@@ -67,8 +67,8 @@ const RecentlyViewedScreen = (props) => {
           setEndOfFile(true);
           return;
         }
-          console.log(endOfFile);
-          setPage((prev) => (prev = prev + 1));
+        console.log(endOfFile);
+        setPage((prev) => (prev = prev + 1));
         await setData((prev) => [...prev, ...response.data]);
       }
     }
@@ -89,7 +89,6 @@ const RecentlyViewedScreen = (props) => {
   };
 
   let view;
-  
 
   if (data.length === 0) {
     view = (
@@ -108,17 +107,17 @@ const RecentlyViewedScreen = (props) => {
     );
   } else {
     view = (
-     <View style={{flex:1}}>
-          <RecentlyViewedComponent
-        navigation={props.navigation}
-        data={data}
-        handleRefresh={handleRefresh}
-        handleLoadMore={handleLoadMore}
-        isRefreshing={isRefreshing}
-        isLoadingMoreData={isLoadingMoreData}
-        endOfFile={endOfFile}
-      />
-     </View>
+      <View style={{flex: 1}}>
+        <RecentlyViewedComponent
+          navigation={props.navigation}
+          data={data}
+          handleRefresh={handleRefresh}
+          handleLoadMore={handleLoadMore}
+          isRefreshing={isRefreshing}
+          isLoadingMoreData={isLoadingMoreData}
+          endOfFile={endOfFile}
+        />
+      </View>
     );
   }
 
@@ -136,7 +135,7 @@ const RecentlyViewedScreen = (props) => {
                     marginLeft: 10,
                     fontFamily: Fonts.poppins_regular,
                   }}>
-                 Back
+                  Back
                 </Text>
               </View>
             </TouchableOpacity>
@@ -172,6 +171,12 @@ const RecentlyViewedScreen = (props) => {
           <ProductPlaceholderLoader />
         </View>
       )}
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

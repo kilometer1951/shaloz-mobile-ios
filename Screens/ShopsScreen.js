@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
- 
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,7 +15,8 @@ import ProductComponent from '../components/ProductComponent';
 import ProductPlaceholderLoader from '../components/ProductPlaceholderLoader';
 import ShopsComponent from '../components/Shops/ShopsComponent';
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const ShopsScreen = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
@@ -28,14 +28,13 @@ const ShopsScreen = (props) => {
   const headerTile = props.navigation.getParam('headerTile');
   const seller_id = props.navigation.getParam('seller_id');
 
-
-//track store visitors
+  //track store visitors
   useEffect(() => {
-   const trackVisitors = () => {
-      appActions.trackVisitors(seller_id,user._id)
-   }
-   trackVisitors()
-  },[])
+    const trackVisitors = () => {
+      appActions.trackVisitors(seller_id, user._id);
+    };
+    trackVisitors();
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -69,7 +68,7 @@ const ShopsScreen = (props) => {
           <View style={{width: '25%'}}>
             <TouchableOpacity
               onPress={() => {
-                props.navigation.navigate("SearchShop", {seller_id:seller_id})
+                props.navigation.navigate('SearchShop', {seller_id: seller_id});
               }}>
               <View style={{paddingRight: 10, marginTop: 2}}>
                 <Icon
@@ -83,12 +82,17 @@ const ShopsScreen = (props) => {
         </View>
       </SafeAreaView>
       {!isLoading ? (
-        <ShopsComponent navigation={props.navigation} seller_id={seller_id}/>
+        <ShopsComponent navigation={props.navigation} seller_id={seller_id} />
       ) : (
         <View style={{marginTop: 10}}>
           <ProductPlaceholderLoader />
         </View>
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

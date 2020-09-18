@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   TouchableOpacity,
-  
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -18,7 +17,8 @@ import CompletedOrdersComponent from '../components/MyShop/CompletedOrdersCompon
 import NetworkError from '../components/NetworkError';
 
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const CompletedOrdersScreen = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,6 @@ const CompletedOrdersScreen = (props) => {
 
   const backTitle = props.navigation.getParam('backTitle');
   const headerTile = props.navigation.getParam('headerTile');
-
 
   return (
     <View style={styles.screen}>
@@ -58,18 +57,20 @@ const CompletedOrdersScreen = (props) => {
                 fontSize: 17,
                 fontFamily: Fonts.poppins_semibold,
               }}>
-             Completed Orders
+              Completed Orders
             </Text>
           </View>
-          <View style={{width: '20%'}}>
-           
-          </View>
+          <View style={{width: '20%'}}></View>
         </View>
       </SafeAreaView>
-   
-     <CompletedOrdersComponent />
-   
-    
+
+      <CompletedOrdersComponent />
+
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
       {networkError && (
         <NetworkError
           networkError={networkError}
@@ -95,7 +96,6 @@ const styles = StyleSheet.create({
   headerRow: {
     width: '60%',
   },
-  
 });
 
 export default CompletedOrdersScreen;

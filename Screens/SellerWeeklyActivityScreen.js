@@ -17,7 +17,8 @@ import SellerWeeklyActivityComponent from '../components/MyShop/SellerWeeklyActi
 import NetworkError from '../components/NetworkError';
 
 import * as appActions from '../store/actions/appActions';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 const SellerWeeklyActivityScreen = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +72,11 @@ const SellerWeeklyActivityScreen = (props) => {
           setNetworkError={setNetworkError}
         />
       )}
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };

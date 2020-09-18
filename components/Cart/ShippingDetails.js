@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ViewPager from '@react-native-community/viewpager';
+import Geolocation from '@react-native-community/geolocation';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -44,6 +45,60 @@ const ShippingDetails = (props) => {
 
   const [viewToRender, setViewToRender] = useState('payment');
   const [validatedAddress, setValidatedAddress] = useState({});
+  const [activityIndicator, setActivityIndicator] = useState(false);
+
+  const myApiKey = 'AIzaSyDEeUA1zS0cT-YHR8UyawDsYkoJop-enog';
+
+  const myLocation = (section) => {
+    Geolocation.getCurrentPosition(
+      async (position) => {
+        // setActivityIndicator(true);
+        const lng = position.coords.longitude;
+        const lat = position.coords.latitude;
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${myApiKey}`,
+        );
+        const res = await response.json();
+        const newAdressArray = res.results[0].formatted_address.split(',');
+        let address = newAdressArray[0].trim();
+        let locationState = newAdressArray[2].slice(0, 3).trim();
+        let locationCity = newAdressArray[1].trim();
+        let postalCode = newAdressArray[2].split(`${locationState}`)[1].trim();
+        // setDisplayError(false);
+        // setShopLocation(address);
+        // setActivityIndicator(false);
+        if (address.indexOf('#')) {
+          let apt_suite_other = address.split('#');
+          address = apt_suite_other[0];
+          setApt_suite_other(apt_suite_other[1]);
+          setStreet_address(address);
+        } else {
+          setStreet_address(address);
+        }
+
+        setZip_code(postalCode);
+        setCity(locationCity);
+        setState(locationState);
+      },
+      (error) => {
+        console.log(error);
+        //setActivityIndicator(false);
+        // setNetworkError(true);
+        Alert.alert(
+          'Location Error',
+          'Cannot get current location.',
+          [
+            {
+              text: 'Ok',
+              onPress: async () => {},
+            },
+          ],
+          {cancelable: false},
+        );
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  };
 
   useEffect(() => {
     const shippingDetails = async () => {
@@ -385,14 +440,24 @@ const ShippingDetails = (props) => {
           />
         </View>
         <View>
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: Fonts.poppins_semibold,
-              marginTop: 15,
-            }}>
-            Street address*
-          </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: Fonts.poppins_semibold,
+                marginTop: 15,
+              }}>
+              Street address*
+            </Text>
+            <TouchableOpacity onPress={myLocation}>
+              <Icon
+                name="md-locate"
+                size={20}
+                style={{marginRight: 10, marginTop: 15}}
+                color={Colors.pink}
+              />
+            </TouchableOpacity>
+          </View>
           <TextInput
             placeholderTextColor="#bdbdbd"
             style={{

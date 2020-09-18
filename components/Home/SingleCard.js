@@ -13,8 +13,12 @@ import FastImage from 'react-native-fast-image';
 const SingleCard = (props) => {
   return (
     <View style={styles.dealProductCard}>
-      <View style={{backgroundColor:"#e1e4e8", borderTopLeftRadius: 5,borderTopRightRadius: 5}}>
-       
+      <View
+        style={{
+          backgroundColor: '#e1e4e8',
+          borderTopLeftRadius: 5,
+          borderTopRightRadius: 5,
+        }}>
         <TouchableOpacity
           onPress={async () => {
             const userData = await AsyncStorage.getItem('@userData');
@@ -23,9 +27,9 @@ const SingleCard = (props) => {
               props.setIsNotAuthenticated(true);
               return;
             }
-             props.navigation.navigate('Deals',{backTitle:"Back"})
+            props.navigation.navigate('Deals', {backTitle: 'Back'});
           }}>
-          <Image
+          <FastImage
             source={require('../../assets/image3.jpg')}
             style={{
               width: '100%',
@@ -33,7 +37,7 @@ const SingleCard = (props) => {
               borderTopLeftRadius: 5,
               borderTopRightRadius: 5,
             }}
-            resizeMode="cover"
+            resizeMode={FastImage.resizeMode.cover}
           />
         </TouchableOpacity>
       </View>
@@ -55,7 +59,7 @@ const SingleCard = (props) => {
               props.setIsNotAuthenticated(true);
               return;
             }
-            props.navigation.navigate('Deals',{backTitle:"Back"});
+            props.navigation.navigate('Deals', {backTitle: 'Back'});
           }}>
           <View style={{flexDirection: 'row', marginTop: 10}}>
             <Text

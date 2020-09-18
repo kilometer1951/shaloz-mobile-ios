@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {NetworkConsumer} from 'react-native-offline';
+import ConnectionError from '../components/ConnectionError';
 import Fonts from '../contants/Fonts';
 import Colors from '../contants/Colors';
 import {WebView} from 'react-native-webview';
@@ -47,7 +48,9 @@ const WebViewScreen = (props) => {
                 alignItems: 'center',
               }}>
               <Text style={{fontFamily: Fonts.poppins_bold, fontSize: 19}}>
-                {title === 'shipping_policies' ? 'Shipping policies' : 'Terms of Use'}
+                {title === 'shipping_policies'
+                  ? 'Shipping policies'
+                  : 'Terms of Use'}
               </Text>
             </View>
           </View>
@@ -61,6 +64,11 @@ const WebViewScreen = (props) => {
         style={{flex: 1, width: deviceWidth}}
         scrollEnabled
       />
+      <NetworkConsumer>
+        {({isConnected}) =>
+          !isConnected && <ConnectionError networkValue={false} />
+        }
+      </NetworkConsumer>
     </View>
   );
 };
